@@ -1,0 +1,1 @@
+insert into user(password, name, lastname, email, u_type) values ('admin','admin','admin','admin','systemmanager')
