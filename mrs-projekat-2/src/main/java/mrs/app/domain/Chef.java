@@ -1,10 +1,7 @@
 package mrs.app.domain;
-
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "chef")
 public class Chef extends User{
 
 	/**

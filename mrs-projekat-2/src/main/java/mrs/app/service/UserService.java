@@ -10,5 +10,5 @@ public interface UserService {
 	
 	Collection<User> findAll();
 
-	User create(User greeting) throws Exception;
+	User create(User user) throws Exception;
 }

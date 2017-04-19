@@ -2,6 +2,7 @@ package mrs.app.service;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
 
@@ -22,7 +23,11 @@ public class UserRepositoryTests {
 	
 	@Test
 	public void executesQueryMethodsCorrectly(){
-		User user = new User("bla", "ja","ja","ja");
+		SystemManager user = new SystemManager();
+		user.setEmail("abc");
+		user.setPassword("abc");
+		user.setLastname("ja");
+		user.setName("ja");
 		userRepository.save(user);
 		
 		List<User> users = userRepository.findAll();

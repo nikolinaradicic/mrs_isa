@@ -1,1 +1,1 @@
-insert into user(password, name, lastname, email, u_type) values ('admin','admin','admin','admin','systemmanager')
+insert into system_manager(id, email, name, lastname, password) value (1,"admin","admin","admin","admin")

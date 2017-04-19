@@ -3,7 +3,6 @@ package mrs.app.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,10 +13,7 @@ import javax.persistence.Transient;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-
-@DiscriminatorColumn(name = "U_TYPE")
-
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User implements Serializable{
 
 	
@@ -33,7 +29,7 @@ public class User implements Serializable{
 	protected String repeatedPassword;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	protected Long id;
 	
 	@Column(nullable = false)
