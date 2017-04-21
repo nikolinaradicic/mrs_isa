@@ -11,4 +11,7 @@ public interface UserService {
 	Collection<User> findAll();
 
 	User create(User user) throws Exception;
+	
+	User change(User user);
+	
 }
