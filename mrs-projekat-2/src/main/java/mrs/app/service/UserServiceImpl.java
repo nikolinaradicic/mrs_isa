@@ -49,4 +49,12 @@ public class UserServiceImpl implements UserService{
 		
 	}
 
+
+	@Override
+	public User change(User user) {
+		User savedUser=userRepository.save(user);
+		System.out.println(user.getId());
+		return savedUser;
+	}
+
 }

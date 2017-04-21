@@ -1,3 +1,4 @@
+
 package mrs.app.controller;
 
 import java.util.Collection;
@@ -132,5 +133,47 @@ public class UserController {
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+
+	@RequestMapping(
+			value = "/api/changePass",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> changePass(
+			@RequestBody User user) throws Exception {
+		logger.info("> change password");
+		User current = (User) httpSession.getAttribute("user");
+		if (current == null){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		current.setPassword(user.getPassword());
+		User changedUser = (User) userService.change(current);
+		logger.info("< change password");
+		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
+		
+	}
+	
+	@RequestMapping(
+			value = "/api/changePersonalData",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> changePersonalData(
+			@RequestBody User user) throws Exception {
+		logger.info("> change personal data");
+		User current = (User) httpSession.getAttribute("user");
+		if (current == null){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		current.setLastname(user.getLastname());
+		current.setName(user.getName());
+		current.setEmail(user.getEmail());
+		User changedUser = (User) userService.change(current);
+		logger.info("< change personal data");
+		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
+		
+	}
+	
+	
 
 }
