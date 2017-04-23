@@ -2,6 +2,7 @@ package mrs.app.service;
 
 import java.util.Collection;
 
+import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 
 public interface UserService {
@@ -13,5 +14,7 @@ public interface UserService {
 	User create(User user) throws Exception;
 	
 	User change(User user);
+	
+	User changeData(User user);
 	
 }

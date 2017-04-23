@@ -74,3 +74,64 @@ function login() {
 		}
 	});
 }
+
+function changePass() {
+	var $form = $("#changePass");
+	console.log($form);
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#password-error").text("Fill all the fields").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/changePass",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+			if (data.responseJSON){
+				console.log(data);
+				location.href = "index.html";
+			}
+			else{
+				console.log(data);
+				$("#password-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+function changeData() {
+	var $form = $("#changeData");
+	console.log($form);
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#data-error").text("Fill all the fields").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/changePersonalData",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+			if (data.responseJSON){
+				console.log(data);
+				location.href = "index.html";
+			}
+			else{
+				console.log(data);
+				$("#data-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+

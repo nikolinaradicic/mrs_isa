@@ -165,15 +165,13 @@ public class UserController {
 		if (current == null){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		current.setLastname(user.getLastname());
-		current.setName(user.getName());
-		current.setEmail(user.getEmail());
-		User changedUser = (User) userService.change(current);
+		user.setId(current.getId());
+		user.setPassword(current.getPassword());
+		user.setRepeatedPassword(current.getRepeatedPassword());
+		User changedUser = (User) userService.changeData(user);
 		logger.info("< change personal data");
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
 		
 	}
-	
-	
 
 }

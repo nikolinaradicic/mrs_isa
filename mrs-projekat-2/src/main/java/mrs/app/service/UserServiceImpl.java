@@ -1,7 +1,9 @@
 package mrs.app.service;
 
 import java.util.Collection;
+import java.util.List;
 
+import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
 
@@ -52,9 +54,23 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User change(User user) {
-		User savedUser=userRepository.save(user);
-		System.out.println(user.getId());
-		return savedUser;
+		User savedUser = userRepository.findOne(user.getId());
+		savedUser.setPassword(user.getPassword());
+		System.out.println(user.getPassword());
+		
+		return userRepository.save(savedUser);
+	}
+	
+	@Override
+	public User changeData(User user) {
+		User savedUser = userRepository.findOne(user.getId());
+		System.out.println("*******************");
+		System.out.println(user.toString());
+		savedUser.setEmail(user.getEmail());
+		savedUser.setName(user.getName());
+		savedUser.setLastname(user.getLastname());
+		
+		return userRepository.save(savedUser);
 	}
 
 }
