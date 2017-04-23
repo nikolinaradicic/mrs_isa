@@ -1,9 +1,6 @@
 package mrs.app.service;
 
 import java.util.Collection;
-import java.util.List;
-
-import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
 

@@ -8,7 +8,5 @@ public class SystemManager extends User{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
 
 }

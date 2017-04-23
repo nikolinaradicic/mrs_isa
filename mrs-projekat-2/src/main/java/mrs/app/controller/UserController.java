@@ -167,7 +167,6 @@ public class UserController {
 		}
 		user.setId(current.getId());
 		user.setPassword(current.getPassword());
-		user.setRepeatedPassword(current.getRepeatedPassword());
 		User changedUser = (User) userService.changeData(user);
 		logger.info("< change personal data");
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
