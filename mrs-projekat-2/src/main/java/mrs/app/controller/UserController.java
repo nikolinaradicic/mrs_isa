@@ -172,5 +172,23 @@ public class UserController {
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
 		
 	}
+	
+	@RequestMapping(
+			value = "/api/addFriends",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> addFriends(
+			@RequestBody Guest friend) throws Exception {
+		logger.info("> add friends");
+		Guest current = (Guest) httpSession.getAttribute("user");
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		Guest changedUser = (Guest) userService.addFriend(current,friend);
+		logger.info("< add friends");
+		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
+		
+	}
 
 }

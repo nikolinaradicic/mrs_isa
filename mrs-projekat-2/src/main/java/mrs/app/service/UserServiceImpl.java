@@ -1,6 +1,9 @@
 package mrs.app.service;
 
 import java.util.Collection;
+import java.util.List;
+
+import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
 
@@ -37,6 +40,7 @@ public class UserServiceImpl implements UserService{
             throw new Exception(
                     "Id mora biti null prilikom perzistencije novog entiteta.");
         }
+        System.out.println(user.getEmail());
         User savedUser = userRepository.save(user);
         logger.info("< create");
         return savedUser;
@@ -68,6 +72,29 @@ public class UserServiceImpl implements UserService{
 		savedUser.setLastname(user.getLastname());
 		
 		return userRepository.save(savedUser);
+	}
+	
+	@Override
+	public Guest addFriend(Guest user, Guest friend) {
+		// TODO Auto-generated method stub
+		Guest currentUser=(Guest)userRepository.findOne(user.getId());
+		List<User> friendsToBe=(List<User>)userRepository.findAll();
+		User foundUser=new User();
+		boolean found=false;
+		for(User u:friendsToBe){
+			if(u.getEmail().equals(friend.getEmail())){
+				foundUser=u;
+				found=true;
+			}
+		}
+		if(found){
+			Guest friendToBe=(Guest)foundUser;
+			friendToBe.getGuests().add(user);
+			currentUser.getGuests().add(friendToBe);
+			userRepository.save(friendToBe);
+			return userRepository.save(currentUser);
+		}
+		return null;
 	}
 
 }
