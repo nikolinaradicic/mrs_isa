@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
+import mrs.app.domain.Bidder;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
@@ -103,6 +104,30 @@ public class UserController {
 		try{
 			SystemManager savedUser = (SystemManager) userService.create(user);
 			logger.info("< register sistem manager");
+			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
+		}
+		catch(MySQLIntegrityConstraintViolationException e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	
+	@RequestMapping(
+			value = "/bidderRegistration",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> registerBidder(
+			@RequestBody Bidder user) throws Exception {
+		logger.info("> register bidder");
+		User current = (User) httpSession.getAttribute("user");
+		if (current == null || current.getClass() != RestaurantManager.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		try{
+			Bidder savedUser = (Bidder) userService.create(user);
+			logger.info("< register bidder");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
 		}
 		catch(MySQLIntegrityConstraintViolationException e){

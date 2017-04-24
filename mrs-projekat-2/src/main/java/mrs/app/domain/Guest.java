@@ -3,7 +3,7 @@ package mrs.app.domain;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
 
@@ -15,7 +15,7 @@ public class Guest extends User{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@ManyToMany
+	@OneToMany
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Set<Guest> guests;
 
