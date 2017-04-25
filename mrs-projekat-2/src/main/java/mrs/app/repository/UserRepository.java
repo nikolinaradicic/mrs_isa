@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User,Long>{
 	public <S extends User> List<S> save(Iterable<S> arg0);
 	
 	public <S extends User> S findByEmailAndPassword(String email, String password);
+	
+	public <S extends User> S findByEmail(String email);
 }

@@ -1,12 +1,9 @@
 package mrs.app.service;
 
 import java.util.Collection;
-import java.util.List;
-
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,26 +72,37 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public Guest addFriend(Guest user, Guest friend) {
+	public boolean addFriend(Guest user, Guest friend) {
 		// TODO Auto-generated method stub
-		Guest currentUser=(Guest)userRepository.findOne(user.getId());
-		List<User> friendsToBe=(List<User>)userRepository.findAll();
-		User foundUser=new User();
-		boolean found=false;
-		for(User u:friendsToBe){
-			if(u.getEmail().equals(friend.getEmail())){
-				foundUser=u;
-				found=true;
-			}
+		Guest currentUser = (Guest) userRepository.findOne(user.getId());
+		
+		Guest requestedFriend = (Guest) userRepository.findByEmail(friend.getEmail());
+		
+		if(requestedFriend != null){
+			requestedFriend.getRequests().add(currentUser);
+			
+			userRepository.save(requestedFriend);
+			return true;
 		}
-		if(found){
-			Guest friendToBe=(Guest)foundUser;
-			friendToBe.getGuests().add(user);
-			currentUser.getGuests().add(friendToBe);
-			userRepository.save(friendToBe);
-			return userRepository.save(currentUser);
+		return false;
+	}
+
+
+	@Override
+	public boolean acceptFriend(Guest current, Guest friend) {
+		// TODO Auto-generated method stub
+		Guest currentUser = (Guest) userRepository.findOne(current.getId());
+		
+		Guest requestedFriend = (Guest) userRepository.findByEmail(friend.getEmail());
+		if (requestedFriend != null)
+		{
+			requestedFriend.getFriends().add(currentUser);
+			currentUser.getFriends().add(requestedFriend);
+			currentUser.getRequests().remove(requestedFriend);
+			userRepository.save(currentUser);
+			userRepository.save(requestedFriend);
 		}
-		return null;
+		return false;
 	}
 
 }

@@ -17,6 +17,8 @@ public interface UserService {
 	
 	User changeData(User user);
 	
-	Guest addFriend(Guest user, Guest friend);
+	boolean addFriend(Guest user, Guest friend);
+
+	boolean acceptFriend(Guest current, Guest friend);
 	
 }

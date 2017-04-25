@@ -17,14 +17,25 @@ public class Guest extends User{
 	
 	@OneToMany
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Set<Guest> guests;
+	private Set<Guest> friends;
+	
+	@OneToMany
+	private Set<Guest> requests;
 
-	public Set<Guest> getGuests() {
-		return guests;
+	public Set<Guest> getRequests() {
+		return requests;
 	}
 
-	public void setGuests(Set<Guest> guests) {
-		this.guests = guests;
+	public void setRequests(Set<Guest> requests) {
+		this.requests = requests;
+	}
+	
+	public Set<Guest> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(Set<Guest> friends) {
+		this.friends =friends;
 	}
 
 }

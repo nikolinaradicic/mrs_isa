@@ -1,10 +1,12 @@
 
 package mrs.app.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
+import mrs.app.DTOs.GuestDTO;
 import mrs.app.domain.Bidder;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
@@ -38,15 +40,23 @@ public class UserController {
 	
 	
 	@RequestMapping(
-			value = "/api/users",
+			value = "/api/guests",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<User>> getUsers() {
+	public ResponseEntity<Collection<GuestDTO>> getUsers() {
 		logger.info("> getUsers");
 
 		Collection<User> users = userService.findAll();
+		ArrayList<GuestDTO> retval = new ArrayList<GuestDTO>();
+		for (User u : users){
+			if (u.getClass().equals(Guest.class)){
+				Guest g = (Guest) u;
+				retval.add(new GuestDTO(g));
+			}
+			
+		}
 		logger.info("< getGreetings");
-		return new ResponseEntity<Collection<User>>(users,
+		return new ResponseEntity<Collection<GuestDTO>>(retval,
 				HttpStatus.OK);
 	}	
 	
@@ -207,13 +217,37 @@ public class UserController {
 			@RequestBody Guest friend) throws Exception {
 		logger.info("> add friends");
 		Guest current = (Guest) httpSession.getAttribute("user");
+		logger.info("< add friends");
 		if (current == null || current.getClass()!= Guest.class){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		Guest changedUser = (Guest) userService.addFriend(current,friend);
+		if (userService.addFriend(current, friend)){
+			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
+	}
+	
+	@RequestMapping(
+			value = "/api/acceptFriend",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> acceptFriend(
+			@RequestBody Guest friend) throws Exception {
+		logger.info("> add friends");
+		Guest current = (Guest) httpSession.getAttribute("user");
 		logger.info("< add friends");
-		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
-		
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		if (userService.acceptFriend(current, friend)){
+			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
 	}
 
 }
