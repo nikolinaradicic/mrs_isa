@@ -67,10 +67,10 @@
           	    	<a href="javascript" >
                     	<i class="#"></i>
                     	<img src="img/account.png" class="img-circle" width="60">
-                    	<span><h5>Account</h5></span>
+                    	<span><h5 id="account-name"></h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="#">Personal Data</a></li>
+                    	<li><a href="#" onclick="displayData()">Personal Data</a></li>
                       	<li><a  href="changePersData.html">Change Personal Data</a></li>
                         <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
@@ -80,7 +80,7 @@
                     	<span><h5>Restaurant Manage</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="#">Restaurants</a></li>
+                    	<li><a href="indexSysMan.html">Restaurants</a></li>
                     	<li><a href="addRestaurant.html">Add Restaurant</a></li>
                     </ul>
                	</li>
@@ -106,7 +106,7 @@
       <!--main content start-->
 
       <section id="main-content">
-          <section class="wrapper">
+          <section class="wrapper" id="add-restaurant-form">
 				<div class="login-form">
           			<form class="sign-in-htm" id="addRestaurant">
           				<div class="group">
@@ -134,9 +134,11 @@
 						</div>
 					</form>
 				</div>
-			</div>
-		</div>
-		</section><! --/wrapper -->
+		</section>
+		<section class="wrapper" id="dataUser">
+		</section>
+		<section class="wrapper" id="restaurants">
+		</section>
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->

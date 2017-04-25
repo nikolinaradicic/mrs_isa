@@ -27,7 +27,7 @@ function getRestaurants(){
 		complete: function(data) {
 			if (data.responseJSON){
 				
-				$("#dataUser > h4").remove();			
+				$("#dataUser > div").remove();			
 				$("#restaurants > div").remove();
 				$.each(data.responseJSON, function(i, item) {
 					$("#restaurants").append($("<div class='row mt'>")
@@ -73,7 +73,7 @@ function register()
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				location.href = "indexGuest.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				$("#form-error").text("Username already exists").css("color","red");
@@ -100,16 +100,8 @@ function login() {
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data.responseJSON);
-				if(data.responseJSON.role == "SYSTEM_MANAGER"){
-					location.href = "indexSysMan.html";
-				}
-				if(data.responseJSON.role ==  "RESTAURANT_MANAGER"){
-					location.href="indexRestMan.html";
-				}
-				if(data.responseJSON.role == "GUEST"){
-					location.href="indexGuest.html";
-				}
+				location.href = "indexSysMan.html";
+				
 			}
 			else{
 				$("#login-error").text("Invalid username or password").css("color","red");
@@ -138,7 +130,7 @@ function changePass() {
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data);
-				location.href = "index.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				console.log(data);
@@ -168,7 +160,7 @@ function changeData() {
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data);
-				location.href = "index.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				console.log(data);
@@ -215,7 +207,7 @@ function addFriend() {
 	
 	var s = JSON.stringify(data);
 	$.ajax({
-		url: "api/addFriend",
+		url: "/api/addFriend",
 		type:"POST",
 		data: s,
 		contentType:"application/json",
@@ -223,7 +215,7 @@ function addFriend() {
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data);
-				location.href = "index.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				console.log(data);
@@ -242,8 +234,9 @@ function getUser(callback){
 		complete: function(data) {
 			if (data.responseJSON){
 				$("#account-name").text(data.responseJSON["name"]);
-				callback(data.responseJSON);
-				
+				if(data.responseJSON.role=="SYSTEM_MANAGER" || data.responseJSON.role=="GUEST"){
+					callback(data.responseJSON);
+				}
 			}
 			else{
 				console.log(data);
@@ -262,13 +255,19 @@ function displayData(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#restaurants").hide();
-				$("#dataUser > h4").remove();
-				$("#dataUser").append($("<br>"));
-				$("#dataUser").append($("<img src='img/fr-11.jpg' width='150'>"));
-				$("#dataUser").append($("<h4>").text("E-mail: "+data.responseJSON["email"]));
-				$("#dataUser").append($("<h4>").text("First Name: "+data.responseJSON["name"]));
-				$("#dataUser").append($("<h4>").text("Last Name: "+data.responseJSON["lastname"]));
+				$("#changePassword").hide();
+				$("#add-restaurant-form").hide();
+				$("#restaurants > div").remove();
+				$("#changePers").hide();
+				$("#dataUser > div").remove();
+				$("#bidder-form").hide();
+				$("#dataUser").append($("<div>")
+								.append($("<br>"))
+								.append($("<img src='img/fr-11.jpg' width='150'>"))
+								.append($("<h4>").text("E-mail: "+data.responseJSON["email"]))
+								.append($("<h4>").text("First Name: "+data.responseJSON["name"]))
+								.append($("<h4>").text("Last Name: "+data.responseJSON["lastname"]))
+								);
 			}
 			else{
 				console.log(data);
@@ -298,7 +297,7 @@ function registerManager(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				location.href = "index.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				console.log(data);
@@ -330,7 +329,7 @@ function addBidder() {
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data);
-				location.href = "index.html";
+				location.href = "indexSysMan.html";
 			}
 			else{
 				console.log(data);
@@ -364,8 +363,4 @@ function getFriends(){
 			}
 		}
 	});
-	
-	function showAddFriendForm(){
-		$("#add-friend-section").show();
-	}
 }

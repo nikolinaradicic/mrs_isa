@@ -10,24 +10,22 @@
     <title>MyRestaurant</title>
     
     <script src="js/jquery.js"></script>
-    <script src="js/common-scripts.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
-    <script src="js/jquery.scrollTo.min.js"></script>
-    
-
     <link href="css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	
-    <link href="css/font-awesome.css" rel="stylesheet" />
-    <script src="js/functions.js"></script> 
-    <script src="js/selectionPage.js"></script>   
+    <link href="css/font-awesome.css" rel="stylesheet" />   
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="js/jquery.scrollTo.min.js"></script>
+    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+  	<script src="js/functions.js"></script>
+    <script src="js/common-scripts.js"></script>
+    <script src="js/selectionPage.js"></script>
+    
  <script>
-		$(document).ready(function() {
-			getUser(getRestaurants);
+	 $(document).ready(function() {
+			displayForPersData();
 		});
 	</script>
 
@@ -45,7 +43,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a id="logo" onclick="toPage()" class="logo"><b>MyRESTAURANT</b></a>
+            <a id="logo" href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
@@ -75,7 +73,7 @@
                         <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
                	</li>  
-               	<li class="sub-menu">
+               	<li class="sub-menu" id="restaurant-manage">
           	    	<a href="javascript" >
                     	<i class="#"></i>
                     	<span><h5>Restaurant Manage</h5></span>
@@ -84,7 +82,27 @@
                     	<li><a href="#" onclick="getRestaurants()">Restaurants</a></li>
                     	<li><a href="addRestaurant.html">Add Restaurant</a></li>
                     </ul>
-               	</li>	
+               	</li> 
+               	<li class="sub-menu" id="friend-manage">
+          	    	<a href="javascript" >
+                    	<i class="#"></i>
+                    	<span><h5>Friend Manage</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="#" onclick="displayFriends()">Friends</a></li>
+                    	<li><a href="addFriend.html">Add Friend</a></li>
+                    </ul>
+               	</li>
+               	
+               	<li class="sub-menu" id="employee-manage">
+          	    	<a href="javascript" >
+                    	<i class="#"></i>
+                    	<span><h5>Manage Employees</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="addBidder.html">Add Bidder</a></li>
+                    </ul>
+               	</li> 		
             </ul>			
            	<!-- sidebar menu end-->
           </div>
@@ -96,9 +114,13 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
+      	<section class="wrapper" id="friend-request">
+		</section>
       	<section class="wrapper" id="dataUser">
 		</section>
 		<section class="wrapper" id="restaurants">
+		</section>
+		<section class="wrapper" id="friends-section">
 		</section>
       </section><!-- /MAIN CONTENT -->
 

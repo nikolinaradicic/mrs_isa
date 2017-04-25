@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 import mrs.app.domain.Restaurant;
-import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
 import mrs.app.service.RestaurantService;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

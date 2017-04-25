@@ -102,6 +102,7 @@ public class UserServiceImpl implements UserService{
 			currentUser.getRequests().remove(requestedFriend);
 			userRepository.save(currentUser);
 			userRepository.save(requestedFriend);
+			return true;
 		}
 		return false;
 	}
@@ -115,6 +116,14 @@ public class UserServiceImpl implements UserService{
 			return savedGuest.getFriends();
 		}
 		return null;
+	}
+
+
+	@Override
+	public User getUser(User user) {
+		// TODO Auto-generated method stub
+		User savedUser = userRepository.findOne(user.getId());
+		return savedUser;
 	}
 
 }

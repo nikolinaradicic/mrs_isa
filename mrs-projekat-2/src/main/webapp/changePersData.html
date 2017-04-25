@@ -27,7 +27,7 @@
     
     <script>
 		$(document).ready(function() {
-			displayForPersData();
+			displayForPersData(changePersData);
 		});
 	</script>
 
@@ -45,7 +45,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a id="logo" onclick="toPage()" class="logo"><b>MyRESTAURANT</b></a>
+            <a id="logo" href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
@@ -67,11 +67,11 @@
           	    	<a href="#" >
                     	<i class="#"></i>
                     	<img src="img/account.png" class="img-circle" width="60">
-                    	<span><h5>Account</h5></span>
+                    	<span><h5 id="account-name"></h5></span>
                    	</a>
                     <ul class="sub">
                     	<li><a href="#" onclick="displayData()">Personal Data</a></li>
-                      	<li><a  href="#">Change Personal Data</a></li>
+                      	<li><a  href="changePersData.html">Change Personal Data</a></li>
                         <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
                	</li>
@@ -81,7 +81,7 @@
                     	<span><h5>Restaurant Manage</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="#" onclick="getRestaurants()">Restaurants</a></li>
+                    	<li><a href="indexSysMan.html">Restaurants</a></li>
                     	<li><a href="addRestaurant.html">Add Restaurant</a></li>
                     </ul>
                	</li> 
@@ -93,6 +93,16 @@
                     <ul class="sub">
                     	<li><a href="#">Friends</a></li>
                     	<li><a href="#">Add Friend</a></li>
+                    </ul>
+               	</li> 
+               	<li class="sub-menu" id="employee-manage">
+          	    	<a href="javascript" >
+                    	<i class="#"></i>
+                    	<span><h5>Manage employees</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="addBidder.html">Add Bidder</a></li>
+
                     </ul>
                	</li>  
             </ul>		
@@ -117,15 +127,15 @@
 						</div>
 						<div class="group">
 							<label class="label">First Name</label>
-							<input type="text" class="input" name="name"/>
+							<input type="text" class="input" name="name" id= "name-field"/>
 						</div>
 						<div class="group">
 							<label class="label">Last Name</label>
-							<input type="text" name="lastname" class="input" />
+							<input type="text" name="lastname" class="input" id= "lastname-field"/>
 						</div>
 						<div class="group">
 							<label class="label">E-mail</label>
-							<input type="email" class="input" autocomplete="off" name="email" />
+							<input type="email" class="input" autocomplete="off" name="email" id= "email-field"/>
 						</div>
 				
 						<div class="group">
@@ -135,7 +145,7 @@
 						<div class="hr">
 							<div class="foot-lnk">
 								<br/>
-								<a href="index.html">Cancel</a>
+								<a href="indexSysMan.html">Cancel</a>
 							</div>
 						</div>
 					</form>

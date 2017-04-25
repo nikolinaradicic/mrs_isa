@@ -23,4 +23,6 @@ public interface UserService {
 
 	Collection<Guest> getFriends(Guest user);
 	
+	User getUser(User user);
+	
 }

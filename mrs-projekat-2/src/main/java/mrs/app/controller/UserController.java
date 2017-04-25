@@ -92,6 +92,7 @@ public class UserController {
 		logger.info("> register guest");
 		try{
 			Guest savedUser = (Guest) userService.create(user);
+			httpSession.setAttribute("user", savedUser);
 			logger.info("< register guest");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
 		}
@@ -217,18 +218,33 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> getUser() {
 		logger.info("> getUser");
-		User user=(User)httpSession.getAttribute("user");
+		User sessionUser = (User) httpSession.getAttribute("user");
+		User user=(User) userService.getUser(sessionUser);
 		logger.info("< getUser");
 		return new ResponseEntity<User>(user,
 				HttpStatus.OK);
 	}
 	
 	@RequestMapping(
-			value = "/api/addFriends",
+			value = "/api/getUserRepresentation",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GuestDTO> getUserRepresentation() {
+		logger.info("> get user representation");
+		User sessionUser = (User) httpSession.getAttribute("user");
+		Guest user = (Guest) userService.getUser(sessionUser);
+		GuestDTO retval = new GuestDTO(user);
+		logger.info("<  get user representation");
+		return new ResponseEntity<GuestDTO>(retval,
+				HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/api/addFriend",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> addFriends(
+	public ResponseEntity<User> addFriend(
 			@RequestBody Guest friend) throws Exception {
 		logger.info("> add friends");
 		Guest current = (Guest) httpSession.getAttribute("user");

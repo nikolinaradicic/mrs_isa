@@ -47,7 +47,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a id="logo" onclick="toPage()" class="logo"><b>MyRESTAURANT</b></a>
+            <a id="logo" href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
@@ -69,20 +69,20 @@
           	    	<a href="javascript" >
                     	<i class="#"></i>
                     	<img src="img/account.png" class="img-circle" width="60">
-                    	<span><h5>Account</h5></span>
+                    	<span><h5 id="account-name"></h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="#">Personal Data</a></li>
+                    	<li><a href="#" onclick="displayData()">Personal Data</a></li>
                       	<li><a  href="changePersData.html">Change Personal Data</a></li>
-                        <li><a  href="#">Change Password</a></li>
+                        <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
-                <li class="sub-menu">
+                <li class="sub-menu"  id="restaurant-manage">
           	    	<a href="javascript" >
                     	<i class="#"></i>
                     	<span><h5>Restaurant Manage</h5></span>
                    	</a>
-                    <ul class="sub" id="restaurant-manage">
-                    	<li><a href="#">Restaurants</a></li>
+                    <ul class="sub">
+                    	<li><a href="indexSysMan.html">Restaurants</a></li>
                     	<li><a href="addRestaurant.html">Add Restaurant</a></li>
                     </ul>
                	</li>
@@ -96,7 +96,16 @@
                     	<li><a href="addFriend.html">Add Friend</a></li>
                     </ul>
                	</li>
-               	</li>  	
+               	<li class="sub-menu" id="employee-manage">
+          	    	<a href="javascript" >
+                    	<i class="#"></i>
+                    	<span><h5>Manage employees</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="addBidder.html">Add Bidder</a></li>
+
+                    </ul>
+               	</li>   	
             </ul>			
            	<!-- sidebar menu end-->
           </div>
@@ -108,7 +117,9 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
-          <section class="wrapper">
+      	<section class="wrapper" id="dataUser">
+      	</section>
+          <section class="wrapper" id="changePassword">
 				<div class="login-form">
           			<form class="sign-in-htm" id="changePass">
           				<div class="group">
@@ -131,7 +142,7 @@
 						<div class="hr">
 							<div class="foot-lnk">
 								<br/>
-								<a href="index.html">Cancel</a>
+								<a href="indexSysMan.html">Cancel</a>
 							</div>
 						</div>
 					</form>
