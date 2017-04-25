@@ -11,6 +11,6 @@ public class Chef extends User{
 
 	public Chef() {
 		// TODO Auto-generated constructor stub
-		this.role=UserType.CHEF;
+		this.role = UserType.CHEF;
 	}
 }

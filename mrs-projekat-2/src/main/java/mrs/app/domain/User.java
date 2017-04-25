@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.InheritanceType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -13,7 +12,7 @@ import javax.persistence.Transient;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable{
 
 	
@@ -29,7 +28,7 @@ public class User implements Serializable{
 	protected String repeatedPassword;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue
 	protected Long id;
 	
 	@Column(nullable = false)
@@ -97,10 +96,6 @@ public class User implements Serializable{
 
 	public void setRole(UserType role) {
 		this.role = role;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 }

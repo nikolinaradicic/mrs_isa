@@ -1,10 +1,13 @@
 
 package mrs.app.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
+import mrs.app.DTOs.GuestDTO;
+import mrs.app.domain.Bidder;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
@@ -37,17 +40,25 @@ public class UserController {
 	
 	
 	@RequestMapping(
-			value = "/api/users",
+			value = "/api/guests",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<User>> getUsers() {
-		logger.info("> getUsers");
+	public ResponseEntity<Collection<GuestDTO>> getUsers() {
+		logger.info("> get guests");
 
 		Collection<User> users = userService.findAll();
-		logger.info("< getGreetings");
-		return new ResponseEntity<Collection<User>>(users,
+		ArrayList<GuestDTO> retval = new ArrayList<GuestDTO>();
+		for (User u : users){
+			if (u.getClass().equals(Guest.class)){
+				Guest g = (Guest) u;
+				retval.add(new GuestDTO(g));
+			}
+			
+		}
+		logger.info("< get guests");
+		return new ResponseEntity<Collection<GuestDTO>>(retval,
 				HttpStatus.OK);
-	}	
+	}
 	
 	
 	@RequestMapping(
@@ -59,10 +70,12 @@ public class UserController {
 		logger.info("> login");
 		System.out.println(user.getEmail());
 		User foundUser = userService.login(user.getEmail(), user.getPassword());
+		
 		if (foundUser == null) {
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 		}
 		logger.info("< login");
+		System.out.println(foundUser.getEmail());
 		httpSession.setAttribute("user", foundUser);
 		return new ResponseEntity<User>(foundUser, HttpStatus.OK);
 	}
@@ -103,6 +116,30 @@ public class UserController {
 		try{
 			SystemManager savedUser = (SystemManager) userService.create(user);
 			logger.info("< register sistem manager");
+			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
+		}
+		catch(MySQLIntegrityConstraintViolationException e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(
+			value = "/bidderRegistration",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	
+	public ResponseEntity<User> registerBidder(
+			@RequestBody Bidder user) throws Exception {
+		logger.info("> register bidder");
+		User current = (User) httpSession.getAttribute("user");
+		if (current == null || current.getClass() != RestaurantManager.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		try{
+			Bidder savedUser = (Bidder) userService.create(user);
+			logger.info("< register bidder");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
 		}
 		catch(MySQLIntegrityConstraintViolationException e){
@@ -184,6 +221,48 @@ public class UserController {
 		logger.info("< getUser");
 		return new ResponseEntity<User>(user,
 				HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/api/addFriends",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> addFriends(
+			@RequestBody Guest friend) throws Exception {
+		logger.info("> add friends");
+		Guest current = (Guest) httpSession.getAttribute("user");
+		logger.info("< add friends");
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		if (userService.addFriend(current, friend)){
+			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
+	}
+	
+	@RequestMapping(
+			value = "/api/acceptFriend",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> acceptFriend(
+			@RequestBody Guest friend) throws Exception {
+		logger.info("> add friends");
+		Guest current = (Guest) httpSession.getAttribute("user");
+		logger.info("< add friends");
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		if (userService.acceptFriend(current, friend)){
+			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
 	}
 
 }

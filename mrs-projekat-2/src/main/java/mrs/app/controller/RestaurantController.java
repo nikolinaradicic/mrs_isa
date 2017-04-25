@@ -41,6 +41,7 @@ public class RestaurantController {
 		logger.info("> get restaurants");
 		
 		Collection<Restaurant> restaurants = restaurantService.findAll();
+		System.out.println(restaurants.size());
 		logger.info("< get restaurants");
 		return new ResponseEntity<Collection<Restaurant>>(restaurants,HttpStatus.OK);
 	}

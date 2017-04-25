@@ -20,6 +20,7 @@ public class Guest extends User{
 	private Set<Guest> friends;
 	
 	@OneToMany
+	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Set<Guest> requests;
 
 	public Set<Guest> getRequests() {

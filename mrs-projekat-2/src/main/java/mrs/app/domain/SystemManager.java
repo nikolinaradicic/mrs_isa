@@ -11,7 +11,7 @@ public class SystemManager extends User{
 	
 	public SystemManager() {
 		// TODO Auto-generated constructor stub
-		this.role=UserType.SYSTEM_MANAGER;
+		this.role = UserType.SYSTEM_MANAGER;
 	}
 	
 

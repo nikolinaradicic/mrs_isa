@@ -25,7 +25,6 @@ public class GuestDTO {
 		
 		for (Guest g : guest.getRequests()){
 			this.requests.add(g.getEmail());
-			System.out.println("dodaoooo");
 		}
 	}
 
