@@ -1,13 +1,10 @@
 
 package mrs.app.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
-import mrs.app.DTOs.GuestDTO;
-import mrs.app.domain.Bidder;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
@@ -40,23 +37,15 @@ public class UserController {
 	
 	
 	@RequestMapping(
-			value = "/api/guests",
+			value = "/api/users",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<GuestDTO>> getUsers() {
+	public ResponseEntity<Collection<User>> getUsers() {
 		logger.info("> getUsers");
 
 		Collection<User> users = userService.findAll();
-		ArrayList<GuestDTO> retval = new ArrayList<GuestDTO>();
-		for (User u : users){
-			if (u.getClass().equals(Guest.class)){
-				Guest g = (Guest) u;
-				retval.add(new GuestDTO(g));
-			}
-			
-		}
 		logger.info("< getGreetings");
-		return new ResponseEntity<Collection<GuestDTO>>(retval,
+		return new ResponseEntity<Collection<User>>(users,
 				HttpStatus.OK);
 	}	
 	
@@ -122,30 +111,6 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	
-	@RequestMapping(
-			value = "/bidderRegistration",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> registerBidder(
-			@RequestBody Bidder user) throws Exception {
-		logger.info("> register bidder");
-		User current = (User) httpSession.getAttribute("user");
-		if (current == null || current.getClass() != RestaurantManager.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		try{
-			Bidder savedUser = (Bidder) userService.create(user);
-			logger.info("< register bidder");
-			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
-		}
-		catch(MySQLIntegrityConstraintViolationException e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-	
 	@RequestMapping(
 			value = "/api/restManagerRegistration",
 			method = RequestMethod.POST,
@@ -202,6 +167,7 @@ public class UserController {
 		}
 		user.setId(current.getId());
 		user.setPassword(current.getPassword());
+		user.setRepeatedPassword(current.getRepeatedPassword());
 		User changedUser = (User) userService.changeData(user);
 		logger.info("< change personal data");
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
@@ -209,45 +175,15 @@ public class UserController {
 	}
 	
 	@RequestMapping(
-			value = "/api/addFriends",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
+			value = "/api/getUser",
+			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> addFriends(
-			@RequestBody Guest friend) throws Exception {
-		logger.info("> add friends");
-		Guest current = (Guest) httpSession.getAttribute("user");
-		logger.info("< add friends");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		if (userService.addFriend(current, friend)){
-			return new ResponseEntity<User>(current,HttpStatus.CREATED);
-		}
-		else{
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}	
-	}
-	
-	@RequestMapping(
-			value = "/api/acceptFriend",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> acceptFriend(
-			@RequestBody Guest friend) throws Exception {
-		logger.info("> add friends");
-		Guest current = (Guest) httpSession.getAttribute("user");
-		logger.info("< add friends");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		if (userService.acceptFriend(current, friend)){
-			return new ResponseEntity<User>(current,HttpStatus.CREATED);
-		}
-		else{
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}	
+	public ResponseEntity<User> getUser() {
+		logger.info("> getUser");
+		User user=(User)httpSession.getAttribute("user");
+		logger.info("< getUser");
+		return new ResponseEntity<User>(user,
+				HttpStatus.OK);
 	}
 
 }

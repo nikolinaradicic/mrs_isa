@@ -1,15 +1,19 @@
 package mrs.app.domain;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.InheritanceType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.Transient;
+
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User implements Serializable{
 
 	
@@ -17,10 +21,15 @@ public class User implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Column(nullable = false)
 	protected String password;
+	
+	@Transient
+	protected String repeatedPassword;
+	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	protected Long id;
 	
 	@Column(nullable = false)
@@ -29,8 +38,20 @@ public class User implements Serializable{
 	protected String lastname;
 	@Column(nullable = false,unique=true)
 	protected String email;
+	@Column(nullable=false)
+	protected UserType role;
 	
-	public User(){}
+	public User(){
+		
+	}
+
+	public User(String password, String name, String lastname, String email) {
+		super();
+		this.password = password;
+		this.name = name;
+		this.lastname = lastname;
+		this.email = email;
+	}
 
 	public String getPassword() {
 		return password;
@@ -63,5 +84,23 @@ public class User implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getRepeatedPassword() {
+		return repeatedPassword;
+	}
+	public void setRepeatedPassword(String repeatedPassword) {
+		this.repeatedPassword = repeatedPassword;
+	}
 
+	public UserType getRole() {
+		return role;
+	}
+
+	public void setRole(UserType role) {
+		this.role = role;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 }

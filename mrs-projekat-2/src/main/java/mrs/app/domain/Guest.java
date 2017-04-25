@@ -38,4 +38,8 @@ public class Guest extends User{
 		this.friends =friends;
 	}
 
+	public Guest() {
+		// TODO Auto-generated constructor stub
+		this.role=UserType.GUEST;
+	}
 }

@@ -1,0 +1,6 @@
+package mrs.app.domain;
+
+public enum UserType {
+
+	WAITER,SYSTEM_MANAGER,RESTAURANT_MANAGER,GUEST,CHEF,BIDDER,BARTENDER
+}
