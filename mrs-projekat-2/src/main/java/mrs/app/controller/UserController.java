@@ -173,5 +173,17 @@ public class UserController {
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
 		
 	}
+	
+	@RequestMapping(
+			value = "/api/getUser",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> getUser() {
+		logger.info("> getUser");
+		User user=(User)httpSession.getAttribute("user");
+		logger.info("< getUser");
+		return new ResponseEntity<User>(user,
+				HttpStatus.OK);
+	}
 
 }

@@ -57,29 +57,9 @@
                    	</a>
                     <ul class="sub">
                     	<li><a href="#">Personal Data</a></li>
-                      	<li><a  href="changePersData.html">Change Personal Data</a></li>
-                        <li><a  href="#">Change Password</a></li>
+                      	<li><a  href="#">Change Personal Data</a></li>
+                        <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
-                <li class="sub-menu">
-          	    	<a href="javascript" >
-                    	<i class="#"></i>
-                    	<span><h5>Restaurant Manage</h5></span>
-                   	</a>
-                    <ul class="sub">
-                    	<li><a href="#">Restaurants</a></li>
-                    	<li><a href="addRestaurant.html">Add Restaurant</a></li>
-                    </ul>
-               	</li>
-               	<li class="sub-menu">
-          	    	<a href="javascript" >
-                    	<i class="#"></i>
-                    	<span><h5>Friend Manage</h5></span>
-                   	</a>
-                    <ul class="sub">
-                    	<li><a href="#">Friends</a></li>
-                    	<li><a href="addFriend.html">Add Friend</a></li>
-                    </ul>
-               	</li>
                	</li>  	
             </ul>			
            	<!-- sidebar menu end-->
@@ -94,35 +74,54 @@
       <section id="main-content">
           <section class="wrapper">
 				<div class="login-form">
-          			<form class="sign-in-htm" id="changePass">
+          			<form class="sign-up-htm" id="addManager">
           				<div class="group">
-							<label class="label"><h3>Change Password</h3></label>
+							<label class="label"><h3>Add Manager</h3></label>
 							<br/>
 						</div>
 						<div class="group">
-							<label for="password" class="label">Password</label>
-							<input data-type="password" id="pass" type="password" class="input" name="password">
+							<label class="label">First Name
+							<span class="req">*</span>
+							</label>
+							<input type="text" class="input" required name="name"/>
 						</div>
 						<div class="group">
-							<label for="password" class="label">Repeat Password</label>
-							<input id="pass" type="password" name="repeatedPassword" class="input" data-type="password">
+							<label class="label">Last Name
+							<span class="req">*</span>
+							</label>
+							<input type="text" class="input" required name = "lastname"/>
 						</div>
-				
 						<div class="group">
-							<p id ="password-error"></p>
-							<input type="button" class="button" value="Confirm" onclick="changePass()">
+							<label class="label">E-mail
+							<span class="req">*</span>
+							</label>
+							<input type="email" class="input" required autocomplete="off" name="email"/>
+						</div>
+						<div class="group">
+							<label class="label">Password
+							<span class="req">*</span>
+							</label>
+							<input type="password" class="input" required autocomplete="off" name="password"/>
+						</div>
+						<div class="group">
+							<label class="label">Repeat Password
+							<span class="req">*</span>
+							</label>
+							<input type="password" class="input" required autocomplete="off" name="repeatedPassword"/>
+						</div>
+						<div class="group">
+							<p id="addManager-error"></p>
+							<input type="button" class="button" value="Add" onclick="addManager()">
 						</div>
 						<div class="hr">
 							<div class="foot-lnk">
 								<br/>
 								<a href="index.html">Cancel</a>
+								</div>
 							</div>
-						</div>
-					</form>
+					</form>	
 				</div>
-			</div>
-		</div>
-		</section><! --/wrapper -->
+			</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->
@@ -135,15 +134,6 @@
   	<script src="js/functions.js"></script>
     <script src="js/common-scripts.js"></script>
 
-    
-  <script>
-      //custom select box
-
-      $(function(){
-          $('select.styled').customSelect();
-      });
-
-  </script>
 
   </body>
 </html>

@@ -38,6 +38,8 @@ public class User implements Serializable{
 	protected String lastname;
 	@Column(nullable = false,unique=true)
 	protected String email;
+	@Column(nullable=false)
+	protected UserType role;
 	
 	public User(){
 		
@@ -88,4 +90,17 @@ public class User implements Serializable{
 	public void setRepeatedPassword(String repeatedPassword) {
 		this.repeatedPassword = repeatedPassword;
 	}
+
+	public UserType getRole() {
+		return role;
+	}
+
+	public void setRole(UserType role) {
+		this.role = role;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 }

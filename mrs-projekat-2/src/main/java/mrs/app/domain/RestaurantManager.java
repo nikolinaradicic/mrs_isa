@@ -12,6 +12,11 @@ public class RestaurantManager extends User{
 	
 	@ManyToOne(optional = false)
 	private Restaurant restaurant;
+	
+	public RestaurantManager() {
+		// TODO Auto-generated constructor stub
+		this.role=UserType.RESTAURANT_MANAGER;
+	}
 
 	public Restaurant getRestaurant() {
 		return restaurant;

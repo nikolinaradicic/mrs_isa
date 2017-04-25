@@ -18,4 +18,8 @@ public class Guest extends User{
 	 */
 	private static final long serialVersionUID = 1L;	
 
+	public Guest() {
+		// TODO Auto-generated constructor stub
+		this.role=UserType.GUEST;
+	}
 }
