@@ -20,5 +20,7 @@ public interface UserService {
 	boolean addFriend(Guest user, Guest friend);
 
 	boolean acceptFriend(Guest current, Guest friend);
+
+	Collection<Guest> getFriends(Guest user);
 	
 }

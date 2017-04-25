@@ -265,4 +265,20 @@ public class UserController {
 		}	
 	}
 
+	@RequestMapping(
+			value = "/getFriends",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<Guest>> getFriends() throws Exception {
+		logger.info("> add friends");
+		Guest current = (Guest) httpSession.getAttribute("user");
+		logger.info("< add friends");
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		
+		Collection<Guest> friends = userService.getFriends(current);
+		return new ResponseEntity<Collection<Guest>>(friends, HttpStatus.OK);
+	}
 }

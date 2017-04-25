@@ -73,7 +73,7 @@ function register()
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				location.href = "index.html";
+				location.href = "indexGuest.html";
 			}
 			else{
 				$("#form-error").text("Username already exists").css("color","red");
@@ -242,9 +242,7 @@ function getUser(callback){
 		complete: function(data) {
 			if (data.responseJSON){
 				$("#account-name").text(data.responseJSON["name"]);
-				if (data.responseJSON.role == "SYSTEM_MANAGER"){
-					callback();
-				}
+				callback(data.responseJSON);
 				
 			}
 			else{
@@ -344,7 +342,7 @@ function addBidder() {
 function getFriends(){
 
 	$.ajax({
-		url: "/restaurants",
+		url: "/getFriends",
 		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
@@ -352,9 +350,9 @@ function getFriends(){
 			if (data.responseJSON){
 				$("#dataUser > h4").remove();			
 				$("#restaurants > div").remove();
-				$("#friends > h4").hide;
-				
+				$("#friends > h4").remove();
 				$.each(data.responseJSON, function(i, item) {
+					console.log(item);
 					$("#friends").append($("<br>"));
 					$("#friends").append($("<img src='img/fr-11.jpg' width='150'>"));
 					$("#friends").append($("<h4>").text("E-mail: "+data.responseJSON["email"]));
@@ -366,4 +364,8 @@ function getFriends(){
 			}
 		}
 	});
+	
+	function showAddFriendForm(){
+		$("#add-friend-section").show();
+	}
 }

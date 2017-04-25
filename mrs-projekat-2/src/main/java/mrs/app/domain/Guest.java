@@ -7,6 +7,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Guest extends User{
 
@@ -23,6 +25,7 @@ public class Guest extends User{
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Set<Guest> requests;
 
+	@JsonIgnore
 	public Set<Guest> getRequests() {
 		return requests;
 	}
@@ -31,6 +34,7 @@ public class Guest extends User{
 		this.requests = requests;
 	}
 	
+	@JsonIgnore
 	public Set<Guest> getFriends() {
 		return friends;
 	}

@@ -9,7 +9,7 @@
 
     <title>MyRestaurant</title>
 
-	
+	<script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="js/jquery.scrollTo.min.js"></script>
@@ -23,10 +23,9 @@
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<script src="js/jquery.js"></script>
 	<script>
 		$(document).ready(function() {
-			getUser();
+			getUser(getRestaurants);
 		});
 	</script>
 
@@ -96,11 +95,13 @@
       <!--main content start-->
       <section id="main-content">
       	<section class="wrapper" id="dataUser">
-		</section><! --/wrapper -->
+		</section>
 		<section class="wrapper" id="restaurants">
-		</section><! --/wrapper -->
+		</section>
 		<section class="wrapper" id="friends">
 			<h4></h4>
+		</section>
+		<section class="wrapper" id="add-friend-section">
 		</section>
       </section><!-- /MAIN CONTENT -->
 

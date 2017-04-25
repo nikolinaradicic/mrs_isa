@@ -4,6 +4,7 @@ import java.util.Collection;
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,17 @@ public class UserServiceImpl implements UserService{
 			userRepository.save(requestedFriend);
 		}
 		return false;
+	}
+
+
+	@Override
+	public Collection<Guest> getFriends(Guest user) {
+		// TODO Auto-generated method stub
+		Guest savedGuest = userRepository.findByEmail(user.getEmail());
+		if (savedGuest != null){
+			return savedGuest.getFriends();
+		}
+		return null;
 	}
 
 }
