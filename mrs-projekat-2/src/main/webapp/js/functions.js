@@ -25,8 +25,6 @@ function getRestaurants(){
 		contentType:"application/json",
 		dataType:"json",
 		complete: function(data) {
-			console.log("tu sam brate");
-			console.log(data);
 			if (data.responseJSON){
 				
 				$("#dataUser > h4").remove();			
@@ -39,7 +37,7 @@ function getRestaurants(){
 														.append($("<h4>").text(item.name)))
 													.append($("<img src='img/city1.jpg' class='img-circle' width='100'>"))
 													.append($("<h4>").text(item.description))
-													.append($("<a class='button' href='addManager.html'>")
+													.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
 														.text("Add Manager")
 														.css('background-color','#c6c6ec')
 														.css('border','0px solid')
@@ -236,8 +234,6 @@ function addFriend() {
 }
 
 function getUser(callback){
-	console.log("get user funkcija");
-
 	$.ajax({
 		url: "api/getUser",
 		type:"GET",
@@ -247,7 +243,7 @@ function getUser(callback){
 			if (data.responseJSON){
 				$("#account-name").text(data.responseJSON["name"]);
 				if (data.responseJSON.role == "SYSTEM_MANAGER"){
-					getRestaurants();
+					callback();
 				}
 				
 			}
@@ -285,8 +281,7 @@ function displayData(){
 }
 
 
-
-function addManager() {
+function registerManager(){
 	var $form = $("#addManager");
 	console.log($form);
 	var data = getFormData($form);
@@ -294,9 +289,9 @@ function addManager() {
 		$("#addManager-error").text("Fields must be filled in").css("color","red");
 		return;
 	}
-	
+	var id = window.location.search.split("=")[1];
+	data.restaurant = {id : id};
 	var s = JSON.stringify(data);
-	
 	$.ajax({
 		url: "/api/restManagerRegistration",
 		type:"POST",
@@ -305,7 +300,6 @@ function addManager() {
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data);
 				location.href = "index.html";
 			}
 			else{
@@ -315,6 +309,8 @@ function addManager() {
 		}
 	});
 }
+
+
 
 function addBidder() {
 	var $form = $("#addBidder");

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Restaurant {
 	
@@ -29,7 +31,7 @@ public class Restaurant {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<RestaurantManager> managers;
-	
+
 	public String getName() {
 		return name;
 	}
@@ -62,10 +64,11 @@ public class Restaurant {
 		this.id = id;
 	}
 	
+	@JsonIgnore
 	public Set<RestaurantManager> getManagers() {
 		return managers;
 	}
-	
+	@JsonIgnore
 	public void setManagers(Set<RestaurantManager> managers) {
 		this.managers = managers;
 	}

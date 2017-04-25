@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mrs.app.domain.Restaurant;
+import mrs.app.domain.RestaurantManager;
 import mrs.app.repository.RestaurantRepository;
 
 @Service
@@ -39,6 +40,17 @@ public class RestaurantServiceImpl implements RestaurantService{
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         
         logger.info("< create");
+        return savedRestaurant;
+	}
+
+	@Override
+	public Restaurant addManager(RestaurantManager manager, Long id) throws Exception {
+		// TODO Auto-generated method stub
+		logger.info("> add Manager");
+        Restaurant savedRestaurant = restaurantRepository.findOne(id);
+        savedRestaurant.getManagers().add(manager);
+        restaurantRepository.save(savedRestaurant);
+        logger.info("< add Manager");
         return savedRestaurant;
 	}
 
