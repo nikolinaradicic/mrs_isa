@@ -53,6 +53,7 @@ function getRestaurants(){
 		}
 	});
 }
+
 function getRestaurants1(){
 	$.ajax({
 		url: "/restaurants",

@@ -92,18 +92,21 @@ function displayForPersData(callback){
 			if (data.responseJSON.role == "GUEST"){
 				$("#restaurant-manage").hide();
 				$("#employee-manage").hide();
+				$("restaurant-info").remove();
 				checkRequests(getRestaurants1);
 			}
 			else if(data.responseJSON.role == "SYSTEM_MANAGER"){
 				$("#employee-manage").hide();
 				$("#friend-manage").hide();
 				$("#poruke").remove();	
+				$("restaurant-info").remove();
 				getRestaurants();
 			}
 			else if(data.responseJSON.role == "RESTAURANT_MANAGER"){
 				$("#restaurant-manage").hide();
 				$("#friend-manage").hide();
 				$("#poruke").remove();
+				displayRestaurant(data.responseJSON.restaurant);
 			}
 			else if(data.responseJSON.role=="BIDDER"){
 				$("#restaurant-manage").hide();

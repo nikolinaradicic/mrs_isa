@@ -30,6 +30,9 @@ public class Restaurant {
 	private Set<Meal> menu;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	private Set<Drink> drinkList;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<RestaurantManager> managers;
 
 	public String getName() {
@@ -71,6 +74,14 @@ public class Restaurant {
 	@JsonIgnore
 	public void setManagers(Set<RestaurantManager> managers) {
 		this.managers = managers;
+	}
+
+	public Set<Drink> getDrinkList() {
+		return drinkList;
+	}
+
+	public void setDrinkList(Set<Drink> drinkList) {
+		this.drinkList = drinkList;
 	}
 
 }

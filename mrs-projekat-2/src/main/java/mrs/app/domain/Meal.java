@@ -11,9 +11,8 @@ public class Meal implements Serializable{
 	private String description;
 	private double price;
 	
-	public Meal(){
-		
-	}
+	public Meal(){}
+	
 	public String getName() {
 		return name;
 	}

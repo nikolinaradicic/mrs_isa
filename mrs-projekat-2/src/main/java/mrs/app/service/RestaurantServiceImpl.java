@@ -7,8 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mrs.app.domain.Drink;
 import mrs.app.domain.Restaurant;
-import mrs.app.domain.RestaurantManager;
+import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.RestaurantRepository;
 
 @Service
@@ -18,6 +19,10 @@ public class RestaurantServiceImpl implements RestaurantService{
 	
 	@Autowired
 	private RestaurantRepository restaurantRepository;
+	
+	@Autowired
+	private DrinkRepository drinkRepository;
+	
 	@Override
 	public Collection<Restaurant> findAll() {
 		// TODO Auto-generated method stub
@@ -43,15 +48,22 @@ public class RestaurantServiceImpl implements RestaurantService{
         return savedRestaurant;
 	}
 
+
 	@Override
-	public Restaurant addManager(RestaurantManager manager, Long id) throws Exception {
+	public Drink addDrink(Drink drink) throws Exception {
 		// TODO Auto-generated method stub
-		logger.info("> add Manager");
-        Restaurant savedRestaurant = restaurantRepository.findOne(id);
-        savedRestaurant.getManagers().add(manager);
-        restaurantRepository.save(savedRestaurant);
-        logger.info("< add Manager");
-        return savedRestaurant;
+		logger.info("> create drink");
+		
+        if (drink.getId() != null) {
+            logger.error("Pokusaj kreiranja novog entiteta, ali Id nije null.");
+            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
+        }
+        
+        Drink savedDrink = drinkRepository.save(drink);
+        
+        logger.info("< create drink");
+        return savedDrink;
+		
 	}
 
 }
