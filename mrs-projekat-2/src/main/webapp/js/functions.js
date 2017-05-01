@@ -32,10 +32,10 @@ function getRestaurants(){
 				$.each(data.responseJSON, function(i, item) {
 					$("#restaurants").append($("<div class='row mt'>")
 											.append($("<div class='col-md-4'>")
-												.append($("<div class='white-panel pn'>")
+												.append($("<div class='white-panel pn'>").css("width","1050")
 													.append($("<div class='white-header'>")
 														.append($("<h4>").text(item.name)))
-													.append($("<img src='img/city1.jpg' class='img-circle' width='100'>"))
+													.append($("<img src='img/city1.jpg' class='img' width='150'>"))
 													.append($("<h4>").text(item.description))
 													.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
 														.text("Add Manager")
@@ -48,7 +48,35 @@ function getRestaurants(){
 										);
 					
 				});
-				
+					
+			}
+		}
+	});
+}
+function getRestaurants1(){
+	$.ajax({
+		url: "/restaurants",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+			if (data.responseJSON){
+				$("#dataUser > div").remove();			
+				$("#restaurants > div").remove();
+				$.each(data.responseJSON, function(i, item) {
+					$("#restaurants").append($("<div class='row mt'>")
+											.append($("<div class='col-md-4'>")
+												.append($("<div class='white-panel pn'>").css("width","1050")
+													.append($("<div class='white-header'>")
+														.append($("<h4>").text(item.name)))
+													.append($("<img src='img/city1.jpg' class='img' width='100'>").css("width","150"))
+													.append($("<h4>").text(item.description))
+												)
+											)
+										);
+					
+				});
+					
 			}
 		}
 	});
@@ -255,9 +283,15 @@ function displayData(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
+				if(data.responeJSON.role!="GUEST"){
+					$("#poruke").remove();
+				}
+				$("#add-friend-form").hide();
 				$("#changePassword").hide();
 				$("#add-restaurant-form").hide();
 				$("#restaurants > div").remove();
+				$("#friends-section > div").remove();
+				$("#friend-request > div").remove();
 				$("#changePers").hide();
 				$("#dataUser > div").remove();
 				$("#bidder-form").hide();
@@ -321,7 +355,7 @@ function addBidder() {
 	var s = JSON.stringify(data);
 	
 	$.ajax({
-		url: "/api/restManagerRegistration",
+		url: "/bidderRegistration",
 		type:"POST",
 		data: s,
 		contentType:"application/json",

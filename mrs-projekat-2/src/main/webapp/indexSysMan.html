@@ -45,6 +45,26 @@
             <!--logo start-->
             <a id="logo" href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
+            <section id="poruke">
+            <div class="nav notify-row" id="top_menu">
+                <!--  notification start -->
+                <ul class="nav top-menu">
+                	<li id="header_inbox_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+                            <i class="fa fa-envelope-o"></i>
+                            <span class="badge bg-theme" id="brojZahteva"></span>
+                        </a>
+                        <ul class="dropdown-menu extended inbox" id="dodatiZahteve">
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <li>
+                                <p class="green" id="brojZahtevaPoruka"></p>
+                            </li>
+                        </ul>
+               	    </li>            
+                </ul>
+          	</div>
+          	</section>
+                
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
                     <li><a class="logout" href="login.html">Logout</a></li>
@@ -113,15 +133,16 @@
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
-      <section id="main-content">
-      	<section class="wrapper" id="friend-request">
-		</section>
-      	<section class="wrapper" id="dataUser">
-		</section>
-		<section class="wrapper" id="restaurants">
-		</section>
-		<section class="wrapper" id="friends-section">
-		</section>
+      <section id="main-content" class="scrollbar">
+      <div class="wrapper" id="friends-section">
+		</div>
+      	<div class="wrapper" id="friend-request">
+		</div>
+		<div class="wrapper" id="restaurants">
+		</div>
+		<div class="wrapper" id="dataUser">
+		</div>
+		
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->

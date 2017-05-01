@@ -37,7 +37,7 @@ public class User implements Serializable{
 	protected String lastname;
 	@Column(nullable = false,unique=true)
 	protected String email;
-	@Column(nullable=false)
+	@Column(nullable=false,unique=true)
 	protected UserType role;
 	
 	public User(){

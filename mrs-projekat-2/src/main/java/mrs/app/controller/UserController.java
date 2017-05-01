@@ -135,6 +135,7 @@ public class UserController {
 			@RequestBody Bidder user) throws Exception {
 		logger.info("> register bidder");
 		User current = (User) httpSession.getAttribute("user");
+		
 		if (current == null || current.getClass() != RestaurantManager.class){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}

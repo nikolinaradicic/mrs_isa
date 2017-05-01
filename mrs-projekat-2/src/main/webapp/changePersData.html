@@ -52,6 +52,26 @@
                     <li><a class="logout" href="login.html">Logout</a></li>
             	</ul>
             </div>
+            
+            <section id="poruke">
+            <div class="nav notify-row" id="top_menu">
+                <!--  notification start -->
+                <ul class="nav top-menu">
+                	<li id="header_inbox_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+                            <i class="fa fa-envelope-o"></i>
+                            <span class="badge bg-theme" id="brojZahteva"></span>
+                        </a>
+                        <ul class="dropdown-menu extended inbox" id="dodatiZahteve">
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <li>
+                                <p class="green" id="brojZahtevaPoruka"></p>
+                            </li>
+                        </ul>
+               	    </li>            
+                </ul>
+          	</div>
+          	</section>
         </header>
       <!--header end-->
       
@@ -91,8 +111,8 @@
                     	<span><h5>Friend Manage</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="#">Friends</a></li>
-                    	<li><a href="#">Add Friend</a></li>
+                    	<li><a href="#" onclick="displayFriends()">Friends</a></li>
+                    	<li><a href="addFriends.html">Add Friend</a></li>
                     </ul>
                	</li> 
                	<li class="sub-menu" id="employee-manage">
@@ -116,8 +136,6 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
-      	<section class="wrapper" id="dataUser">
-		</section><! --/wrapper -->
       	<section class="wrapper" id="changePers">
 				<div class="login-form">
           			<form class="sign-in-htm" id="changeData">
@@ -150,9 +168,11 @@
 						</div>
 					</form>
 				</div>
-			</div>
-		</div>
 		</section><! --/wrapper -->
+		<div class="wrapper" id="friends-section">
+		</div>
+      	<div class="wrapper" id="dataUser">
+		</div>
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->

@@ -8,7 +8,8 @@ function displayFriends()
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#changePassword").hide();
+				$("#top-menu").hide();
+				$("#changePassword").remove();
 				$("#add-restaurant-form").hide();
 				$("#restaurants > div").remove();
 				$("#changePers").hide();
@@ -16,7 +17,7 @@ function displayFriends()
 				$("#add-friend-form").hide();
 				$("#bidder-form").hide();
 				$.each(data.responseJSON.friends, function(i, item){
-					$("#friends-section").append($("<div>")
+					$("#friends-section").append($("<div>").append($("<br>"))
 							.append($("<img src='img/fr-11.jpg' width='150'>"))
 							.append($("<h4>").text("E-mail: "+item))
 							);
@@ -52,14 +53,28 @@ function checkRequests(callback){
 		dataType:"json",
 		complete: function(data) {
 			console.log(data.responseJSON);
-			$.each(data.responseJSON.requests, function(i, item) {
-				$("#friend-request").append($("<b>").text("Friend request from: " + item)
-											)
-									.append($("<button>Confirm</button>").click(function(){
-									    acceptFriend(item);
-									}));
-			});
+			$("#brojZahteva").text(data.responseJSON.requests.length);
+			$("#brojZahtevaPoruka").text("You have "+data.responseJSON.requests.length+" requests.");
+
+
 			
+			$.each(data.responseJSON.requests,function(i,item){
+				
+				$("#dodatiZahteve").append($("<li>").append($("<a href='indexSysMan.html#'>")
+														.append($("<span class='photo'>")
+																.append($("<img alt='avatar'>").attr('src','img/fr-11.jpg'))
+														)
+														.append($("<span class='subject'>")
+																.append($("<span class='from'>").text("Request from:"+item))
+														)
+														.append($("<input class='button' type='button' value='Confirm'>").hover(function(e) {
+															  $(this).css("background-color",e.type === "mouseenter"?"#b3b3e6":"#6666cc");
+														}).css('border','1px').css('background-color','#6666cc').css('width','80').css('height','30').css('color','#fff').css('border-radius','3px').click(function(){
+														    acceptFriend(item);
+														}))
+													)
+										)
+			});
 			callback();
 		}
 	
@@ -77,16 +92,24 @@ function displayForPersData(callback){
 			if (data.responseJSON.role == "GUEST"){
 				$("#restaurant-manage").hide();
 				$("#employee-manage").hide();
-				checkRequests(getRestaurants);
+				checkRequests(getRestaurants1);
 			}
 			else if(data.responseJSON.role == "SYSTEM_MANAGER"){
 				$("#employee-manage").hide();
 				$("#friend-manage").hide();
+				$("#poruke").remove();	
 				getRestaurants();
 			}
 			else if(data.responseJSON.role == "RESTAURANT_MANAGER"){
 				$("#restaurant-manage").hide();
 				$("#friend-manage").hide();
+				$("#poruke").remove();
+			}
+			else if(data.responseJSON.role=="BIDDER"){
+				$("#restaurant-manage").hide();
+				$("#employee-manage").hide();
+				$("#friend-manage").hide();
+				$("#poruke").remove();
 			}
 			$("#account-name").text(data.responseJSON["name"]);
 			callback();
