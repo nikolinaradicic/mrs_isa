@@ -1,7 +1,6 @@
 package mrs.app.domain;
 
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -26,7 +23,7 @@ public class Restaurant {
 	@Column(nullable = false)
 	private String description;
 	
-	@Transient
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<Meal> menu;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")

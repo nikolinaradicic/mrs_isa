@@ -12,6 +12,7 @@ import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
+import mrs.app.domain.UserType;
 import mrs.app.service.UserService;
 
 import org.slf4j.Logger;
@@ -163,6 +164,7 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		try{
+			user.setRole(UserType.RESTAURANT_MANAGER);
 			RestaurantManager savedUser = (RestaurantManager) userService.create(user);
 			logger.info("< register restaurant manager");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.servlet.http.HttpSession;
 
 import mrs.app.domain.Drink;
+import mrs.app.domain.Meal;
 import mrs.app.domain.Restaurant;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
@@ -105,6 +106,35 @@ public class RestaurantController {
 	}
 	
 	
+	@RequestMapping(
+			value = "/addMeal",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	
+	public ResponseEntity<Meal> addMeal(
+			@RequestBody Meal meal) throws Exception {
+		logger.info("> add meal");
+		
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				meal.setRestaurant(currentUser.getRestaurant());
+				Meal savedMeal = restaurantService.addMeal(meal);
+				logger.info("< add meal");
+				return new ResponseEntity<Meal>(savedMeal, HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		catch(MySQLIntegrityConstraintViolationException e){
+			e.printStackTrace();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		
+	}
 	
 }

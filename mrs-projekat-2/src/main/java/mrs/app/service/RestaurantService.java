@@ -3,6 +3,7 @@ package mrs.app.service;
 import java.util.Collection;
 
 import mrs.app.domain.Drink;
+import mrs.app.domain.Meal;
 import mrs.app.domain.Restaurant;
 
 
@@ -13,4 +14,6 @@ public interface RestaurantService {
 	Restaurant create(Restaurant restaurant) throws Exception;
 
 	Drink addDrink(Drink drink) throws Exception;
+
+	Meal addMeal(Meal meal) throws Exception;
 }

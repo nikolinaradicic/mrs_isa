@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mrs.app.domain.Drink;
+import mrs.app.domain.Meal;
 import mrs.app.domain.Restaurant;
 import mrs.app.repository.DrinkRepository;
+import mrs.app.repository.MealRepository;
 import mrs.app.repository.RestaurantRepository;
 
 @Service
@@ -22,6 +24,9 @@ public class RestaurantServiceImpl implements RestaurantService{
 	
 	@Autowired
 	private DrinkRepository drinkRepository;
+	
+	@Autowired
+	private MealRepository mealRepository;
 	
 	@Override
 	public Collection<Restaurant> findAll() {
@@ -64,6 +69,22 @@ public class RestaurantServiceImpl implements RestaurantService{
         logger.info("< create drink");
         return savedDrink;
 		
+	}
+
+	@Override
+	public Meal addMeal(Meal meal) throws Exception {
+		// TODO Auto-generated method stub
+		logger.info("> create meal");
+		
+        if (meal.getId() != null) {
+            logger.error("Pokusaj kreiranja novog entiteta, ali Id nije null.");
+            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
+        }
+        
+        Meal savedMeal = mealRepository.save(meal);
+        
+        logger.info("< create meal");
+        return savedMeal;
 	}
 
 }

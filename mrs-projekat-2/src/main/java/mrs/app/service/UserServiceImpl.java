@@ -1,8 +1,10 @@
 package mrs.app.service;
 
 import java.util.Collection;
+
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
+import mrs.app.repository.RestaurantRepository;
 import mrs.app.repository.UserRepository;
 
 import org.slf4j.Logger;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService{
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
 	@Override
 	public Collection<User> findAll() {
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService{
             throw new Exception(
                     "Id mora biti null prilikom perzistencije novog entiteta.");
         }
-        System.out.println(user.getEmail());
+        
         User savedUser = userRepository.save(user);
         logger.info("< create");
         return savedUser;
