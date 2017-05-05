@@ -16,4 +16,6 @@ public interface RestaurantService {
 	Drink addDrink(Drink drink) throws Exception;
 
 	Meal addMeal(Meal meal) throws Exception;
+
+	int changeInformation(Restaurant restaurant);
 }

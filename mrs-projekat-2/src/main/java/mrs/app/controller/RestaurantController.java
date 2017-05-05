@@ -137,4 +137,32 @@ public class RestaurantController {
 		
 	}
 	
+	@RequestMapping(
+			value = "/changeInformation",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Restaurant> changeInformation(
+			@RequestBody Restaurant restaurant) throws Exception {
+		logger.info("> change information");
+		
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				restaurant.setId(currentUser.getRestaurant().getId());
+				int value = restaurantService.changeInformation(restaurant);
+				System.out.println(value);
+				logger.info("< change information");
+				return new ResponseEntity<>(HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		
+	}
+	
 }

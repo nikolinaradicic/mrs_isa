@@ -87,4 +87,11 @@ public class RestaurantServiceImpl implements RestaurantService{
         return savedMeal;
 	}
 
+	@Override
+	public int changeInformation(Restaurant restaurant) {
+		// TODO Auto-generated method stub
+		return restaurantRepository.updateRestaurant(restaurant.getName(), restaurant.getDescription(), restaurant.getId());
+		
+	}
+
 }

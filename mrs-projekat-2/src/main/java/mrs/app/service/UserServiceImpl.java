@@ -68,8 +68,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User changeData(User user) {
 		User savedUser = userRepository.findOne(user.getId());
-		System.out.println("*******************");
-		System.out.println(user.toString());
 		savedUser.setEmail(user.getEmail());
 		savedUser.setName(user.getName());
 		savedUser.setLastname(user.getLastname());

@@ -1,8 +1,13 @@
 function displayRestaurant(restaurant){
-	$("#restaurant-info")
-						.append($("<h5>").text("Name: " + restaurant.name))
-						.append($("<b>").text("Description: " + restaurant.description));
+	$("#restaurant-info").append($("<h5>").text("Name: " + restaurant.name))
+						.append($("<h5>").text("Description: " + restaurant.description))
+						.append($("<button>").text("Edit").click(function(){
+								$("#modalInformation").modal('toggle');
+								})
+							);
 	
+	$("#r-name").attr("value", restaurant.name);
+	$("#r-description").text(restaurant.description);
 	$("#restaurant-info").append($("<h5>").text("Drink List"));
 	$("#restaurant-info").append($("<button>")
 			.text("Add drink")
@@ -98,6 +103,29 @@ function addMeal(){
 			else{
 				$("#form-error").text("An error has ocured").css("color","red");
 			}
+		}
+	});
+}
+
+function changeInformation(){
+	var $form = $("#change-information-form");
+	var data = getFormData($form);
+	if (!validateForm(data)){
+		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+		
+	var s = JSON.stringify(data);
+	console.log(s);
+	$.ajax({
+		url: "/changeInformation",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+				location.href = "indexSysMan.html";
+			
 		}
 	});
 }
