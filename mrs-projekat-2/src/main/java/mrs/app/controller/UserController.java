@@ -1,18 +1,19 @@
-
 package mrs.app.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
 import mrs.app.DTOs.GuestDTO;
+import mrs.app.domain.Bartender;
 import mrs.app.domain.Bidder;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
 import mrs.app.domain.UserType;
+import mrs.app.domain.Waiter;
 import mrs.app.service.UserService;
 
 import org.slf4j.Logger;
@@ -38,29 +39,6 @@ public class UserController {
 	
 	@Autowired
 	private HttpSession httpSession;
-	
-	
-	@RequestMapping(
-			value = "/api/guests",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<GuestDTO>> getUsers() {
-		logger.info("> get guests");
-
-		Collection<User> users = userService.findAll();
-		ArrayList<GuestDTO> retval = new ArrayList<GuestDTO>();
-		for (User u : users){
-			if (u.getClass().equals(Guest.class)){
-				Guest g = (Guest) u;
-				retval.add(new GuestDTO(g));
-			}
-			
-		}
-		logger.info("< get guests");
-		return new ResponseEntity<Collection<GuestDTO>>(retval,
-				HttpStatus.OK);
-	}
-	
 	
 	@RequestMapping(
 			value = "/api/login",
@@ -300,4 +278,82 @@ public class UserController {
 		Collection<Guest> friends = userService.getFriends(current);
 		return new ResponseEntity<Collection<Guest>>(friends, HttpStatus.OK);
 	}
+	
+	@RequestMapping(
+			value = "/registerBartender",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Bartender> registerEmployee(
+			@RequestBody Bartender user) throws Exception {
+		logger.info("> register bartender");
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if (current == null){
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+			user.setRestaurant(current.getRestaurant());
+			Bartender savedUser = (Bartender) userService.create(user);
+			logger.info("< register Bartender");
+			return new ResponseEntity<Bartender>(savedUser, HttpStatus.CREATED);
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	
+	@RequestMapping(
+			value = "/registerWaiter",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Waiter> registerWaiter(
+			@RequestBody Waiter user) throws Exception {
+		logger.info("> register waiter");
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if (current == null){
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+			user.setRestaurant(current.getRestaurant());
+			Waiter savedUser = (Waiter) userService.create(user);
+			logger.info("< register waiter");
+			return new ResponseEntity<Waiter>(savedUser, HttpStatus.CREATED);
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	
+	@RequestMapping(
+			value = "/registerChef",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Chef> registerChef(
+			@RequestBody Chef user) throws Exception {
+		logger.info("> register chef");
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if (current == null){
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+			user.setRestaurant(current.getRestaurant());
+			Chef savedUser = (Chef) userService.create(user);
+			logger.info("< register chef");
+			return new ResponseEntity<Chef>(savedUser, HttpStatus.CREATED);
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
 }

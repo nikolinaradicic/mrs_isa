@@ -2,7 +2,7 @@ package mrs.app.domain;
 import javax.persistence.Entity;
 
 @Entity
-public class Chef extends User{
+public class Chef extends Employee{
 
 	/**
 	 * 

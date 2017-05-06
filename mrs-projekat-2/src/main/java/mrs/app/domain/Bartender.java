@@ -3,7 +3,7 @@ package mrs.app.domain;
 import javax.persistence.Entity;
 
 @Entity
-public class Bartender extends User{
+public class Bartender extends Employee{
 
 	/**
 	 * 
@@ -15,6 +15,5 @@ public class Bartender extends User{
 		this.role = UserType.BARTENDER;
 	}
 	
-
 
 }
