@@ -33,9 +33,6 @@ public class RestaurantController {
 	private RestaurantService restaurantService;
 	
 	@Autowired
-	private TableService tableService;
-	
-	@Autowired
 	private SegmentService segmentService;
 	
 	@Autowired

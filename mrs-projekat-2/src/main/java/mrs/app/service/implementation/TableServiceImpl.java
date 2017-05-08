@@ -4,15 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import mrs.app.domain.restaurant.RestaurantTable;
-import mrs.app.repository.TableRepository;
+import mrs.app.repository.RestaurantTableRepository;
 import mrs.app.service.TableService;
 
 @Service
 public class TableServiceImpl implements TableService {
 	
 	@Autowired
-	TableRepository tableRepository;
+	private RestaurantTableRepository tableRepository;
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 

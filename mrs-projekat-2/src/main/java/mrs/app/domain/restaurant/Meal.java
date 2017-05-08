@@ -24,6 +24,15 @@ public class Meal implements Serializable{
 	@Column(nullable = false)
 	private double price;
 	
+	public Meal(String name, String description, double price,
+			Restaurant restaurant) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.restaurant = restaurant;
+	}
+
 	@ManyToOne
 	@JsonIgnore
 	private Restaurant restaurant;

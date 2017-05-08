@@ -11,6 +11,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Drink {
+	
+	public Drink(String name, String description, double price,
+			Restaurant restaurant) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.restaurant = restaurant;
+	}
+
 	@Column(nullable = false)
 	private String name;
 	@Column(nullable = false)

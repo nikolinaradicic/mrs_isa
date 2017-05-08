@@ -1,6 +1,7 @@
 package mrs.app.domain.restaurant;
 
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,7 +36,7 @@ public class Restaurant {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<RestaurantManager> managers;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@OneToMany(mappedBy = "restaurant")
 	private Set<Segment> segments;
 
 	private String chart;
@@ -52,6 +53,16 @@ public class Restaurant {
 		return description;
 	}
 	
+	public Restaurant(String name, String description) {
+		super();
+		this.name = name;
+		this.description = description;
+	}
+
+	public Restaurant() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
