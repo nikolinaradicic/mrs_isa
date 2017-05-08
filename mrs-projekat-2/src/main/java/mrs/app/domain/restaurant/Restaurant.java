@@ -1,4 +1,4 @@
-package mrs.app.domain;
+package mrs.app.domain.restaurant;
 
 import java.util.Set;
 import javax.persistence.Column;
@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import mrs.app.domain.RestaurantManager;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -31,6 +34,11 @@ public class Restaurant {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<RestaurantManager> managers;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	private Set<Segment> segments;
+
+	private String chart;
 
 	public String getName() {
 		return name;
@@ -79,6 +87,22 @@ public class Restaurant {
 
 	public void setDrinkList(Set<Drink> drinkList) {
 		this.drinkList = drinkList;
+	}
+
+	public String getChart() {
+		return chart;
+	}
+	
+	public void setChart(String chart){
+		this.chart = chart;
+	}
+
+	public Set<Segment> getSegments() {
+		return segments;
+	}
+
+	public void setSegments(Set<Segment> segments) {
+		this.segments = segments;
 	}
 
 }

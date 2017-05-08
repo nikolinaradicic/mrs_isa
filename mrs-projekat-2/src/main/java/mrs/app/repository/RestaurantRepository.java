@@ -2,7 +2,7 @@ package mrs.app.repository;
 
 import java.util.List;
 
-import mrs.app.domain.Restaurant;
+import mrs.app.domain.restaurant.Restaurant;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

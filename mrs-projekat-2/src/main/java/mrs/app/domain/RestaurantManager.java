@@ -2,6 +2,8 @@ package mrs.app.domain;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import mrs.app.domain.restaurant.Restaurant;
+
 @Entity
 public class RestaurantManager extends User{
 	

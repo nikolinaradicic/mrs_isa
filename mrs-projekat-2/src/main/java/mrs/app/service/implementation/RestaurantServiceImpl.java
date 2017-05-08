@@ -1,4 +1,4 @@
-package mrs.app.service;
+package mrs.app.service.implementation;
 
 import java.util.Collection;
 
@@ -7,12 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mrs.app.domain.Drink;
-import mrs.app.domain.Meal;
-import mrs.app.domain.Restaurant;
+import mrs.app.domain.restaurant.Drink;
+import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.RestaurantRepository;
+import mrs.app.service.RestaurantService;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService{

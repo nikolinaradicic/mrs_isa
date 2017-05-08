@@ -1,17 +1,17 @@
 package mrs.app.controller;
 
 import java.util.Collection;
-
 import javax.servlet.http.HttpSession;
-
-import mrs.app.domain.Drink;
-import mrs.app.domain.Meal;
-import mrs.app.domain.Restaurant;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
+import mrs.app.domain.restaurant.Drink;
+import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.Segment;
 import mrs.app.service.RestaurantService;
-
+import mrs.app.service.SegmentService;
+import mrs.app.service.TableService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @RestController
@@ -32,6 +31,12 @@ public class RestaurantController {
 
 	@Autowired
 	private RestaurantService restaurantService;
+	
+	@Autowired
+	private TableService tableService;
+	
+	@Autowired
+	private SegmentService segmentService;
 	
 	@Autowired
 	private HttpSession httpSession;
@@ -105,7 +110,6 @@ public class RestaurantController {
 		
 	}
 	
-	
 	@RequestMapping(
 			value = "/addMeal",
 			method = RequestMethod.POST,
@@ -165,4 +169,24 @@ public class RestaurantController {
 		
 	}
 	
+	@RequestMapping(
+			value = "/addSegment",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	public ResponseEntity<Segment> addSegment(@RequestBody Segment segment){
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				segment.setRestaurant(currentUser.getRestaurant());
+				Segment savedSegment = segmentService.create(segment);
+				return new ResponseEntity<Segment>(savedSegment, HttpStatus.CREATED);
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
 }

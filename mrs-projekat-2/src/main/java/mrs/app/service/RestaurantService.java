@@ -2,9 +2,9 @@ package mrs.app.service;
 
 import java.util.Collection;
 
-import mrs.app.domain.Drink;
-import mrs.app.domain.Meal;
-import mrs.app.domain.Restaurant;
+import mrs.app.domain.restaurant.Drink;
+import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Restaurant;
 
 
 public interface RestaurantService {

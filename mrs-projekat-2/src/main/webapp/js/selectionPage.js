@@ -115,7 +115,7 @@ function displayForPersData(callback){
 				$("#poruke").remove();
 			}
 			$("#account-name").text(data.responseJSON["name"]);
-			callback();
+			callback(data.responseJSON.restaurant);
 		}
 	
 	});

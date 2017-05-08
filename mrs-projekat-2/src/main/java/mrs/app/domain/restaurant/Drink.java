@@ -1,4 +1,4 @@
-package mrs.app.domain;
+package mrs.app.domain.restaurant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -5,6 +5,8 @@ import java.sql.Date;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import mrs.app.domain.restaurant.Restaurant;
+
 @MappedSuperclass
 public class Employee extends User {
 	
