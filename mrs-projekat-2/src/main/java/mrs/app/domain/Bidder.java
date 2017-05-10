@@ -13,5 +13,6 @@ public class Bidder extends User{
 	public Bidder() {
 		// TODO Auto-generated constructor stub
 		this.role = UserType.BIDDER;
+		this.firstTime="notvisited";
 	}
 }

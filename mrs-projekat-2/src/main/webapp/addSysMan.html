@@ -8,14 +8,9 @@
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
     <title>MyRestaurant</title>
+
+	    
     <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="js/jquery.scrollTo.min.js"></script>
-    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
-  	<script src="js/functions.js"></script>
-  	<script src="js/selectionPage.js"></script>
-    <script src="js/common-scripts.js"></script>
 
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/font-awesome.css" rel="stylesheet" />
@@ -23,12 +18,18 @@
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="js/bootstrap.min.js"></script>
+    <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="js/jquery.scrollTo.min.js"></script>
+    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+  	<script src="js/functions.js"></script>
+  	<script src="js/selectionPage.js"></script>
+    <script src="js/common-scripts.js"></script>
     
-        
-    <script>
-		$(document).ready(function() {
+     <script>
+	 $(document).ready(function() {
 			displayForPersData();
-			$("#restaurants").remove();
 		});
 	</script>
 
@@ -46,7 +47,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a id="logo" onclick="toPage()" class="logo"><b>MyRESTAURANT</b></a>
+            <a href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
@@ -75,24 +76,15 @@
                       	<li><a  href="changePersData.html">Change Personal Data</a></li>
                         <li><a  href="changePass.html">Change Password</a></li>
                     </ul>
+               	</li>
                	<li class="sub-menu" id="restaurant-manage">
           	    	<a href="javascript" >
                     	<i class="#"></i>
                     	<span><h5>Restaurant Manage</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="indexSysMan.html">Restaurants</a></li>
+                    	<li><a href="#" onclick="getRestaurants()">Restaurants</a></li>
                     	<li><a href="addRestaurant.html">Add Restaurant</a></li>
-                    </ul>
-               	</li>
-               	<li class="sub-menu" id="friend-manage">
-          	    	<a href="javascript" >
-                    	<i class="#"></i>
-                    	<span><h5>Friend Manage</h5></span>
-                   	</a>
-                    <ul class="sub">
-                    	<li><a href="#">Friends</a></li>
-                    	<li><a href="addFriend.html">Add Friend</a></li>
                     </ul>
                	</li>
                	<li class="sub-menu" id="manage">
@@ -103,7 +95,7 @@
                     <ul class="sub">
                     	<li><a href="addSysMan.html">Add System Manager</a></li>
                     </ul>
-               	</li> 	
+               	</li> 	   	
             </ul>			
            	<!-- sidebar menu end-->
           </div>
@@ -114,45 +106,64 @@
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
-
       <section id="main-content">
-          <section class="wrapper" id="add-restaurant-form">
+      	<section class="wrapper" id="dataUser">
+      	</section>
+          <section class="wrapper" id="sysMan-form">
 				<div class="login-form">
-          			<form class="sign-in-htm" id="addRestaurant">
+          			<form class="sign-up-htm" id="addSysMan">
           				<div class="group">
-							<label class="label"><h3>Add Restaurant</h3></label>
-							<br/><br/>
+							<label class="label"><h3>Add System Manager</h3></label>
+							<br/>
 						</div>
 						<div class="group">
-							<label class="label">Name</label>
-							<input type="text" class="input" name="name">
+							<label class="label">First Name
+							<span class="req">*</span>
+							</label>
+							<input type="text" class="input" required name="name"/>
 						</div>
 						<div class="group">
-							<label class="label">Description</label>
-							<input type="text" name="description" class="input">
+							<label class="label">Last Name
+							<span class="req">*</span>
+							</label>
+							<input type="text" class="input" required name = "lastname"/>
 						</div>
-				
 						<div class="group">
-							<p id ="add-error"></p>
-							<input type="button" class="button" value="Confirm" onclick="addRestaurant()">
+							<label class="label">E-mail
+							<span class="req">*</span>
+							</label>
+							<input type="email" class="input" required autocomplete="off" name="email"/>
+						</div>
+						<div class="group">
+							<label class="label">Password
+							<span class="req">*</span>
+							</label>
+							<input type="password" class="input" required autocomplete="off" name="password"/>
+						</div>
+						<div class="group">
+							<label class="label">Repeat Password
+							<span class="req">*</span>
+							</label>
+							<input type="password" class="input" required autocomplete="off" name="repeatedPassword"/>
+						</div>
+						<div class="group">
+							<p id="addSysMan-error"></p>
+							<input type="button" class="button" value="Add" onclick="addSysMan()">
 						</div>
 						<div class="hr">
 							<div class="foot-lnk">
 								<br/>
 								<a href="indexSysMan.html">Cancel</a>
+								</div>
 							</div>
-						</div>
-					</form>
+					</form>	
 				</div>
-		</section>
-		<section class="wrapper" id="dataUser">
-		</section>
-		<section class="wrapper" id="restaurants">
-		</section>
+			</section>
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->
   </section>
+
 
   </body>
 </html>

@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.InheritanceType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
 
 
@@ -39,7 +39,8 @@ public class User implements Serializable{
 	protected String email;
 	@Column(nullable=false)
 	protected UserType role;
-	
+	@Column(nullable=false)
+	protected String firstTime="notvisited";
 	public User(){
 		
 	}
@@ -97,5 +98,14 @@ public class User implements Serializable{
 	public void setRole(UserType role) {
 		this.role = role;
 	}
+
+	public String getFirstTime() {
+		return firstTime;
+	}
+
+	public void setFirstTime(String firstTime) {
+		this.firstTime = firstTime;
+	}
+
 	
 }

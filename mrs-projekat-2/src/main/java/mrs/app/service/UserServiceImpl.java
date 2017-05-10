@@ -60,8 +60,7 @@ public class UserServiceImpl implements UserService{
 	public User change(User user) {
 		User savedUser = userRepository.findOne(user.getId());
 		savedUser.setPassword(user.getPassword());
-		System.out.println(user.getPassword());
-		
+		savedUser.setFirstTime("visited");		
 		return userRepository.save(savedUser);
 	}
 	
@@ -71,7 +70,6 @@ public class UserServiceImpl implements UserService{
 		savedUser.setEmail(user.getEmail());
 		savedUser.setName(user.getName());
 		savedUser.setLastname(user.getLastname());
-		
 		return userRepository.save(savedUser);
 	}
 	
@@ -127,6 +125,23 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		User savedUser = userRepository.findOne(user.getId());
 		return savedUser;
+	}
+
+
+	@Override
+	public boolean unfriend(Guest current, Guest friend) {
+		// TODO Auto-generated method stub
+		Guest currentUser = (Guest) userRepository.findOne(current.getId());		
+		Guest toUnfriend = (Guest) userRepository.findByEmail(friend.getEmail());
+		if (toUnfriend != null)
+		{
+			toUnfriend.getFriends().remove(currentUser);
+			currentUser.getFriends().remove(toUnfriend);
+			userRepository.save(currentUser);
+			userRepository.save(toUnfriend);
+			return true;
+		}
+		return false;
 	}
 
 }
