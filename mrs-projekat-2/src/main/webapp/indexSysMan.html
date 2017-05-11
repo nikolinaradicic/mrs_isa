@@ -9,7 +9,7 @@
 
     <title>MyRestaurant</title>
     
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery.js"> </script>
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/font-awesome.css" rel="stylesheet" />   
     <link href="css/style1.css" rel="stylesheet">
@@ -23,13 +23,14 @@
     <script src="js/common-scripts.js"></script>
     <script src="js/selectionPage.js"></script>
     <script src="js/restaurantFunctions.js"></script>
+    <script type="text/javascript" src="js/jquery.gritter.js"></script>
+    <script type="text/javascript" src="js/gritter-conf.js"></script>
     
  <script>
 	 $(document).ready(function() {
 			displayForPersData();
 		});
 	</script>
-
   </head>
 
   <body>
@@ -51,7 +52,7 @@
                 <!--  notification start -->
                 <ul class="nav top-menu">
                 	<li id="header_inbox_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="indexSysMan.html#">
                             <i class="fa fa-envelope-o"></i>
                             <span class="badge bg-theme" id="brojZahteva"></span>
                         </a>
@@ -125,6 +126,15 @@
                     	<li><a href = "addEmployee.html">Add Employee</a>
                     	<li><a href = "seatingChart.html">Seating chart</a>
                     </ul>
+               	</li>
+               	<li class="sub-menu" id="manage">
+          	    	<a href="javascript" >
+                    	<i class="#"></i>
+                    	<span><h5>Manage</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="addSysMan.html">Add System Manager</a></li>
+                    </ul>
                	</li> 		
             </ul>			
            	<!-- sidebar menu end-->
@@ -137,18 +147,32 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content" class="scrollbar">
-      <div class="wrapper" id="friends-section">
-		</div>
+      	<div class="wrapper" id="friends-section">
+      	</div>
       	<div class="wrapper" id="friend-request">
-		</div>
-		<div class="wrapper" id="restaurants">
-		</div>
-		<div class="wrapper" id="dataUser">
-		</div>
+      	</div>
+		<div class="wrapper site-min-height" id="restaurants1"> 
+<!-- 			<h3 id="h3-naziv1"><i class="fa fa-angle-right"></i>Restaurants</h3> -->
+				<div class="row mt">
+          			<div class="col-lg-12">
+						<div class="row" id="restaurants">
+						</div>
+						</div>
+						</div>
+						</div>
+		<div class="wrapper" id="dataUser1">
+<!-- 			<h3 id="h3-naziv2"><i class="fa fa-angle-right"></i>Profile Informations</h3> -->
+								<div class="row mt">
+          							<div class="col-lg-12">
+										<div class="row" id="dataUser">
+										</div>
+										</div>
+										</div>
+										</div>
 		<div class="wrapper" id="restaurant-info">
 		</div>
-		
-      </section><!-- /MAIN CONTENT -->
+									
+	</section><!-- /MAIN CONTENT -->
 
       <!--main content end-->
   </section>
@@ -250,7 +274,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add Meal</h4>
+        <h4 class="modal-title">Edit Informations</h4>
       </div>
       <div class="modal-body">
        <form id="change-information-form" class="form-horizontal">

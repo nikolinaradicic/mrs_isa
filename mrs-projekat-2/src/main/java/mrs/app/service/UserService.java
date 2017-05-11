@@ -25,4 +25,5 @@ public interface UserService {
 	
 	User getUser(User user);
 	
+	boolean unfriend(Guest current, Guest friend);
 }

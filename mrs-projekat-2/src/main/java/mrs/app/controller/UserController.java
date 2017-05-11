@@ -261,6 +261,28 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
+	
+	@RequestMapping(
+			value = "/api/unFriend",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> unfriend(
+			@RequestBody Guest friend) throws Exception {
+		System.out.println(friend.toString());
+		logger.info("> unfriend");
+		Guest current = (Guest) httpSession.getAttribute("user");
+		logger.info("< unfriend");
+		if (current == null || current.getClass()!= Guest.class){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		if (userService.unfriend(current, friend)){
+			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
+	}
 
 	@RequestMapping(
 			value = "/getFriends",

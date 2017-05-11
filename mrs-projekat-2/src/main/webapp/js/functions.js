@@ -26,23 +26,34 @@ function getRestaurants(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
+				$("#dataUser1").hide();
+				$("#friends-section").hide();
+				$("#friend-request").hide();
+				$("#restaurant-info").hide();
 				
-				$("#dataUser > div").remove();			
-				$("#restaurants > div").remove();
+				$("#restaurants1").show();
 				$.each(data.responseJSON, function(i, item) {
-					$("#restaurants").append($("<div class='row mt'>")
-											.append($("<div class='col-md-4'>")
-												.append($("<div class='white-panel pn'>").css("width","1050")
-													.append($("<div class='white-header'>")
-														.append($("<h4>").text(item.name)))
-													.append($("<img src='img/city1.jpg' class='img' width='150'>"))
-													.append($("<h4>").text(item.description))
+					$("#restaurants").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+											.append($("<div class='content-panel pn'>")
+												.append($("<div id='profile-01'>")
+													.append($("<h3>").text(item.name))
+													.append($("<h6>").text(item.description))
+												)
+												.append($("<div class='profile-01 centered'>")
+													.css('color','#802000')
 													.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
-														.text("Add Manager")
-														.css('background-color','#c6c6ec')
-														.css('border','0px solid')
-														.css('border-radius','7px')
-														.css('padding','10px 20px'))
+														.css('padding-top','1px')
+														.css('padding-bottom','31px')
+														.append($("<p>").text("Add Manager").css('padding-botton','31px'))
+														
+													)
+												)
+												.append($("<div class='centered'>")
+													.append($("<h6>")
+														.append($("<i class='fa fa-envelope'>"))
+														.append($("<br/>"))
+														.text('ja')
+													)
 												)
 											)
 										);
@@ -62,16 +73,33 @@ function getRestaurants1(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#dataUser > div").remove();			
-				$("#restaurants > div").remove();
+				$("#friends-section").hide();
+				$("#friend-request").hide();
+				$("#restaurant-info").hide();
+				$("#dataUser1").hide();			
+				$("#restaurants1").show();
 				$.each(data.responseJSON, function(i, item) {
-					$("#restaurants").append($("<div class='row mt'>")
-											.append($("<div class='col-md-4'>")
-												.append($("<div class='white-panel pn'>").css("width","1050")
-													.append($("<div class='white-header'>")
-														.append($("<h4>").text(item.name)))
-													.append($("<img src='img/city1.jpg' class='img' width='100'>").css("width","150"))
-													.append($("<h4>").text(item.description))
+					$("#restaurants").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+											.append($("<div class='content-panel pn'>")
+												.append($("<div id='profile-01'>")
+													.append($("<h3>").text(item.name))
+													.append($("<h6>").text(item.description))
+												)
+												.append($("<div class='profile-01 centered'>")
+													.css('color','#802000')
+													.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
+														.css('padding-top','1px')
+														.css('padding-bottom','31px')
+														.append($("<p>").text("Add Manager").css('padding-botton','31px'))
+														
+													)
+												)
+												.append($("<div class='centered'>")
+													.append($("<h6>")
+														.append($("<i class='fa fa-envelope'>"))
+														.append($("<br/>"))
+														.text('ja')
+													)
 												)
 											)
 										);
@@ -101,8 +129,12 @@ function register()
 		contentType:"application/json",
 		dataType:"json",
 		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "indexSysMan.html";
+			if(data.responseJSON){
+				if(data.responseJSON["firstTime"]=="notvisited"){
+					location.href="changePass.html"				
+				}else{
+					location.href = "indexSysMan.html";
+				}
 			}
 			else{
 				$("#form-error").text("Username already exists").css("color","red");
@@ -110,7 +142,6 @@ function register()
 		}
 	});
 }
-
 function login() {
 	var $form = $("#login");
 	var data = getFormData($form);
@@ -129,8 +160,11 @@ function login() {
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				location.href = "indexSysMan.html";
-				
+				if(data.responseJSON["firstTime"]=="notvisited"){
+					location.href="changePass.html";
+				}else{
+					location.href = "indexSysMan.html";
+				}
 			}
 			else{
 				$("#login-error").text("Invalid username or password").css("color","red");
@@ -158,7 +192,6 @@ function changePass() {
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data);
 				location.href = "indexSysMan.html";
 			}
 			else{
@@ -284,25 +317,40 @@ function displayData(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				if(data.responeJSON.role!="GUEST"){
+				if(data.responseJSON.role!="GUEST"){
 					$("#poruke").remove();
 				}
+				$("#restaurant-info > div").remove();
 				$("#add-friend-form").hide();
 				$("#changePassword").hide();
+				
 				$("#add-restaurant-form").hide();
-				$("#restaurants > div").remove();
-				$("#friends-section > div").remove();
-				$("#friend-request > div").remove();
+				$("#friends-section").hide();
+				$("#friend-request").hide();
 				$("#changePers").hide();
-				$("#dataUser > div").remove();
+				$("#restaurants1").hide();
 				$("#bidder-form").hide();
-				$("#dataUser").append($("<div>")
-								.append($("<br>"))
-								.append($("<img src='img/fr-11.jpg' width='150'>"))
-								.append($("<h4>").text("E-mail: "+data.responseJSON["email"]))
-								.append($("<h4>").text("First Name: "+data.responseJSON["name"]))
-								.append($("<h4>").text("Last Name: "+data.responseJSON["lastname"]))
-								);
+				$("#sysMan-form").hide();
+				$("#dataUser1").show();
+				$("#dataUser").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+								.append($("<div class='content-panel pn'>")
+										.append($("<div id='spotify'>")
+											.append($("<div class='col-xs-4 col-xs-offset-8'>"))
+													.append($("<div class='sp-title'>")	
+														.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
+															.css('padding-left','20px')
+														)
+														.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
+															.css('padding-left','20px')
+														)
+														.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
+															.css('padding-left','20px')
+														)
+													)
+										)
+												
+								)
+							);
 			}
 			else{
 				console.log(data);
@@ -373,6 +421,34 @@ function addBidder() {
 		}
 	});
 }
+function addSysMan() {
+	var $form = $("#addSysMan");
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#addSysMan-error").text("Fields must be filled in").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "/api/sysManagerRegistration",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+			if (data.responseJSON){
+				location.href = "indexSysMan.html";
+			}
+			else{
+				console.log(data);
+				$("#addSysMan-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
 function getFriends(){
 
 	$.ajax({
@@ -382,8 +458,8 @@ function getFriends(){
 		dataType:"json",
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#dataUser > h4").remove();			
-				$("#restaurants > div").remove();
+				$("#dataUser1 > h4").remove();			
+				$("#restaurants1 > div").remove();
 				$("#friends > h4").remove();
 				$.each(data.responseJSON, function(i, item) {
 					console.log(item);

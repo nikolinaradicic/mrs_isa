@@ -47,5 +47,6 @@ public class Guest extends User{
 	public Guest() {
 		// TODO Auto-generated constructor stub
 		this.role=UserType.GUEST;
+		this.firstTime="notvisited";
 	}
 }

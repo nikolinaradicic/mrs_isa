@@ -16,13 +16,33 @@ function displayFriends()
 				$("#dataUser > div").remove();
 				$("#add-friend-form").hide();
 				$("#bidder-form").hide();
+				$("#sysMan-form").hide();
 				$.each(data.responseJSON.friends, function(i, item){
 					$("#friends-section").append($("<div>").append($("<br>"))
 							.append($("<img src='img/fr-11.jpg' width='150'>"))
 							.append($("<h4>").text("E-mail: "+item))
-							);
+							.append($("<input type='button' class='button' value='Unfriend'>").click(function(){
+														    unfriend(item);})))
 				});
 				
+			}
+		}
+	});
+}
+
+function unfriend(id){
+	var user = {email : id};	
+	var s = JSON.stringify(user);
+	$.ajax({
+		url: "/api/unFriend",
+		type:"POST",
+		contentType:"application/json",
+		data: s,
+		dataType:"json",
+		complete: function(data) {
+			console.log(data.responseJSON)
+			if (data.responseJSON){
+				location.href = "indexSysMan.html";		
 			}
 		}
 	});
@@ -93,6 +113,7 @@ function displayForPersData(callback){
 				$("#restaurant-manage").hide();
 				$("#employee-manage").hide();
 				$("restaurant-info").remove();
+				$("#manage").hide();
 				checkRequests(getRestaurants1);
 			}
 			else if(data.responseJSON.role == "SYSTEM_MANAGER"){
@@ -106,6 +127,7 @@ function displayForPersData(callback){
 				$("#restaurant-manage").hide();
 				$("#friend-manage").hide();
 				$("#poruke").remove();
+				$("#manage").hide();
 				displayRestaurant(data.responseJSON.restaurant);
 			}
 			else if(data.responseJSON.role=="BIDDER"){
@@ -113,6 +135,21 @@ function displayForPersData(callback){
 				$("#employee-manage").hide();
 				$("#friend-manage").hide();
 				$("#poruke").remove();
+				$("#manage").hide();
+			}
+			else if(data.responseJSON.role=="BARTENDER"){
+				$("#restaurant-manage").hide();
+				$("#employee-manage").hide();
+				$("#friend-manage").hide();
+				$("#poruke").remove();
+				$("#manage").hide();
+			}
+			else if(data.responseJSON.role=="CHEF"){
+				$("#restaurant-manage").hide();
+				$("#employee-manage").hide();
+				$("#friend-manage").hide();
+				$("#poruke").remove();
+				$("#manage").hide();
 			}
 			$("#account-name").text(data.responseJSON["name"]);
 			callback(data.responseJSON.restaurant);
