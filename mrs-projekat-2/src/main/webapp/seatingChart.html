@@ -24,7 +24,7 @@
     <script src="js/selectionPage.js"></script>
     <script src="js/restaurantFunctions.js"></script>
     <script src="js/fabric.js"></script>
-  	
+  	<script src="js/fabric.canvasex.js"></script>
     <script src="js/seatingChart.js"></script>
 
   </head>
@@ -189,6 +189,46 @@
 
   </div>
 </div>
+
+  <div id="modalSto" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Detalji stola</h4>
+      </div>
+      <div class="modal-body">
+       <form id="addSto" class="form-horizontal">
+				<fieldset>
+                    <div class="form-group">
+						<label class="control-label col-sm-3">Broj stolica:</label>
+						<div class="col-sm-8">
+						<input required id="Stolica" class="pull-right form-control" type="text" name="Stolica">
+						</div>
+					</div>
+                    <div class="form-group">
+						<div class="col-sm-8">
+						<input required id="Naziv" class="pull-right form-control" type="hidden" name="Naziv">
+						</div>
+					</div>
+					</fieldset>
+					<hr>
+					<div class="form-group">
+					<div class="col-sm-11">		
+						<button type="button" class="btn btn-md btn-primary pull-right RbtnMargin" id="stoAdd">Potvrdi</button>					
+						<button type="button" class="btn btn-md btn-danger pull-right"  id="stoDelete">Obriši</button>					
+					</div>
+					<br/>
+				</div>
+			</form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
 
   </body>

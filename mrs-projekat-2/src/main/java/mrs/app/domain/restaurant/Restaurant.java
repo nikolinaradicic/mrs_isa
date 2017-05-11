@@ -39,8 +39,6 @@ public class Restaurant {
 	@OneToMany(mappedBy = "restaurant")
 	private Set<Segment> segments;
 
-	private String chart;
-
 	public String getName() {
 		return name;
 	}
@@ -98,14 +96,6 @@ public class Restaurant {
 
 	public void setDrinkList(Set<Drink> drinkList) {
 		this.drinkList = drinkList;
-	}
-
-	public String getChart() {
-		return chart;
-	}
-	
-	public void setChart(String chart){
-		this.chart = chart;
 	}
 
 	public Set<Segment> getSegments() {

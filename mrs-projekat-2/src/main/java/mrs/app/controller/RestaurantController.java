@@ -1,27 +1,35 @@
 package mrs.app.controller;
 
 import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
+
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.Segment;
 import mrs.app.service.RestaurantService;
 import mrs.app.service.SegmentService;
 import mrs.app.service.TableService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @RestController
@@ -34,6 +42,9 @@ public class RestaurantController {
 	
 	@Autowired
 	private SegmentService segmentService;
+	
+	@Autowired
+	private TableService tableService;
 	
 	@Autowired
 	private HttpSession httpSession;
@@ -186,4 +197,85 @@ public class RestaurantController {
 		}
 		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
+	
+	
+	@RequestMapping(
+			value = "/getSegment",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Segment> getChart(@RequestBody String segmentName) throws Exception {
+		logger.info("> get segment");
+		
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				Segment segment  = segmentService.findSegment(segmentName, currentUser.getRestaurant());
+				logger.info("< get segment");
+				return new ResponseEntity<Segment>(segment, HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		
+	}
+	
+	
+	@RequestMapping(value="/saveTables",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<RestaurantTable>> saveTables(@RequestBody List<RestaurantTable> tables){
+		logger.info("> save chart");
+	
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				if (tables.size() > 0){
+					Segment segment = segmentService.findSegment(tables.get(0).getSegment().getName(), currentUser.getRestaurant());
+					for (RestaurantTable table : tables) {
+						table.setSegment(segment);
+						tableService.create(table);
+					}
+				}
+				
+				logger.info("< save chart");
+				return new ResponseEntity<>(HttpStatus.CREATED);
+			}
+		}
+	catch(Exception e){
+		e.printStackTrace();
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	
+	@RequestMapping(
+				value="/saveChart/{id}",
+				method = RequestMethod.POST)
+	public ResponseEntity<String> sacuvajCanvas(@PathVariable String id, @RequestBody String segment){
+		logger.info("> save chart");
+		
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				
+				Segment saved = segmentService.findSegment(id, currentUser.getRestaurant());
+				segmentService.updateSegment(segment, saved.getId());
+				logger.info("< save chart");
+				return new ResponseEntity<String>(saved.getChart(), HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+	
 }

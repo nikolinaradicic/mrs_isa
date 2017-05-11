@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class RestaurantTable {
@@ -18,8 +19,6 @@ public class RestaurantTable {
 	
 	@ManyToOne
 	private Segment segment;
-	
-	private String name;
 
 	public RestaurantTable() {
 		// TODO Auto-generated constructor stub
@@ -55,14 +54,8 @@ public class RestaurantTable {
 	}
 
 
-	public String getName() {
-		return name;
-	}
 
 
-	public void setName(String name) {
-		this.name = name;
-	}
 	
 	
 
