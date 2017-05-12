@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 
+import mrs.app.DTOs.TableDTO;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
@@ -224,24 +224,20 @@ public class RestaurantController {
 	}
 	
 	
-	@RequestMapping(value="/saveTables",
+	@RequestMapping(value="/saveTables/{id}",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<RestaurantTable>> saveTables(@RequestBody List<RestaurantTable> tables){
-		logger.info("> save chart");
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<TableDTO>> saveTables( @PathVariable String id, @RequestBody List<TableDTO> tables){
+		logger.info("> save tables");
 	
 		try{
 			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
 			if (currentUser != null){
-				if (tables.size() > 0){
-					Segment segment = segmentService.findSegment(tables.get(0).getSegment().getName(), currentUser.getRestaurant());
-					for (RestaurantTable table : tables) {
-						table.setSegment(segment);
-						tableService.create(table);
-					}
-				}
+				Segment segment = segmentService.findSegment(id, currentUser.getRestaurant());
 				
-				logger.info("< save chart");
+				tableService.saveTables(tables, segment);
+				logger.info("< save tables");
 				return new ResponseEntity<>(HttpStatus.CREATED);
 			}
 		}
@@ -257,7 +253,7 @@ public class RestaurantController {
 	@RequestMapping(
 				value="/saveChart/{id}",
 				method = RequestMethod.POST)
-	public ResponseEntity<String> sacuvajCanvas(@PathVariable String id, @RequestBody String segment){
+	public ResponseEntity<String> saveChart(@PathVariable String id, @RequestBody String chart){
 		logger.info("> save chart");
 		
 		try{
@@ -265,7 +261,7 @@ public class RestaurantController {
 			if (currentUser != null){
 				
 				Segment saved = segmentService.findSegment(id, currentUser.getRestaurant());
-				segmentService.updateSegment(segment, saved.getId());
+				segmentService.updateSegment(chart, saved.getId());
 				logger.info("< save chart");
 				return new ResponseEntity<String>(saved.getChart(), HttpStatus.CREATED);
 			}
@@ -277,5 +273,35 @@ public class RestaurantController {
 		
 		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
+	
+	
+	@RequestMapping(
+			value="/getTable/{id}",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RestaurantTable> getTable(@PathVariable String id, @RequestBody TableDTO table){
+		logger.info("> get table");
+	
+		try{
+			RestaurantManager currentUser = (RestaurantManager) httpSession.getAttribute("user");
+			if (currentUser != null){
+				Segment saved = segmentService.findSegment(id, currentUser.getRestaurant());
+				RestaurantTable savedTable = tableService.findByNameAndSegment(table.getName(), saved);
+				System.out.println(savedTable.getChairNumber());
+				System.out.println(savedTable.getName());
+				System.out.println(savedTable.getId());
+				logger.info("< get table");
+			return new ResponseEntity<RestaurantTable>(savedTable, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	catch(Exception e){
+		e.printStackTrace();
+	}
+	
+	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+}
+	
 	
 }

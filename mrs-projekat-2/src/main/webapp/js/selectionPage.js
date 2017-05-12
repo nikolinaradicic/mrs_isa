@@ -40,7 +40,7 @@ function unfriend(id){
 		data: s,
 		dataType:"json",
 		complete: function(data) {
-			console.log(data.responseJSON)
+			console.log(data.responseJSON);
 			if (data.responseJSON){
 				location.href = "indexSysMan.html";		
 			}
@@ -93,7 +93,7 @@ function checkRequests(callback){
 														    acceptFriend(item);
 														}))
 													)
-										)
+										);
 			});
 			callback();
 		}
