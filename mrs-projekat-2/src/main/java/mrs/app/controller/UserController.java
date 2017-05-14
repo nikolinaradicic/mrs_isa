@@ -5,16 +5,20 @@ import java.util.Collection;
 import javax.servlet.http.HttpSession;
 
 import mrs.app.DTOs.GuestDTO;
+import mrs.app.DTOs.WorkingShiftDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Bidder;
 import mrs.app.domain.Chef;
+import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
 import mrs.app.domain.UserType;
 import mrs.app.domain.Waiter;
+import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.service.UserService;
+import mrs.app.service.WorkingShiftService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,9 @@ public class UserController {
 	
 	@Autowired
 	private HttpSession httpSession;
+	
+	@Autowired
+	private WorkingShiftService workingShiftService;
 	
 	@RequestMapping(
 			value = "/api/login",
@@ -378,4 +385,60 @@ public class UserController {
 		}
 	}
 	
+	
+	@RequestMapping(
+			value = "/getEmployees",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<Employee>> getEmployees(){
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if(current != null){
+				Collection<Employee> employees = userService.findEmployees(current.getRestaurant());
+				return new ResponseEntity<Collection<Employee>>(employees, HttpStatus.OK);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Collection<Employee>>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@RequestMapping(
+			value = "/addWorkingShift",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<WorkingShift> addWorkingShift(@RequestBody WorkingShift shift){
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if(current != null){
+				Employee employee = (Employee) userService.findEmployee(shift.getEmployee().getEmail());
+				shift.setRestaurant(current.getRestaurant());
+				shift.setEmployee(employee);
+				WorkingShift saved = workingShiftService.create(shift);
+				return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@RequestMapping(
+			value = "/getWorkingShifts",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<WorkingShift>> getWorkingShifts(@RequestBody WorkingShiftDTO shift){
+		try{
+			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
+			if(current != null){
+				Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
+				return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
 }

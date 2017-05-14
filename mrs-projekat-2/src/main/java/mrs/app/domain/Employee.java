@@ -1,13 +1,16 @@
 package mrs.app.domain;
 
 import java.sql.Date;
+import java.util.Set;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.WorkingShift;
 
-@MappedSuperclass
+@Entity
 public class Employee extends User {
 	
 	/**
@@ -18,8 +21,11 @@ public class Employee extends User {
 	protected int uniformSize;
 	protected int shoeSize;
 	
+	@OneToMany(mappedBy = "employee")
+	protected Set<WorkingShift> shifts;
+	
 	@ManyToOne
-	private Restaurant restaurant;
+	protected Restaurant restaurant;
 	
 	public Date getBirthday() {
 		return birthday;

@@ -36,6 +36,9 @@ public class Restaurant {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	private Set<RestaurantManager> managers;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	private Set<WorkingShift> shifts;
+	
 	@OneToMany(mappedBy = "restaurant")
 	private Set<Segment> segments;
 

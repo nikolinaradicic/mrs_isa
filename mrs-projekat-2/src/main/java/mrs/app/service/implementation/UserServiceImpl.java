@@ -2,8 +2,11 @@ package mrs.app.service.implementation;
 
 import java.util.Collection;
 
+import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
+import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.repository.EmployeeRepository;
 import mrs.app.repository.RestaurantRepository;
 import mrs.app.repository.UserRepository;
 import mrs.app.service.UserService;
@@ -20,6 +23,9 @@ public class UserServiceImpl implements UserService{
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
     
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -143,6 +149,20 @@ public class UserServiceImpl implements UserService{
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public Collection<Employee> findEmployees(Restaurant restaurant) {
+		// TODO Auto-generated method stub
+		return employeeRepository.findByRestaurant(restaurant);
+	}
+
+
+	@Override
+	public User findEmployee(String email) {
+		// TODO Auto-generated method stub
+		return userRepository.findByEmail(email);
 	}
 
 }
