@@ -30,7 +30,7 @@ function getRestaurants(){
 				$("#friends-section").hide();
 				$("#friend-request").hide();
 				$("#restaurant-info").hide();
-				
+				$("#restaurants > div").remove();
 				$("#restaurants1").show();
 				$.each(data.responseJSON, function(i, item) {
 					$("#restaurants").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
@@ -333,6 +333,7 @@ function displayData(){
 				$("#sysMan-form").hide();
 				$("#dataUser1").show();
 				$("#calendar").hide();
+				$("#dataUser > div").remove();
 				$("#friends-section1").hide();
 				$("#dataUser").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
 								.append($("<div class='content-panel pn'>")
