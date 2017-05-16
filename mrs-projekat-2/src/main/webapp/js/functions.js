@@ -30,7 +30,7 @@ function getRestaurants(){
 				$("#friends-section").hide();
 				$("#friend-request").hide();
 				$("#restaurant-info").hide();
-				
+				$("#restaurants > div").remove();
 				$("#restaurants1").show();
 				$.each(data.responseJSON, function(i, item) {
 					$("#restaurants").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
@@ -131,7 +131,7 @@ function register()
 		complete: function(data) {
 			if(data.responseJSON){
 				if(data.responseJSON["firstTime"]=="notvisited"){
-					location.href="changePass.html"				
+					location.href="changePass1.html"				
 				}else{
 					location.href = "indexSysMan.html";
 				}
@@ -161,7 +161,7 @@ function login() {
 		complete: function(data) {
 			if (data.responseJSON){
 				if(data.responseJSON["firstTime"]=="notvisited"){
-					location.href="changePass.html";
+					location.href="changePass1.html";
 				}else{
 					location.href = "indexSysMan.html";
 				}
@@ -332,6 +332,9 @@ function displayData(){
 				$("#bidder-form").hide();
 				$("#sysMan-form").hide();
 				$("#dataUser1").show();
+				$("#calendar").hide();
+				$("#dataUser > div").remove();
+				$("#friends-section1").hide();
 				$("#dataUser").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
 								.append($("<div class='content-panel pn'>")
 										.append($("<div id='spotify'>")

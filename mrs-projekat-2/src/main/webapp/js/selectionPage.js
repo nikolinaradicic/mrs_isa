@@ -9,20 +9,30 @@ function displayFriends()
 		complete: function(data) {
 			if (data.responseJSON){
 				$("#top-menu").hide();
-				$("#changePassword").remove();
+				$("#changePassword").hide();
 				$("#add-restaurant-form").hide();
-				$("#restaurants > div").remove();
+				$("#restaurants1").hide();
 				$("#changePers").hide();
-				$("#dataUser > div").remove();
+				$("#dataUser1").hide();
 				$("#add-friend-form").hide();
 				$("#bidder-form").hide();
 				$("#sysMan-form").hide();
+				$("#friends-section1").show();
+				console.log("usao");
 				$.each(data.responseJSON.friends, function(i, item){
-					$("#friends-section").append($("<div>").append($("<br>"))
-							.append($("<img src='img/fr-11.jpg' width='150'>"))
-							.append($("<h4>").text("E-mail: "+item))
-							.append($("<input type='button' class='button' value='Unfriend'>").click(function(){
-														    unfriend(item);})))
+					$("#friend-section").append($("<tr>")
+											.append($("<td>")
+												.append($("<a href='#'>").text(item))
+											)
+											.append($("<td>")
+												.append($("<input type='button' class='button' value='Unfriend'>")
+													.click(function(){
+													unfriend(item);
+													})
+													.append($("<i class='fa fa-user-times'>"))
+												)
+											)
+										)
 				});
 				
 			}
@@ -114,6 +124,7 @@ function displayForPersData(callback){
 				$("#employee-manage").hide();
 				$("restaurant-info").remove();
 				$("#manage").hide();
+				$("#calendar").hide();
 				checkRequests(getRestaurants1);
 			}
 			else if(data.responseJSON.role == "SYSTEM_MANAGER"){
@@ -128,6 +139,7 @@ function displayForPersData(callback){
 				$("#friend-manage").hide();
 				$("#poruke").remove();
 				$("#manage").hide();
+				$("#calendar").hide();
 				displayRestaurant(data.responseJSON.restaurant);
 			}
 			else if(data.responseJSON.role=="BIDDER"){
