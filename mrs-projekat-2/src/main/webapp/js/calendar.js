@@ -90,11 +90,12 @@ function displayCalendar(){
 	            success: function(doc) {
 	            	console.log(doc);
 	                var events = [];
-	                $(doc).find('event').each(function() {
-	                    events.push({
-	                        title: $(this).attr('title'),
-	                        start: $(this).attr('start') // will be parsed
-	                    });
+	                $.each(doc, function(i,item){
+	                	
+	                	events.push({
+	                		title: item.employee.email,
+	                		start: item.date
+	                	});
 	                });
 	                callback(events);
 	            }
@@ -104,7 +105,7 @@ function displayCalendar(){
 		eventRender: function(event, element) {
 			var check = moment(event.start, 'DD.MM.YYYY').format('YYYY-MM-DD');
 		    var today = moment(new Date()).format('YYYY-MM-DD');
-		    if(check > today)
+		    if(check >= today)
 		    {
 		    	element.append( "<span class='closeon'>X</span>" );
 	            element.find(".closeon").click(function() {

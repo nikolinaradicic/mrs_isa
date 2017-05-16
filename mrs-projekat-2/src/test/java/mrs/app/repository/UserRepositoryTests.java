@@ -1,4 +1,4 @@
-package mrs.app.service;
+package mrs.app.repository;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

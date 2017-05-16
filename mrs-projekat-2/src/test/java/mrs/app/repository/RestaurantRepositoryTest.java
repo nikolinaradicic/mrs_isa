@@ -1,4 +1,4 @@
-package mrs.app.service;
+package mrs.app.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import mrs.app.domain.restaurant.Restaurant;

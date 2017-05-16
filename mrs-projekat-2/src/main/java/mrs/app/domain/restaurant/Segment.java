@@ -68,6 +68,13 @@ public class Segment implements Serializable{
 
 	public Segment() {}
 
+	public Segment(String name, Restaurant restaurant) {
+		// TODO Auto-generated constructor stub
+		super();
+		this.name = name;
+		this.restaurant = restaurant;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -84,4 +91,17 @@ public class Segment implements Serializable{
 		this.chart = chart;
 	}
 
+	@Override
+	public boolean equals(Object obj){
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Segment))
+			return false;
+		Segment c = (Segment) obj;
+		if (this.id == c.id)
+			return true;
+		return false;
+	}
 }

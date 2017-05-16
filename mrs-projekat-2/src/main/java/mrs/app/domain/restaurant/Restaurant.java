@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
+
 import mrs.app.domain.RestaurantManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,18 +30,23 @@ public class Restaurant {
 	private String description;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Meal> menu;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Drink> drinkList;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<RestaurantManager> managers;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<WorkingShift> shifts;
 	
-	@OneToMany(mappedBy = "restaurant")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Segment> segments;
 
 	public String getName() {

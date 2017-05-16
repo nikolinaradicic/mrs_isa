@@ -21,6 +21,10 @@ public class Drink {
 		this.restaurant = restaurant;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
 	@Column(nullable = false)
 	private String name;
 	@Column(nullable = false)
@@ -39,10 +43,6 @@ public class Drink {
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
 	
 	public Long getId() {
 		return id;
