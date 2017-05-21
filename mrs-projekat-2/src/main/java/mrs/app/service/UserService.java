@@ -32,4 +32,6 @@ public interface UserService {
 	boolean unfriend(Guest current, Guest friend);
 	
 	Collection<Employee> findEmployees(Restaurant restaurant);
+
+	User findByUsername(String username);
 }

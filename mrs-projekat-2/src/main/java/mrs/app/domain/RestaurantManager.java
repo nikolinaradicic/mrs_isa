@@ -17,7 +17,7 @@ public class RestaurantManager extends User{
 	
 	public RestaurantManager() {
 		// TODO Auto-generated constructor stub
-		this.role=UserType.RESTAURANT_MANAGER;
+		this.role=UserType.ROLE_RESTAURANT_MANAGER;
 		this.firstTime="notvisited";
 	}
 

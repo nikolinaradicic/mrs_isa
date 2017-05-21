@@ -11,7 +11,7 @@ public class Chef extends Employee{
 
 	public Chef() {
 		// TODO Auto-generated constructor stub
-		this.role = UserType.CHEF;
+		this.role = UserType.ROLE_CHEF;
 		this.firstTime="notvisited";
 	}
 }

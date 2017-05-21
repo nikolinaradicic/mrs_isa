@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class Meal implements Serializable{
 	/**
@@ -34,7 +32,6 @@ public class Meal implements Serializable{
 	}
 
 	@ManyToOne
-	@JsonIgnore
 	private Restaurant restaurant;
 	
 	@Id

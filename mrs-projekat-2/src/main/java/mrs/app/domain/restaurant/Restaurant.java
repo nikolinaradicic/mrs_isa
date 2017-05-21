@@ -75,6 +75,7 @@ public class Restaurant {
 		this.description = description;
 	}
 	
+	@JsonIgnore
 	public Set<Meal> getMenu() {
 		return menu;
 	}
@@ -100,6 +101,7 @@ public class Restaurant {
 		this.managers = managers;
 	}
 
+	@JsonIgnore
 	public Set<Drink> getDrinkList() {
 		return drinkList;
 	}

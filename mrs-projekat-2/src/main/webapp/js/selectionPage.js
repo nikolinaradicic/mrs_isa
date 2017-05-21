@@ -170,19 +170,3 @@ function displayForPersData(callback){
 	});
 }
 
-function changePersData(){
-	$.ajax({
-		url: "api/getUser",
-		type:"GET",
-		contentType:"application/json",
-		dataType:"json",
-		complete: function(data) {
-			
-			if (data.responseJSON){
-				$("#name-field").attr("value", data.responseJSON.name);
-				$("#lastname-field").attr("value", data.responseJSON.lastname);
-				$("#email-field").attr("value", data.responseJSON.email);
-			}
-		}
-	});
-}

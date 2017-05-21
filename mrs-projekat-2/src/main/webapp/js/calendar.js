@@ -1,8 +1,8 @@
 var start_date;
 var end_date;
-$(document).ready(function() {
-	displayForPersData(fillEmployeeBox);
-});
+function setupCalendar(){
+	fillEmployeeBox();
+}
 
 function fillEmployeeBox(){
 	$.ajax({
@@ -10,6 +10,7 @@ function fillEmployeeBox(){
 		url: '/getEmployees',
 		contentType:"application/json",
 		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function (i, item) {
 			    $('#employee-select').append($('<option>', { 
@@ -41,16 +42,17 @@ function addEvent(){
 		contentType:"application/json",
 		dataType:"json",
 		data : JSON.stringify(send_data),
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			console.log(data.responseJSON);
-			$('#calendar').fullCalendar('renderEvent', eventData, true);
+			$('#calendar-div').fullCalendar('renderEvent', eventData, true);
 		}
 	});
 }
 
 
 function displayCalendar(){
-	$('#calendar').fullCalendar({
+	$('#calendar-div').fullCalendar({
 		header: {
 			left: 'prev,next today',
 			center: 'title',
@@ -73,7 +75,7 @@ function displayCalendar(){
 		    	$("#modalEvent").modal('toggle');
 		    }
 			
-			$('#calendar').fullCalendar('unselect');
+			$('#calendar-div').fullCalendar('unselect');
 		},
 		editable: true,
 		eventLimit: true, // allow "more" link when too many events
@@ -83,6 +85,7 @@ function displayCalendar(){
 	            url: '/getWorkingShifts',
 	            dataType: 'json',
 	            contentType: "application/json",
+	    		headers: createAuthorizationTokenHeader(),
 	            data: JSON.stringify({
 	                start: start,
 	                end: end
@@ -109,7 +112,7 @@ function displayCalendar(){
 		    {
 		    	element.append( "<span class='closeon'>X</span>" );
 	            element.find(".closeon").click(function() {
-	               $('#calendar').fullCalendar('removeEvents',event._id);
+	               $('#calendar-div').fullCalendar('removeEvents',event._id);
 	            });
 		    }
 		}

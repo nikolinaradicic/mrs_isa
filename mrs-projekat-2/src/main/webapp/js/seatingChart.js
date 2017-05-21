@@ -1,27 +1,52 @@
 var tables = [];
-$(document).ready(function() {
+function setupChart(){
 	$("#addSegmentButton").click(function(){
 		$("#modalSegment").modal('toggle');
 	});
 	
-	displayForPersData(fillSegmentBox);
-});
-
-
-$(document).on('click', '#add-table-button', function(){
-	addTableToCanvas();
+	$("#add-table-button").click(function(){
+		addTableToCanvas();
+	});
 	
-});
-
-$(document).on('click', '#new-table-button', function(){
-	$("#add-table-modal").modal('toggle');
+	$('#new-table-button').click(function(){
+		$("#add-table-modal").modal('toggle');
+	});
 	
-});
-
-$(document).on('click', '#save', function(){
-	saveToCanvas();
+	$('#save').click(function(){
+		saveToCanvas();
+		
+	});
 	
-});
+	$('#delete-table').click(function(){
+		deleteTable();
+		
+	});
+
+	$('#change-table').click(function(){
+		changeTable();
+		
+	});
+	
+	var canvas = new fabric.CanvasEx("canvas");
+	document.getElementById('canvas').fabric = canvas;
+	canvas.setHeight(450);
+	canvas.setWidth(800);
+	
+	canvas.on('mouse:dblclick', function(e) {
+		  var activeObject = e.target;
+		  if(activeObject != null){
+			  if(activeObject.get('name')!=null){
+				  var tableId = activeObject.get('name');
+				  $('#table-name').val(tableId);
+				  $('#change-table-modal').modal();
+				  getTable(tableId);
+				}
+		  }
+	});
+	
+	fillSegmentBox();
+}
+
 
 function displaySegment(){
 	console.log("promjena selecta");
@@ -32,6 +57,7 @@ function displaySegment(){
 		data: x,
 		contentType:"application/json",
 		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
 				changeCanvas(data.responseJSON);
@@ -92,6 +118,7 @@ function deleteTable(){
 }
 
 function addTableToCanvas(){
+	console.log("usaooo");
 	var $form = $("#add-table-form");
 	var data = getFormData($form);
 	if (!validateForm(data)){
@@ -129,33 +156,11 @@ function addTableToCanvas(){
 
 
 function showCanvas(segment){
-		var canvas = new fabric.CanvasEx("canvas");
-		if (segment.canvas != ""){
-			console.log("prikazujem");
+		var canvas = document.getElementById('canvas').fabric;
+		if (segment.chart != ""  && segment.chart != null){
 			var json = JSON.parse(segment.chart);
-			canvas.loadFromJSON(json);
-			console.log(canvas);
+			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
 		}
-		
-		document.getElementById('canvas').fabric = canvas;
-		canvas.setHeight(450);
-		canvas.setWidth(800);
-		
-		canvas.on('mouse:dblclick', function(e) {
-			  var activeObject = e.target;
-			  if(activeObject != null){
-				  if(activeObject.get('name')!=null){
-					  var tableId = activeObject.get('name');
-					  $('#table-name').val(tableId);
-					  $('#change-table-modal').modal();
-					  getTable(tableId);
-					}
-			  }
-		});
-		
-		setTimeout(function(){
-			canvas.renderAll(); 
-		}, 100);
 	
 }
 
@@ -175,6 +180,7 @@ function getTable(tableId){
 		data: JSON.stringify(data),
 		contentType:"application/json",
 		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			console.log(data);
 			if (data.responseJSON){
@@ -190,26 +196,13 @@ function getTable(tableId){
 function changeCanvas(segment){
 	var canvas = document.getElementById('canvas').fabric;
 	canvas.clear();
-	if (segment.canvas != ""){
+	if (segment.chart != "" && segment.chart != null){
 		var json = JSON.parse(segment.chart);
-		canvas.loadFromJSON(json);
-		console.log(canvas);
+		canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
 	}
-	setTimeout(function(){
-		canvas.renderAll(); 
-	}, 100);
 
 }
 
-$(document).on('click', '#delete-table', function(){
-	deleteTable();
-	
-});
-
-$(document).on('click', '#change-table', function(){
-	changeTable();
-	
-});
 
 function saveTables(){
 	var x = document.getElementById("segmentSelect").value;
@@ -219,6 +212,7 @@ function saveTables(){
 		dataType: 'json',
 		contentType : "application/json",
 		data : JSON.stringify(tables),
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			tables = [];
 			window.alert("Your configuration has been succesfully saved");
@@ -235,6 +229,7 @@ function saveToCanvas() {
 		dataType: 'text',
 		contentType : "application/text",
 		data : JSON.stringify(canvas),
+		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			saveTables();
 		}
@@ -283,11 +278,16 @@ function addSegment(){
 		url : "/addSegment",
 		data: s,
 		dataType: 'json',
-		contentType : "application/json",
+		contentType: "application/json",
+		headers: createAuthorizationTokenHeader(),
 		success: function(data){
-			console.log(data);
 			$("#modalSegment").modal('toggle');
-			location.href = "seatingChart.html";
+			$('#segmentSelect').prepend($('<option>', { 
+		        value: data.name,
+		        text : data.name 
+		    }));
+			$("#segmentSelect").val(data.name);
+			$("#segmentSelect").change();
 			
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
@@ -297,15 +297,28 @@ function addSegment(){
 	
 }
 
-function fillSegmentBox(restaurant){
-	$.each(restaurant.segments, function (i, item) {
-	    $('#segmentSelect').append($('<option>', { 
-	        value: item.name,
-	        text : item.name 
-	    }));
+function fillSegmentBox(){
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){	
+				console.log(data.responseJSON);
+				if (data.responseJSON.restaurant.segments.length != 0){
+					showCanvas(data.responseJSON.restaurant.segments[0]);
+					$.each(data.responseJSON.restaurant.segments, function (i, item) {
+					    $('#segmentSelect').append($('<option>', { 
+					        value: item.name,
+					        text : item.name 
+					    }));
+					});
+				}
+			}
+				
+		}
 	});
-	if (restaurant.segments != []){
-		showCanvas(restaurant.segments[0]);
-	}
 }
 

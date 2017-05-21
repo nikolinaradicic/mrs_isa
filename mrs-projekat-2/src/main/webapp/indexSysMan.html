@@ -11,11 +11,11 @@
     
     <script src="js/jquery.js"> </script>
     
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/font-awesome.css" rel="stylesheet" />   
+    <link href="css/bootstrap.css" rel="stylesheet">  
+    <link href="css/style.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/bootstrap.min.js"></script>
     <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="js/jquery.scrollTo.min.js"></script>
@@ -23,16 +23,31 @@
   	<script src="js/functions.js"></script>
     <script src="js/common-scripts.js"></script>
     <script src="js/selectionPage.js"></script>
-    <script src="js/restaurantFunctions.js"></script>
     <script type="text/javascript" src="js/jquery.gritter.js"></script>
     <script type="text/javascript" src="js/gritter-conf.js"></script>
+    <script src="js/jquery.ba-bbq.min.js"></script>
+    <script src="js/proba.js"></script>
+    <script src="js/userFunctions.js"></script>
+    <script src="js/restaurantFunctions.js"></script>
+    <script src="js/fabric.js"></script>
+    <script src="js/fabric.canvasex.js"></script>
+    <script src="js/seatingChart.js"></script>
     
- <script>
-	 $(document).ready(function() {
-			displayForPersData();
-			$("#friends-section1").hide();
-		});
-	</script>
+    <link href='fullcalendar-3.4.0/fullcalendar.min.css' rel='stylesheet' />
+	<link href='fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+	<script src='fullcalendar-3.4.0/lib/moment.min.js'></script>
+	<script src='fullcalendar-3.4.0/fullcalendar.min.js'></script>
+	<script src="js/calendar.js"></script>
+	
+	<style>
+		#calendar-div {
+			max-width: 900px;
+			margin: 0 auto;
+			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+			font-size: 14px;
+		}
+
+	</style>
   </head>
 
   <body>
@@ -47,7 +62,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a id="logo" href="indexSysMan.html" class="logo"><b>MyRESTAURANT</b></a>
+            <a id="logo" href="#" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <section id="poruke">
             <div class="nav notify-row" id="top_menu">
@@ -71,7 +86,7 @@
                 
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><button class="logout" onclick="doLogout()">Logout</button></li>
             	</ul>
             </div>
         </header>
@@ -86,29 +101,30 @@
           	<!-- sidebar menu start-->
          	<ul class="sidebar-menu" id="nav-accordion">      
           		<li class="sub-menu">
-          	    	<a href="#" >
+          	    	<a href="menu" >
                     	<i class="#"></i>
                     	<img src="img/account.png" class="img-circle" width="60">
                     	<span><h5 id="account-name"></h5></span>
                    	</a>
                     <ul class="sub">
                     	<li><a href="#" onclick="displayData()">Personal Data</a></li>
-                      	<li><a  href="changePersData.html">Change Personal Data</a></li>
-                        <li><a  href="changePass.html">Change Password</a></li>
+                      	<li><a  href="changePersData">Change Personal Data</a></li>
+                        <li><a  href="changePass">Change Password</a></li>
                     </ul>
                	</li>  
                	<li class="sub-menu" id="restaurant-manage">
-          	    	<a href="javascript" >
-                    	<i class="#"></i>
+          	    	<a href="menu">
+          	    		<i class="#"></i>
                     	<span><h5>Restaurant Manage</h5></span>
-                   	</a>
+          	    	</a>
+                   	
                     <ul class="sub">
-                    	<li><a href="#" onclick="getRestaurants()">Restaurants</a></li>
-                    	<li><a href="addRestaurant.html">Add Restaurant</a></li>
+                    	<li><a href="#">Restaurants</a></li>
+                    	<li><a href="addRestaurant">Add Restaurant</a></li>
                     </ul>
                	</li> 
                	<li class="sub-menu" id="friend-manage">
-          	    	<a href="javascript" >
+          	    	<a href="menu" >
                     	<i class="#"></i>
                     	<span><h5>Friend Manage</h5></span>
                    	</a>
@@ -119,24 +135,24 @@
                	</li>
                	
                	<li class="sub-menu" id="employee-manage">
-          	    	<a href="javascript" >
+          	    	<a href="menu" >
                     	<i class="#"></i>
                     	<span><h5>Manage Employees</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="addBidder.html">Add Bidder</a></li>
-                    	<li><a href = "addEmployee.html">Add Employee</a>
-                    	<li><a href = "seatingChart.html">Seating chart</a>
-                    	<li><a href = "calendarView.html">Calendar</a></li>
+                    	<li><a href="addBidder">Add Bidder</a></li>
+                    	<li><a href = "addEmployee">Add Employee</a>
+                    	<li><a href = "seatingChart">Seating chart</a>
+                    	<li><a href = "calendarView">Calendar</a></li>
                     </ul>
                	</li>
                	<li class="sub-menu" id="manage">
-          	    	<a href="javascript" >
+          	    	<a href="menu" >
                     	<i class="#"></i>
                     	<span><h5>Manage</h5></span>
                    	</a>
                     <ul class="sub">
-                    	<li><a href="addSysMan.html">Add System Manager</a></li>
+                    	<li><a href="addSysMan">Add System Manager</a></li>
                     </ul>
                	</li>
                	<li class="sub-menu" id="calendar">
@@ -153,6 +169,8 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content" class="scrollbar">
+      <div class="wrapper" id="app-div"></div>
+      <div class="wrapper" id="modals-div"></div>
       	<div class="wrapper" id="friends-section1">
       			<div class="row mt">
         <div class="col-lg-12">
@@ -197,11 +215,10 @@
           							<div class="col-lg-12">
 										<div class="row" id="dataUser">
 										</div>
-										</div>
-										</div>
-										</div>
-		<div class="wrapper" id="restaurant-info">
-		</div>
+									</div>
+								</div>
+			</div>
+
 									
 	</section><!-- /MAIN CONTENT -->
 
@@ -224,6 +241,7 @@
 						<label class="control-label col-sm-3">Name:</label>
 						<div class="col-sm-8">
 						<input required id="name" class="pull-right form-control" type="text" name="name">
+						<input type="hidden" name="restaurant">
 						</div>
 					</div>
                     <div class="form-group">
@@ -269,6 +287,7 @@
 						<label class="control-label col-sm-3">Name:</label>
 						<div class="col-sm-8">
 						<input required id="name" class="pull-right form-control" type="text" name="name">
+						<input type="hidden" name="restaurant">
 						</div>
 					</div>
                     <div class="form-group">

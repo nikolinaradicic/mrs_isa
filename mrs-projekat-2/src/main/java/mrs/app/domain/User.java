@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -38,6 +40,7 @@ public class User implements Serializable{
 	@Column(nullable = false,unique=true)
 	protected String email;
 	@Column(nullable=false)
+	@Enumerated(EnumType.STRING)
 	protected UserType role;
 	@Column(nullable=false)
 	protected String firstTime="notvisited";

@@ -7,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class Drink {
 	
@@ -35,7 +33,6 @@ public class Drink {
 	@ManyToOne
 	private Restaurant restaurant;
 	
-	@JsonIgnore
 	public Restaurant getRestaurant() {
 		return restaurant;
 	}

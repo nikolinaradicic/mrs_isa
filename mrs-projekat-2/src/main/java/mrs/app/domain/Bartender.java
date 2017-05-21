@@ -12,7 +12,7 @@ public class Bartender extends Employee{
 	
 	public Bartender() {
 		// TODO Auto-generated constructor stub
-		this.role = UserType.BARTENDER;
+		this.role = UserType.ROLE_BARTENDER;
 		this.firstTime="notvisited";
 	}
 	

@@ -2,6 +2,7 @@ package mrs.app.controller;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import mrs.app.DTOs.GuestDTO;
@@ -17,15 +18,21 @@ import mrs.app.domain.User;
 import mrs.app.domain.UserType;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.WorkingShift;
+import mrs.app.security.JwtTokenUtil;
 import mrs.app.service.UserService;
 import mrs.app.service.WorkingShiftService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,30 +49,16 @@ public class UserController {
 	private UserService userService;
 	
 	@Autowired
-	private HttpSession httpSession;
-	
-	@Autowired
 	private WorkingShiftService workingShiftService;
 	
-	@RequestMapping(
-			value = "/api/login",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> login(@RequestBody User user) {
-		logger.info("> login");
-		System.out.println(user.getEmail());
-		User foundUser = userService.login(user.getEmail(), user.getPassword());
-		
-		if (foundUser == null) {
-			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-		}
-		logger.info("< login");
-		System.out.println(foundUser.getEmail());
-		httpSession.setAttribute("user", foundUser);
-		return new ResponseEntity<User>(foundUser, HttpStatus.OK);
-	}
+	@Autowired
+    private JwtTokenUtil jwtTokenUtil;
 	
+	@Value("${jwt.header}")
+    private String tokenHeader;
+	
+	@Autowired
+    private UserDetailsService userDetailsService;
 	
 	@RequestMapping(
 			value = "/api/guestRegistration",
@@ -73,19 +66,14 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
-	public ResponseEntity<User> registerGuest(
-			@RequestBody Guest user) throws Exception {
+	public ResponseEntity<User> registerGuest(@RequestBody Guest user) throws Exception {
 		logger.info("> register guest");
-		try{
-			Guest savedUser = (Guest) userService.create(user);
-			httpSession.setAttribute("user", savedUser);
-			logger.info("< register guest");
-			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
-		}
-		catch(MySQLIntegrityConstraintViolationException e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		user.setPassword(encoded);
+		Guest savedUser = (Guest) userService.create(user);
+		logger.info("< register guest");
+		return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(
@@ -93,14 +81,14 @@ public class UserController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('SYSTEM_MANAGER')")
 	public ResponseEntity<User> registerSysManager(
 			@RequestBody SystemManager user) throws Exception {
 		logger.info("> register sistem manager");
-		User current = (User) httpSession.getAttribute("user");
-		if (current == null || current.getClass() != SystemManager.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
 		try{
+			PasswordEncoder enc = new BCryptPasswordEncoder();
+			String encoded = enc.encode(user.getPassword());
+			user.setPassword(encoded);
 			SystemManager savedUser = (SystemManager) userService.create(user);
 			logger.info("< register sistem manager");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
@@ -116,16 +104,14 @@ public class UserController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
 	public ResponseEntity<User> registerBidder(
 			@RequestBody Bidder user) throws Exception {
 		logger.info("> register bidder");
-		User current = (User) httpSession.getAttribute("user");
-		
-		if (current == null || current.getClass() != RestaurantManager.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
 		try{
+			PasswordEncoder enc = new BCryptPasswordEncoder();
+			String encoded = enc.encode(user.getPassword());
+			user.setPassword(encoded);
 			Bidder savedUser = (Bidder) userService.create(user);
 			logger.info("< register bidder");
 			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
@@ -141,23 +127,17 @@ public class UserController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('SYSTEM_MANAGER')")
 	public ResponseEntity<User> registerRestManager(
 			@RequestBody RestaurantManager user) throws Exception {
 		logger.info("> register restaurant manager");
-		User current = (User) httpSession.getAttribute("user");
-		if (current == null || current.getClass() != SystemManager.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		try{
-			user.setRole(UserType.RESTAURANT_MANAGER);
-			RestaurantManager savedUser = (RestaurantManager) userService.create(user);
-			logger.info("< register restaurant manager");
-			return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
-		}
-		catch(MySQLIntegrityConstraintViolationException e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		user.setPassword(encoded);
+		RestaurantManager savedUser = (RestaurantManager) userService.create(user);
+		logger.info("< register restaurant manager");
+		return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
+
 	}
 
 	@RequestMapping(
@@ -166,14 +146,15 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> changePass(
-			@RequestBody User user) throws Exception {
+			@RequestBody User user, HttpServletRequest request) throws Exception {
 		logger.info("> change password");
-		User current = (User) httpSession.getAttribute("user");
-		if (current == null){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		current.setPassword(user.getPassword());
-		User changedUser = (User) userService.change(current);
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+        PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		saved.setPassword(encoded);
+		User changedUser = (User) userService.change(saved);
 		logger.info("< change password");
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
 		
@@ -185,15 +166,13 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> changePersonalData(
-			@RequestBody User user) throws Exception {
+			@RequestBody User user, HttpServletRequest request) throws Exception {
 		logger.info("> change personal data");
-		User current = (User) httpSession.getAttribute("user");
-		if (current == null){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		user.setId(current.getId());
-		user.setPassword(current.getPassword());
-		user.setRepeatedPassword(current.getRepeatedPassword());
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+		user.setId(saved.getId());
+		user.setPassword(saved.getPassword());
 		User changedUser = (User) userService.changeData(user);
 		logger.info("< change personal data");
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
@@ -204,16 +183,14 @@ public class UserController {
 			value = "/api/getUser",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> getUser() {
-		logger.info("> getUser");
-		User sessionUser = (User) httpSession.getAttribute("user");
-		User user=(User) userService.getUser(sessionUser);
-		logger.info("< getUser");
-		return new ResponseEntity<User>(user,
-				HttpStatus.OK);
+	public ResponseEntity<User> getUser(HttpServletRequest request) {
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+        return new ResponseEntity<User>(saved, HttpStatus.OK);
 	}
 	
-	@RequestMapping(
+/*	@RequestMapping(
 			value = "/api/getUserRepresentation",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -225,21 +202,19 @@ public class UserController {
 		logger.info("<  get user representation");
 		return new ResponseEntity<GuestDTO>(retval,
 				HttpStatus.OK);
-	}
+	}*/
 	
-	@RequestMapping(
+	/*@RequestMapping(
 			value = "/api/addFriend",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<User> addFriend(
 			@RequestBody Guest friend) throws Exception {
 		logger.info("> add friends");
-		Guest current = (Guest) httpSession.getAttribute("user");
+		//Guest current = (Guest) httpSession.getAttribute("user");
 		logger.info("< add friends");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
 		if (userService.addFriend(current, friend)){
 			return new ResponseEntity<User>(current,HttpStatus.CREATED);
 		}
@@ -247,12 +222,13 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
-	
-	@RequestMapping(
+	*/
+	/*@RequestMapping(
 			value = "/api/acceptFriend",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<User> acceptFriend(
 			@RequestBody Guest friend) throws Exception {
 		logger.info("> add friends");
@@ -274,6 +250,7 @@ public class UserController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<User> unfriend(
 			@RequestBody Guest friend) throws Exception {
 		System.out.println(friend.toString());
@@ -307,30 +284,30 @@ public class UserController {
 		Collection<Guest> friends = userService.getFriends(current);
 		return new ResponseEntity<Collection<Guest>>(friends, HttpStatus.OK);
 	}
+	*/
 	
 	@RequestMapping(
 			value = "/registerBartender",
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
 	public ResponseEntity<Bartender> registerEmployee(
-			@RequestBody Bartender user) throws Exception {
+			@RequestBody Bartender user, HttpServletRequest request) throws Exception {
 		logger.info("> register bartender");
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if (current == null){
-				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			}
-			user.setRestaurant(current.getRestaurant());
-			Bartender savedUser = (Bartender) userService.create(user);
-			logger.info("< register Bartender");
-			return new ResponseEntity<Bartender>(savedUser, HttpStatus.CREATED);
-			
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		user.setRestaurant(saved.getRestaurant());
+		
+		PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		saved.setPassword(encoded);
+		
+		Bartender savedUser = (Bartender) userService.create(user);
+		logger.info("< register Bartender");
+		return new ResponseEntity<Bartender>(savedUser, HttpStatus.CREATED);
 	}
 	
 	
@@ -339,24 +316,23 @@ public class UserController {
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
 	public ResponseEntity<Waiter> registerWaiter(
-			@RequestBody Waiter user) throws Exception {
+			@RequestBody Waiter user, HttpServletRequest request) throws Exception {
 		logger.info("> register waiter");
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if (current == null){
-				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			}
-			user.setRestaurant(current.getRestaurant());
-			Waiter savedUser = (Waiter) userService.create(user);
-			logger.info("< register waiter");
-			return new ResponseEntity<Waiter>(savedUser, HttpStatus.CREATED);
-			
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		user.setRestaurant(saved.getRestaurant());
+		
+		PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		saved.setPassword(encoded);
+		
+		Waiter savedUser = (Waiter) userService.create(user);
+		logger.info("< register waiter");
+		return new ResponseEntity<Waiter>(savedUser, HttpStatus.CREATED);
 	}
 	
 	
@@ -365,24 +341,21 @@ public class UserController {
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Chef> registerChef(
-			@RequestBody Chef user) throws Exception {
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Chef> registerChef(@RequestBody Chef user, HttpServletRequest request) throws Exception {
 		logger.info("> register chef");
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if (current == null){
-				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			}
-			user.setRestaurant(current.getRestaurant());
-			Chef savedUser = (Chef) userService.create(user);
-			logger.info("< register chef");
-			return new ResponseEntity<Chef>(savedUser, HttpStatus.CREATED);
-			
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		user.setRestaurant(saved.getRestaurant());
+		
+		PasswordEncoder enc = new BCryptPasswordEncoder();
+		String encoded = enc.encode(user.getPassword());
+		saved.setPassword(encoded);
+		Chef savedUser = (Chef) userService.create(user);
+		logger.info("< register chef");
+		return new ResponseEntity<Chef>(savedUser, HttpStatus.CREATED);
+		
 	}
 	
 	
@@ -390,38 +363,30 @@ public class UserController {
 			value = "/getEmployees",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Employee>> getEmployees(){
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if(current != null){
-				Collection<Employee> employees = userService.findEmployees(current.getRestaurant());
-				return new ResponseEntity<Collection<Employee>>(employees, HttpStatus.OK);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Collection<Employee>>(HttpStatus.UNAUTHORIZED);
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Collection<Employee>> getEmployees(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		Collection<Employee> employees = userService.findEmployees(saved.getRestaurant());
+		return new ResponseEntity<Collection<Employee>>(employees, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(
 			value = "/addWorkingShift",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WorkingShift> addWorkingShift(@RequestBody WorkingShift shift){
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if(current != null){
-				Employee employee = (Employee) userService.findEmployee(shift.getEmployee().getEmail());
-				shift.setRestaurant(current.getRestaurant());
-				shift.setEmployee(employee);
-				WorkingShift saved = workingShiftService.create(shift);
-				return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<WorkingShift> addWorkingShift(@RequestBody WorkingShift shift, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		Employee employee = (Employee) userService.findEmployee(shift.getEmployee().getEmail());
+		shift.setRestaurant(saved.getRestaurant());
+		shift.setEmployee(employee);
+		WorkingShift savedShift = workingShiftService.create(shift);
+		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -429,16 +394,11 @@ public class UserController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<WorkingShift>> getWorkingShifts(@RequestBody WorkingShiftDTO shift){
-		try{
-			RestaurantManager current = (RestaurantManager) httpSession.getAttribute("user");
-			if(current != null){
-				Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
-				return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	public ResponseEntity<Collection<WorkingShift>> getWorkingShifts(@RequestBody WorkingShiftDTO shift, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager current = (RestaurantManager) userService.findByUsername(username);
+		Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
+		return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
 	}
 }

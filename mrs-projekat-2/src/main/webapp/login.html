@@ -6,6 +6,7 @@
   	<script src="js/jquery.min.js"></script>
   	<script src="js/bootstrap.min.js"></script>
   	<script src="js/functions.js"></script>
+  	<script src="js/proba.js"></script>
   	<link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans:600'>
  	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,8 +21,8 @@
 		<div class="login-form">
 			<form class="sign-in-htm" id = "login">
 				<div class="group">
-					<label for="email" class="label">E-mail</label>
-					<input id="text" type="text" class="input" name="email">
+					<label for="username" class="label">E-mail</label>
+					<input id="text" type="text" class="input" name="username">
 				</div>
 				<div class="group">
 					<label for="password" class="label">Password</label>
@@ -30,7 +31,7 @@
 				
 				<div class="group">
 					<p id ="login-error"></p>
-					<input type="button" class="button" style="color:#fff" value="Log In" onclick="login()">
+					<input type="button" class="button" style="color:#fff" value="Log In" onclick="doLogin()">
 				</div>
 				<div class="hr">
 					<div class="foot-lnk">
