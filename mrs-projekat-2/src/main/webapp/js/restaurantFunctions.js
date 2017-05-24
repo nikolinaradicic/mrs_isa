@@ -160,9 +160,9 @@ function addDrink(){
 				$("#modalDrink").modal('toggle');
 				$("#drinks_inf").prepend($("<div class='col-md-12'>")
 									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(item.name))
-									.append($("<h6>").text(item.description))
-									.append($("<h6>").text(item.price))
+									.append($("<h4>").text(data.responseJSON.name))
+									.append($("<h6>").text(data.responseJSON.description))
+									.append($("<h6>").text(data.responseJSON.price))
 									)
 								);
 			}
@@ -197,9 +197,9 @@ function addMeal(){
 				$("#modalMeal").modal('toggle');
 								$("#meal_inf").prepend($("<div class='col-md-12'>")
 									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(item.name))
-									.append($("<h6>").text(item.description))
-									.append($("<h6>").text(item.price))
+									.append($("<h4>").text(data.responseJSON.name))
+									.append($("<h6>").text(data.responseJSON.description))
+									.append($("<h6>").text(data.responseJSON.price))
 									)
 								);
 			}
@@ -228,6 +228,7 @@ function changeInformation(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
+				$("#modalInformation").modal('toggle');
 				location.href = "#";	
 		}
 	});

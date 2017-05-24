@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
 	// convert all a/href to a#href
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
@@ -43,7 +42,7 @@ $(document).ready(function() {
 			showSeatingChart();
 		}
 		else if(url == "calendarView"){
-			showCalendar();
+			showCalendarView();
 		}
 		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
 			showAddManager();
@@ -52,12 +51,24 @@ $(document).ready(function() {
 			showConfirmEmail();
 		}
 		else if(url=="friends"){
-			showFriends();
-			
+			showFriends();			
 		}
 		else if(url =="addFriend"){
 			showaddFriend();
 		}
+		else if(url == "seatingChartWaiter"){
+ 			showSeatingChartWaiter();
+ 		}
+ 		else if(url == "calendar"){
+ 			showCalendar();
+ 		}
+ 		else if(url == "personalData"){
+ 			console.log("usao");
+ 			showPersonalData();
+ 		}
+ 		else if(url == "restaurantSelect"){
+ 			showRestaurants();
+ 		}
 		// add more routes
 	});
 	
@@ -65,10 +76,26 @@ $(document).ready(function() {
 	if(window.location.hash==''){
 		showMainView(); // home page, show the default view
 	}else{
-		showMainView();
+		//showMainView();
+		console.log("usao");
 		$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 	}
 });
+
+function showRestaurants(){
+	console.log("ja");
+	$("#app-div").html("");
+	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
+		console.log("usap");
+		getRestaurantsSelect();
+	});
+}
+
+function showPersonalData(){
+	$("#app-div").html("");
+	$("#app-div").load("personalData.html #data", function(){
+		displayData();	});
+}
 
 function showSeatingChart(){
 	$("#app-div").html("");
@@ -86,13 +113,21 @@ function showMainView(){
 	}
 }
 
-function showCalendar(){
+function showCalendarView(){
 	$("#app-div").html("");
 	$("#modals-div").load("calendarView.html #modals");
-	$('#app-div').load('calendarView.html #calendar-div', function (){
+	$('#app-div').load('calendarView.html #calendar', function (){
 		setupCalendar();
 	});
 }
+
+function showCalendar(){
+ 	$("#app-div").html("");
+ 	$('#app-div').load('calendar.html #calendar', function (){
+ 		setupCalendarView();
+ 	});
+ }
+ 
 
 function showAddSysMan(){
 	$("#app-div").html("");

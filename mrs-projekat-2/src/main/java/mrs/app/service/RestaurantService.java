@@ -21,4 +21,6 @@ public interface RestaurantService {
 	int changeInformation(Restaurant restaurant);
 	
 	List<Restaurant> findAllSort();
+	
+	Restaurant findOne(Long id);
 }

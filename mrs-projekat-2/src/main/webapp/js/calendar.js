@@ -3,7 +3,6 @@ var end_date;
 
 function setupCalendarView(){
 						$(document).ready(function() {
-							$('#calendar1 > div').remove();
 				  			$.ajax({
 				      			url: "/getWorkingShiftsForEmployee",
 				    			method: "GET",

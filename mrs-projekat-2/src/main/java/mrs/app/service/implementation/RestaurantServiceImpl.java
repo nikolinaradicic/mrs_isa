@@ -100,5 +100,12 @@ public class RestaurantServiceImpl implements RestaurantService{
 		// TODO Auto-generated method stub
 		return restaurantRepository.findAllByOrderByNameAsc();
 	}
+	
+	@Override
+	 	public Restaurant findOne(Long id) {
+	 		// TODO Auto-generated method stub
+	 		
+	 		return restaurantRepository.findOne(id);
+	 	}
 
 }
