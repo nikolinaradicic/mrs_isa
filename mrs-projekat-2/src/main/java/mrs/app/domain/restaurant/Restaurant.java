@@ -43,11 +43,15 @@ public class Restaurant {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
-	private Set<WorkingShift> shifts;
+	private Set<WorkingShift> workingShifts;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Segment> segments;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+	private Set<Shift> shifts;
 
 	public String getName() {
 		return name;
