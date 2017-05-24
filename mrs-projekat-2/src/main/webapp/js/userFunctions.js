@@ -21,6 +21,8 @@ function getUser(callback){
 					$("#friend-manage").hide();
 					$("#poruke").remove();
 					$("#friends-section1").hide();
+					$("#calendar").hide();
+					$("#chart").hide();
 					getRestaurants();
 				}
 				else if(data.responseJSON.role == "ROLE_RESTAURANT_MANAGER"){
@@ -29,6 +31,8 @@ function getUser(callback){
 					$("#poruke").remove();
 					$("#manage").hide();
 					$("#friends-section1").hide();
+					$("#calendar").hide();
+					$("#chart").hide();
 					displayRestaurant(data.responseJSON.restaurant);
 				}
 				else if(data.responseJSON.role =="ROLE_BIDDER"){
@@ -37,6 +41,8 @@ function getUser(callback){
 					$("#friend-manage").hide();
 					$("#poruke").remove();
 					$("#manage").hide();
+					$("#calendar").hide();
+					$("#chart").hide();
 				}
 				else if(data.responseJSON.role == "ROLE_BARTENDER"){
 					$("#restaurant-manage").hide();
@@ -44,8 +50,17 @@ function getUser(callback){
 					$("#friend-manage").hide();
 					$("#poruke").remove();
 					$("#manage").hide();
+					$("#chart").hide();
 				}
 				else if(data.responseJSON.role == "ROLE_CHEF"){
+					$("#restaurant-manage").hide();
+					$("#employee-manage").hide();
+					$("#friend-manage").hide();
+					$("#poruke").remove();
+					$("#manage").hide();
+					$("#chart").hide();
+				}
+				else if(data.responseJSON.role=="ROLE_WAITER"){
 					$("#restaurant-manage").hide();
 					$("#employee-manage").hide();
 					$("#friend-manage").hide();
@@ -70,26 +85,28 @@ function displayData(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#app-div").html("");
-				$("#app-div").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
-								.append($("<div class='content-panel pn'>")
-									.append($("<div id='spotify'>")
-										.append($("<div class='col-xs-4 col-xs-offset-8'>"))
-												.append($("<div class='sp-title'>")	
-													.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
-														.css('padding-left','20px')
+				$("#persData")
+								.append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+									.append($("<div class='content-panel pn'>")
+										.append($("<div id='spotify'>")
+											.append($("<div class='col-xs-4 col-xs-offset-8'>"))
+													.append($("<div class='sp-title'>")	
 													)
-													.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
-														.css('padding-left','20px')
-													)
-													.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
-														.css('padding-left','20px')
-													)
-												)
-										)
-												
-								)
-							);
+											).append($("<br>"))
+											.append($("<br>"))
+											.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
+															.css('padding-left','20px')
+														)
+														.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
+															.css('padding-left','20px')
+														)
+														.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
+															.css('padding-left','20px')
+														)
+													
+									)
+								);
+							
 			}
 			else{
 				console.log(data);

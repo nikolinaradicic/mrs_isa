@@ -40,10 +40,23 @@ $(document).ready(function() {
 			showSeatingChart();
 		}
 		else if(url == "calendarView"){
-			showCalendar();
+			showCalendarView();
 		}
 		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
 			showAddManager();
+		}
+		else if(url == "seatingChartWaiter"){
+			showSeatingChartWaiter();
+		}
+		else if(url == "calendar"){
+			showCalendar();
+		}
+		else if(url == "personalData"){
+			console.log("usao");
+			showPersonalData();
+		}
+		else if(url == "restaurantSelect"){
+			showRestaurants();
 		}
 		// add more routes
 	});
@@ -57,11 +70,34 @@ $(document).ready(function() {
 	}
 });
 
+function showRestaurants(){
+	console.log("ja");
+	$("#app-div").html("");
+	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
+		console.log("usap");
+		getRestaurantsSelect();
+	});
+}
+
+function showPersonalData(){
+	$("#app-div").html("");
+	$("#app-div").load("personalData.html #data", function(){
+		displayData();
+	});
+}
+
 function showSeatingChart(){
 	$("#app-div").html("");
 	$("#modals-div").load("seatingChart.html #modals");
 	$("#app-div").load("seatingChart.html #chart", function(){
 		setupChart();
+	});
+	
+}
+function showSeatingChartWaiter(){
+	$("#app-div").html("");
+	$("#app-div").load("seatingChartWaiter.html #chart", function(){
+		setupChartWaiter();
 	});
 	
 }
@@ -71,11 +107,18 @@ function showMainView(){
 	getUser();
 }
 
-function showCalendar(){
+function showCalendarView(){
 	$("#app-div").html("");
 	$("#modals-div").load("calendarView.html #modals");
 	$('#app-div').load('calendarView.html #calendar-div', function (){
 		setupCalendar();
+	});
+}
+
+function showCalendar(){
+	$("#app-div").html("");
+	$('#app-div').load('calendar.html #calendar1', function (){
+		setupCalendarView();
 	});
 }
 

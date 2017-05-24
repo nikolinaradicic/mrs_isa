@@ -18,4 +18,6 @@ public interface RestaurantService {
 	Meal addMeal(Meal meal) throws Exception;
 
 	int changeInformation(Restaurant restaurant);
+	
+	Restaurant findOne(Long id);
 }

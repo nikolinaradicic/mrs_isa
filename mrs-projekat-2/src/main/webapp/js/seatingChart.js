@@ -47,6 +47,16 @@ function setupChart(){
 	fillSegmentBox();
 }
 
+function setupChartWaiter(){
+	var canvas = new fabric.CanvasEx("canvas");
+	document.getElementById('canvas').fabric = canvas;
+	canvas.setHeight(450);
+	canvas.setWidth(800);
+	canvas.selection = false;
+
+	fillSegmentBox();
+}
+
 
 function displaySegment(){
 	console.log("promjena selecta");
@@ -160,6 +170,15 @@ function showCanvas(segment){
 		if (segment.chart != ""  && segment.chart != null){
 			var json = JSON.parse(segment.chart);
 			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+			setTimeout(function(){
+				canvas.forEachObject(function(o) {
+					console.log("usao");
+  					o.selectable = false;
+  					o.lockMovementX=true;
+  					o.lockMovementY=true;
+  					o.hasControls = false;
+				});
+			},1000);
 		}
 	
 }
@@ -199,6 +218,12 @@ function changeCanvas(segment){
 	if (segment.chart != "" && segment.chart != null){
 		var json = JSON.parse(segment.chart);
 		canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+		canvas.forEachObject(function(o) {
+			console.log("usao");
+  			o.selectable = false;
+  			o.lockMovementX=true;
+  			o.lockMovementY=true;
+		});
 	}
 
 }

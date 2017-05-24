@@ -1,5 +1,32 @@
 var start_date;
 var end_date;
+
+function setupCalendarView(){
+						$(document).ready(function() {
+							$('#calendar1 > div').remove();
+				  			$.ajax({
+				      			url: "/getWorkingShiftsForEmployee",
+				    			method: "GET",
+				    			datatype: "json",
+				    			headers: createAuthorizationTokenHeader()
+				  				}).done(function(data) {
+				  
+					    			var events = [];
+					   		 		$.each(data, function(idx, e) {
+					    				console.log(e);
+					      				events.push({
+					        			start: e.date,
+					        			title: "  "+e.restaurant.name
+					      			});
+				    			});
+				    			$('#calendar1').show();
+				    			$('#calendar1').fullCalendar({
+				      				events: events
+				    			});
+				  			});
+						});
+}
+
 function setupCalendar(){
 	fillEmployeeBox();
 }

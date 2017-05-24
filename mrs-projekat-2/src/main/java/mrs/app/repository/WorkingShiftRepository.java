@@ -13,4 +13,7 @@ public interface WorkingShiftRepository extends JpaRepository<WorkingShift, Long
 
 	@Query("select w from WorkingShift w where w.restaurant = ?1 and w.date between ?2 and ?3")
 	Collection<WorkingShift> findShifts(Restaurant r, Date start, Date end);
+	
+	@Query("select w from WorkingShift w where w.restaurant = ?1")
+	Collection<WorkingShift> findShForRest(Restaurant r);
 }

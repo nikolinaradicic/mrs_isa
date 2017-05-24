@@ -126,6 +126,7 @@ function displayForPersData(callback){
 				$("#manage").hide();
 				$("#calendar").hide();
 				checkRequests(getRestaurants1);
+				$("#chart").hide();
 			}
 			else if(data.responseJSON.role == "SYSTEM_MANAGER"){
 				$("#employee-manage").hide();
@@ -133,6 +134,7 @@ function displayForPersData(callback){
 				$("#poruke").remove();	
 				$("restaurant-info").remove();
 				getRestaurants();
+				$("#chart").hide();
 			}
 			else if(data.responseJSON.role == "RESTAURANT_MANAGER"){
 				$("#restaurant-manage").hide();
@@ -140,6 +142,7 @@ function displayForPersData(callback){
 				$("#poruke").remove();
 				$("#manage").hide();
 				$("#calendar").hide();
+				$("#chart").hide();
 				displayRestaurant(data.responseJSON.restaurant);
 			}
 			else if(data.responseJSON.role=="BIDDER"){
@@ -148,6 +151,7 @@ function displayForPersData(callback){
 				$("#friend-manage").hide();
 				$("#poruke").remove();
 				$("#manage").hide();
+				$("#chart").hide();
 			}
 			else if(data.responseJSON.role=="BARTENDER"){
 				$("#restaurant-manage").hide();
@@ -155,8 +159,16 @@ function displayForPersData(callback){
 				$("#friend-manage").hide();
 				$("#poruke").remove();
 				$("#manage").hide();
+				$("#chart").hide();
 			}
 			else if(data.responseJSON.role=="CHEF"){
+				$("#restaurant-manage").hide();
+				$("#employee-manage").hide();
+				$("#friend-manage").hide();
+				$("#poruke").remove();
+				$("#manage").hide();
+				$("#chart").hide();
+			}else if(data.responseJSON.role=="WAITER"){
 				$("#restaurant-manage").hide();
 				$("#employee-manage").hide();
 				$("#friend-manage").hide();

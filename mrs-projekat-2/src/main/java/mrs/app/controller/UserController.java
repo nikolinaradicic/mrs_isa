@@ -303,7 +303,7 @@ public class UserController {
 		
 		PasswordEncoder enc = new BCryptPasswordEncoder();
 		String encoded = enc.encode(user.getPassword());
-		saved.setPassword(encoded);
+		user.setPassword(encoded);
 		
 		Bartender savedUser = (Bartender) userService.create(user);
 		logger.info("< register Bartender");
@@ -328,7 +328,7 @@ public class UserController {
 		
 		PasswordEncoder enc = new BCryptPasswordEncoder();
 		String encoded = enc.encode(user.getPassword());
-		saved.setPassword(encoded);
+		user.setPassword(encoded);
 		
 		Waiter savedUser = (Waiter) userService.create(user);
 		logger.info("< register waiter");
@@ -351,7 +351,7 @@ public class UserController {
 		
 		PasswordEncoder enc = new BCryptPasswordEncoder();
 		String encoded = enc.encode(user.getPassword());
-		saved.setPassword(encoded);
+		user.setPassword(encoded);
 		Chef savedUser = (Chef) userService.create(user);
 		logger.info("< register chef");
 		return new ResponseEntity<Chef>(savedUser, HttpStatus.CREATED);
@@ -401,4 +401,50 @@ public class UserController {
 		Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
 		return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
 	}
+	
+	@RequestMapping(
+			value = "/getWorkingShiftsForEmployee",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<WorkingShift>> getWorkingShiftsWaiter(HttpServletRequest request){
+		logger.info("> get shifts for employee");
+		String token=request.getHeader(tokenHeader);
+		String username=jwtTokenUtil.getUsernameFromToken(token);
+		Employee current=(Employee)userService.findByUsername(username);
+		try{
+			if(current != null){
+				
+				Collection<WorkingShift> saved = workingShiftService.findShiftsForEmployee(current.getRestaurant());
+				Collection<WorkingShift> saved1 = workingShiftService.findShiftsForEmployee(current.getRestaurant());
+				if(current.getClass().equals(Waiter.class)){
+					for(WorkingShift ws:saved){
+						if(!ws.getEmployee().getClass().equals(Waiter.class)){	
+							saved1.remove(ws);
+						}
+					}
+				}else if(current.getClass().equals(Bartender.class)){
+					for(WorkingShift ws:saved){
+						if(!ws.getEmployee().getClass().equals(Bartender.class)){	
+							saved1.remove(ws);
+						}
+					}	
+				}else if(current.getClass().equals(Chef.class)){
+					for(WorkingShift ws:saved){
+						if(!ws.getEmployee().getClass().equals(Chef.class)){	
+							saved1.remove(ws);
+						}
+					}
+				}else{
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("< get shifts for certain employee");
+				return new ResponseEntity<Collection<WorkingShift>>(saved1, HttpStatus.OK);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	
 }

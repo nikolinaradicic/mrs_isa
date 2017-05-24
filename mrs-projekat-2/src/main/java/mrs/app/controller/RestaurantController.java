@@ -2,9 +2,13 @@ package mrs.app.controller;
 
 import java.util.Collection;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import mrs.app.DTOs.TableDTO;
 import mrs.app.domain.RestaurantManager;
+import mrs.app.domain.User;
+import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
@@ -171,15 +175,24 @@ public class RestaurantController {
 			value = "/getSegment",
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('WAITER')")
 	public ResponseEntity<Segment> getSegment(@RequestBody String segmentName, HttpServletRequest request) throws Exception {
 		logger.info("> get segment");
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
-		Segment segment  = segmentService.findSegment(segmentName, saved.getRestaurant());
-		logger.info("< get segment");
-		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
+        User saved =  userService.findByUsername(username);
+        if(saved.getClass().equals(RestaurantManager.class)){
+        	RestaurantManager manager=(RestaurantManager)saved;
+        	Segment segment  = segmentService.findSegment(segmentName, manager.getRestaurant());
+        	logger.info("< get segment");
+    		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
+        }else{
+        	Waiter waiter=(Waiter)saved;
+        	Segment segment  = segmentService.findSegment(segmentName, waiter.getRestaurant());
+        	logger.info("< get segment");
+    		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
+        }
+		
 		
 	}
 	
@@ -214,6 +227,35 @@ public class RestaurantController {
 		RestaurantTable savedTable = tableService.findByNameAndSegment(table.getName(), segment);
 		logger.info("< get table");
 		return new ResponseEntity<RestaurantTable>(savedTable, HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(
+			value="/getDrinks",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST')")
+	public ResponseEntity<Collection<Drink>> getDrinkList(HttpServletRequest request,@RequestBody Restaurant r){
+		logger.info("> get drink list");
+        Restaurant restaurant= restaurantService.findOne(r.getId());
+        
+		logger.info("< get drink list");
+		return new ResponseEntity<Collection<Drink>>(restaurant.getDrinkList(), HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(
+			value="/getMeals",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST')")
+	public ResponseEntity<Collection<Meal>> getMealList(HttpServletRequest request,@RequestBody Restaurant r){
+		logger.info("> get meal list");
+        Restaurant restaurant= restaurantService.findOne(r.getId());     
+		logger.info("< get meal list");
+		return new ResponseEntity<Collection<Meal>>(restaurant.getMenu(), HttpStatus.OK);
 
 	}
 	

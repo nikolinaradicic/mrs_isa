@@ -29,5 +29,11 @@ public class WorkingShiftServiceImpl implements WorkingShiftService{
 		// TODO Auto-generated method stub
 		return wsRepository.findShifts(restaurant, start, end);
 	}
+	
+	@Override
+	public Collection<WorkingShift> findShiftsForEmployee(Restaurant restaurant) {
+		Collection<WorkingShift> shifts=wsRepository.findShForRest(restaurant);
+		return shifts;
+	}
 
 }
