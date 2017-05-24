@@ -2,6 +2,9 @@ package mrs.app.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -236,12 +239,12 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<Collection<GuestDTO>> getGuests(
-			@RequestBody String email, HttpServletRequest request) throws Exception {
+			@RequestBody String name, HttpServletRequest request) throws Exception {
 		logger.info("> getGuests");
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Guest saved = (Guest) userService.findByUsername(username);
-        Collection<Guest> guests=userService.getGuests(UserType.ROLE_GUEST, "%"+email+"%");
+        Collection<Guest> guests=userService.getGuests(UserType.ROLE_GUEST, "%"+name+"%");
         ArrayList<GuestDTO> retVal=new ArrayList<GuestDTO>();
         for(Guest g: guests){
         	if(!saved.getFriends().contains(g)){
@@ -251,6 +254,65 @@ public class UserController {
 		logger.info("< getGuests");
 		return new ResponseEntity<Collection<GuestDTO>>(retVal,HttpStatus.OK);
 		
+	}
+	@RequestMapping(
+			value = "/sortFriendsName",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<List<GuestDTO>> sortFriends(HttpServletRequest request) {
+		logger.info("> sort Friends name");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
+        ArrayList<GuestDTO> retVal=new ArrayList<>();
+        Collections.sort(saved.getFriends(), new Comparator<Guest>(){
+
+			@Override
+			public int compare(Guest g1, Guest g2) {
+				// TODO Auto-generated method stub
+				return g1.getName().compareTo(g2.getName());
+			}
+				
+			
+        	
+        });
+        for(Guest g:saved.getFriends()){
+        	retVal.add(new GuestDTO(g));
+        }
+		logger.info("< sort friends name");
+		return new ResponseEntity<List<GuestDTO>>(retVal,
+				HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/sortFriendsLastName",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<List<GuestDTO>> sortFriendsLastName(HttpServletRequest request) {
+		logger.info("> sort Friends lastname");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
+        ArrayList<GuestDTO> retVal=new ArrayList<>();
+        Collections.sort(saved.getFriends(), new Comparator<Guest>(){
+
+			@Override
+			public int compare(Guest g1, Guest g2) {
+				// TODO Auto-generated method stub
+				return g1.getLastname().compareTo(g2.getLastname());
+			}
+				
+			
+        	
+        });
+        for(Guest g:saved.getFriends()){
+        	retVal.add(new GuestDTO(g));
+        }
+		logger.info("< sort friends lastname");
+		return new ResponseEntity<List<GuestDTO>>(retVal,
+				HttpStatus.OK);
 	}
 	
 	@RequestMapping(

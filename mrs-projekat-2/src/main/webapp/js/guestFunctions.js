@@ -50,13 +50,13 @@ function getGuests(value){
 				$.each(data.responseJSON, function(i, item){
 					$("#friend-body").append($("<tr>")
 											.append($("<td>")
+												.text(item.email)
+											)
+											.append($("<td>")
 												.text(item.name)
 											)
 											.append($("<td>")
 												.text(item.lastname)
-											)
-											.append($("<td>")
-												.text(item.email)
 											)
 											.append($("<td>")
 												.append($("<button class='button'>Add</button>")
@@ -172,4 +172,84 @@ function unfriend(id){
 			}
 		}
 	});
+}
+
+function sortFriendsName(){
+	$.ajax({
+		url: "/sortFriendsName",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+				displayFriendsName(data.responseJSON);	
+		}
+	});
+}
+
+function displayFriendsName(friends){
+	$("#friendTableBody").empty();
+	$.each(friends, function(i, item){
+		$("#friendTableBody").append($("<tr>")
+								.append($("<td>")
+									.text(item.name)
+								)
+								.append($("<td>")
+									.text(item.lastname)
+								)
+								.append($("<td>")
+									.text(item.email)
+								)
+								.append($("<td>")
+									.append($("<input type='button' class='button' value='Unfriend'>")
+											.click(function(){
+											 unfriend(item.email);
+											})
+											.append($("<i class='fa fa-user-times'>"))
+									
+									)
+								));
+	});
+	
+	
+}
+
+function sortFriendsLastName(){
+	$.ajax({
+		url: "/sortFriendsName",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+				displayFriendsLastName(data.responseJSON);	
+		}
+	});
+}
+
+function displayFriendsLastName(friends){3
+	$("#friendTableBody").empty();
+	$.each(friends, function(i, item){
+		$("#friendTableBody").append($("<tr>")
+								.append($("<td>")
+									.text(item.name)
+								)
+								.append($("<td>")
+									.text(item.lastname)
+								)
+								.append($("<td>")
+									.text(item.email)
+								)
+								.append($("<td>")
+									.append($("<input type='button' class='button' value='Unfriend'>")
+											.click(function(){
+											 unfriend(item.email);
+											})
+											.append($("<i class='fa fa-user-times'>"))
+									
+									)
+								));
+	});
+	
+	
 }

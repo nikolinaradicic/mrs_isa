@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User,Long>{
 	
 	public <S extends User> S findByEmail(String email);
 	
-	@Query("select u from User u where u.role=?1 and u.email like ?2")
-	public <S extends User> List<S> findGuests(UserType type, String email);
+	@Query("select u from User u where u.role=?1 and u.name like ?2")
+	public <S extends User> List<S> findGuests(UserType type, String name);
 }

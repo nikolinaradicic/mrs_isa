@@ -15,7 +15,7 @@ public class GuestDTO {
 	
 	public GuestDTO(Guest guest){
 		this.setEmail(guest.getEmail());
-		this.setName(guest.getEmail());
+		this.setName(guest.getName());
 		this.setLastname(guest.getLastname());
 		friends = new ArrayList<String>();
 		requests = new ArrayList<String>();
