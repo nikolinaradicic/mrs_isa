@@ -130,8 +130,7 @@ public class RestaurantController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<Meal> addMeal(
-			@RequestBody Meal meal) throws Exception {
+	public ResponseEntity<Meal> addMeal(@RequestBody Meal meal) throws Exception {
 		logger.info("> add meal");
 		Meal savedMeal = restaurantService.addMeal(meal);
 		logger.info("< add meal");
@@ -228,6 +227,16 @@ public class RestaurantController {
 		logger.info("< get table");
 		return new ResponseEntity<RestaurantTable>(savedTable, HttpStatus.OK);
 
+	}
+	@RequestMapping(
+			value = "/sortRestaurants",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Restaurant>> sortRestaurants() {
+		logger.info("> sort restaurants");
+		List<Restaurant> restaurants = restaurantService.findAllSort();
+		logger.info("< get restaurants");
+		return new ResponseEntity<List<Restaurant>>(restaurants,HttpStatus.OK);
 	}
 	
 	@RequestMapping(

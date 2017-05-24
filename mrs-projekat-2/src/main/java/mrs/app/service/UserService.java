@@ -2,9 +2,11 @@ package mrs.app.service;
 
 import java.util.Collection;
 
+import mrs.app.DTOs.GuestDTO;
 import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
+import mrs.app.domain.UserType;
 import mrs.app.domain.restaurant.Restaurant;
 
 public interface UserService {
@@ -21,7 +23,7 @@ public interface UserService {
 	
 	User changeData(User user);
 	
-	boolean addFriend(Guest user, Guest friend);
+	boolean addFriend(Guest user, GuestDTO friend);
 
 	boolean acceptFriend(Guest current, Guest friend);
 
@@ -34,4 +36,6 @@ public interface UserService {
 	Collection<Employee> findEmployees(Restaurant restaurant);
 
 	User findByUsername(String username);
+	
+	Collection<Guest> getGuests(UserType type, String email);
 }

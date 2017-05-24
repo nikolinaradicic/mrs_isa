@@ -1,6 +1,7 @@
 package mrs.app.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
@@ -19,5 +20,5 @@ public interface RestaurantService {
 
 	int changeInformation(Restaurant restaurant);
 	
-	Restaurant findOne(Long id);
+	List<Restaurant> findAllSort();
 }

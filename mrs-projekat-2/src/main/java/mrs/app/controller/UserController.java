@@ -1,5 +1,6 @@
 package mrs.app.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @RestController
@@ -190,55 +192,104 @@ public class UserController {
         return new ResponseEntity<User>(saved, HttpStatus.OK);
 	}
 	
-/*	@RequestMapping(
+	@RequestMapping(
+			value = "/api/getFriends",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<Collection<GuestDTO>> getFriends(HttpServletRequest request) {
+		logger.info("> get user representation");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
+		ArrayList<GuestDTO> friendList=new ArrayList<GuestDTO>();
+		for(Guest g:saved.getFriends()){
+			GuestDTO guest=new GuestDTO(g);
+			friendList.add(guest);
+			
+			
+		}
+		logger.info("<  get user representation");
+		return new ResponseEntity<Collection<GuestDTO>>(friendList,
+				HttpStatus.OK);
+	}
+	
+	@RequestMapping(
 			value = "/api/getUserRepresentation",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GuestDTO> getUserRepresentation() {
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<GuestDTO> getUserRepresentation(HttpServletRequest request) {
 		logger.info("> get user representation");
-		User sessionUser = (User) httpSession.getAttribute("user");
-		Guest user = (Guest) userService.getUser(sessionUser);
-		GuestDTO retval = new GuestDTO(user);
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
+		GuestDTO dto = new GuestDTO(saved);
 		logger.info("<  get user representation");
-		return new ResponseEntity<GuestDTO>(retval,
+		return new ResponseEntity<GuestDTO>(dto,
 				HttpStatus.OK);
-	}*/
+	}
 	
-	/*@RequestMapping(
+	@RequestMapping(
+			value = "/getGuests",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<Collection<GuestDTO>> getGuests(
+			@RequestBody String email, HttpServletRequest request) throws Exception {
+		logger.info("> getGuests");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
+        Collection<Guest> guests=userService.getGuests(UserType.ROLE_GUEST, "%"+email+"%");
+        ArrayList<GuestDTO> retVal=new ArrayList<GuestDTO>();
+        for(Guest g: guests){
+        	if(!saved.getFriends().contains(g)){
+        		retVal.add(new GuestDTO(g));
+        	}
+        }
+		logger.info("< getGuests");
+		return new ResponseEntity<Collection<GuestDTO>>(retVal,HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(
 			value = "/api/addFriend",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('GUEST')")
-	public ResponseEntity<User> addFriend(
-			@RequestBody Guest friend) throws Exception {
+	public ResponseEntity<GuestDTO> addFriend(
+			@RequestBody GuestDTO friend, HttpServletRequest request) throws Exception {
 		logger.info("> add friends");
-		//Guest current = (Guest) httpSession.getAttribute("user");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
 		logger.info("< add friends");
-		if (userService.addFriend(current, friend)){
-			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		if (userService.addFriend(saved, friend)){
+			return new ResponseEntity<GuestDTO>(friend,HttpStatus.CREATED);
 		}
 		else{
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
-	*/
-	/*@RequestMapping(
+	
+	@RequestMapping(
 			value = "/api/acceptFriend",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<User> acceptFriend(
-			@RequestBody Guest friend) throws Exception {
+			@RequestBody Guest friend, HttpServletRequest request) throws Exception {
 		logger.info("> add friends");
-		Guest current = (Guest) httpSession.getAttribute("user");
+
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
 		logger.info("< add friends");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		if (userService.acceptFriend(current, friend)){
-			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+		if (userService.acceptFriend(saved, friend)){
+			return new ResponseEntity<User>(saved,HttpStatus.CREATED);
 		}
 		else{
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -252,39 +303,22 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<User> unfriend(
-			@RequestBody Guest friend) throws Exception {
+			@RequestBody Guest friend,HttpServletRequest request) throws Exception {
 		System.out.println(friend.toString());
 		logger.info("> unfriend");
-		Guest current = (Guest) httpSession.getAttribute("user");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Guest saved = (Guest) userService.findByUsername(username);
 		logger.info("< unfriend");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		if (userService.unfriend(current, friend)){
-			return new ResponseEntity<User>(current,HttpStatus.CREATED);
+
+		if (userService.unfriend(saved, friend)){
+			return new ResponseEntity<User>(saved,HttpStatus.OK);
 		}
 		else{
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
 
-	@RequestMapping(
-			value = "/getFriends",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Guest>> getFriends() throws Exception {
-		logger.info("> add friends");
-		Guest current = (Guest) httpSession.getAttribute("user");
-		logger.info("< add friends");
-		if (current == null || current.getClass()!= Guest.class){
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		
-		Collection<Guest> friends = userService.getFriends(current);
-		return new ResponseEntity<Collection<Guest>>(friends, HttpStatus.OK);
-	}
-	*/
 	
 	@RequestMapping(
 			value = "/registerBartender",

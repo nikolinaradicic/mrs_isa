@@ -14,7 +14,7 @@ function getUser(callback){
 					$("#employee-manage").hide();
 					$("#manage").hide();
 					
-					//checkRequests(getRestaurants1);
+					checkRequests(getRestaurants1);
 				}
 				else if(data.responseJSON.role == "ROLE_SYSTEM_MANAGER"){
 					$("#employee-manage").hide();
@@ -325,6 +325,36 @@ function addEmployee(){
 			else{
 				console.log(data);
 				$("#addEmployee-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+function register()
+{
+	var $form = $("#register-form");
+	var data = getFormData($form);
+	if (!validateForm(data)){
+		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/guestRegistration",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		complete: function(data) {
+			if(data.responseJSON){
+				if(data.responseJSON["firstTime"]=="notvisited"){
+					location.href = "#ConfirmEmail";
+				}
+			}
+			else{
+				$("#form-error").text("Username already exists").css("color","red");
 			}
 		}
 	});

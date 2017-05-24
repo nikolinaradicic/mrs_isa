@@ -4,11 +4,14 @@ $(document).ready(function() {
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
 		 // Push this URL "state" onto the history hash.
-		if(href != "menu")
+		if(href != "menu"){
 			$.bbq.pushState(href,2);
+			return false;
+		}
+			
 
 		// Prevent the default click behavior.
-		return false;
+		return true;
 	});
 	
 	$(window).bind( "hashchange", function(e) {
@@ -40,23 +43,20 @@ $(document).ready(function() {
 			showSeatingChart();
 		}
 		else if(url == "calendarView"){
-			showCalendarView();
+			showCalendar();
 		}
 		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
 			showAddManager();
 		}
-		else if(url == "seatingChartWaiter"){
-			showSeatingChartWaiter();
+		else if(url=="ConfirmEmail"){
+			showConfirmEmail();
 		}
-		else if(url == "calendar"){
-			showCalendar();
+		else if(url=="friends"){
+			showFriends();
+			
 		}
-		else if(url == "personalData"){
-			console.log("usao");
-			showPersonalData();
-		}
-		else if(url == "restaurantSelect"){
-			showRestaurants();
+		else if(url =="addFriend"){
+			showaddFriend();
 		}
 		// add more routes
 	});
@@ -70,22 +70,6 @@ $(document).ready(function() {
 	}
 });
 
-function showRestaurants(){
-	console.log("ja");
-	$("#app-div").html("");
-	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
-		console.log("usap");
-		getRestaurantsSelect();
-	});
-}
-
-function showPersonalData(){
-	$("#app-div").html("");
-	$("#app-div").load("personalData.html #data", function(){
-		displayData();
-	});
-}
-
 function showSeatingChart(){
 	$("#app-div").html("");
 	$("#modals-div").load("seatingChart.html #modals");
@@ -94,20 +78,15 @@ function showSeatingChart(){
 	});
 	
 }
-function showSeatingChartWaiter(){
-	$("#app-div").html("");
-	$("#app-div").load("seatingChartWaiter.html #chart", function(){
-		setupChartWaiter();
-	});
-	
-}
 
 function showMainView(){
-	$("#app-div").html("");
-	getUser();
+	if(getJwtToken()){
+		$("#app-div").html("");
+		getUser();		
+	}
 }
 
-function showCalendarView(){
+function showCalendar(){
 	$("#app-div").html("");
 	$("#modals-div").load("calendarView.html #modals");
 	$('#app-div').load('calendarView.html #calendar-div', function (){
@@ -115,16 +94,29 @@ function showCalendarView(){
 	});
 }
 
-function showCalendar(){
-	$("#app-div").html("");
-	$('#app-div').load('calendar.html #calendar1', function (){
-		setupCalendarView();
-	});
-}
-
 function showAddSysMan(){
 	$("#app-div").html("");
 	$('#app-div').load('addSysMan.html #sysMan-form');
+}
+function showConfirmEmail(){
+	$('body').load('confirmRegByEmail.html #confirmByEmail');
+	
+}
+function showFriends(){
+	$('#app-div').load('FriendsView.html #friendsList',displayFriends());
+	
+}
+function showaddFriend(){
+	$('#app-div').load('addFriend.html #add-friend-form',function(){
+		$('#myInput').keypress(function(e){
+			if(e.which===13){
+				e.preventDefault();
+				getGuests(e.target.value);
+			}
+			console.log(e);
+		});
+	});
+	
 }
 
 function showAddBidder(){
