@@ -1,12 +1,51 @@
 var tables = [];
+
+function addTableToCanvas(){
+	var $form = $("#add-table-form");
+	var data = getFormData($form);
+	if (!validateForm(data)){
+		$("#add-table-error").text("Please enter chair number").css("color","red");
+		return;
+	}
+	$("#add-table-modal").modal('toggle');
+	
+	var canvas = document.getElementById('canvas').fabric;
+	
+	var img = document.createElement('img');
+	img.src = 'img/blue.png';
+	
+	var name = Date.now().toString();
+	var imgInstance = new fabric.NamedImage(img, {
+	  left: 100,
+	  top: 100,
+	  height: 50,
+	  width: 100,
+	  opacity: 0.85,
+	  name: name
+	});
+	
+	canvas.add(imgInstance);
+	setTimeout(function(){
+		canvas.renderAll(); 
+	}, 100);
+	
+	var table = new Object();
+	table['name'] = name;
+	table['chairNum'] = data['chairNum'];
+	table['operation'] = "new";
+	tables.push(table);
+}
+
+
 function setupChart(){
 	$("#addSegmentButton").click(function(){
 		$("#modalSegment").modal('toggle');
 	});
 	
-	$("#add-table-button").click(function(){
+/*	$("#add-table-button").click(function(){
+		console.log("usaoooooooo");
 		addTableToCanvas();
-	});
+	});*/
 	
 	$('#new-table-button').click(function(){
 		$("#add-table-modal").modal('toggle');
@@ -127,43 +166,6 @@ function deleteTable(){
 	canvas.getActiveObject().remove();
 }
 
-function addTableToCanvas(){
-	console.log("usaooo");
-	var $form = $("#add-table-form");
-	var data = getFormData($form);
-	if (!validateForm(data)){
-		$("#add-table-error").text("Please enter chair number").css("color","red");
-		return;
-	}
-	$("#add-table-modal").modal('toggle');
-	
-	var canvas = document.getElementById('canvas').fabric;
-	
-	var img = document.createElement('img');
-	img.src = 'img/blue.png';
-	
-	var name = Date.now().toString();
-	var imgInstance = new fabric.NamedImage(img, {
-	  left: 100,
-	  top: 100,
-	  height: 50,
-	  width: 100,
-	  opacity: 0.85,
-	  name: name
-	});
-	
-	canvas.add(imgInstance);
-	setTimeout(function(){
-		canvas.renderAll(); 
-	}, 100);
-	
-	var table = new Object();
-	table['name'] = name;
-	table['chairNum'] = data['chairNum'];
-	table['operation'] = "new";
-	tables.push(table);
-}
-
 
 function showCanvas(segment){
 		var canvas = document.getElementById('canvas').fabric;
@@ -215,6 +217,7 @@ function getTable(tableId){
 function changeCanvas(segment){
 	var canvas = document.getElementById('canvas').fabric;
 	canvas.clear();
+	tables.clear();
 	if (segment.chart != "" && segment.chart != null){
 		var json = JSON.parse(segment.chart);
 		canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
@@ -313,6 +316,7 @@ function addSegment(){
 		    }));
 			$("#segmentSelect").val(data.name);
 			$("#segmentSelect").change();
+			$("#canvas-div").show();
 			
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
@@ -333,6 +337,7 @@ function fillSegmentBox(){
 			if (data.responseJSON){	
 				console.log(data.responseJSON);
 				if (data.responseJSON.restaurant.segments.length != 0){
+					$("#canvas-div").show();
 					showCanvas(data.responseJSON.restaurant.segments[0]);
 					$.each(data.responseJSON.restaurant.segments, function (i, item) {
 					    $('#segmentSelect').append($('<option>', { 

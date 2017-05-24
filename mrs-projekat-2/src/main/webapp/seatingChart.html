@@ -1,16 +1,23 @@
 <div class="wrapper" id="chart">
-	<p>Select restaurant segment:
+	<div class="col-md-3">
+		<button id= "addSegmentButton" class="btn btn-info">New Segment</button>
+	</div>
+	<div class="col-md-6">
+		<p>Select restaurant segment:
 		<select id="segmentSelect" onchange="displaySegment()">
 		</select>
-		Define a new segment: <button id= "addSegmentButton">Add</button>
-	</p>
-	<div class="row" style="padding-top:50px">
+		</p>
+		
+	</div>
+	<div class="row" style="padding-top:50px; display:none" id="canvas-div">
 		<div class="col-md-9" >
 			<canvas id="canvas" width="800" height="450" style="border:1px solid #000000"></canvas>
 		</div>
-		<button id="new-table-button" type="button" class="btn btn-info">New Table</button>
-		<br><br>
-		<button id="save" type="button" class="btn btn-danger">Save</button>
+		<div class="col-md-3">
+			<button id="new-table-button" type="button" class="btn btn-info">New Table</button>
+			<br><br>
+			<button id="save" type="button" class="btn btn-danger">Save</button>
+		</div>
 	</div>
 </div>
 
@@ -69,13 +76,12 @@
 					</fieldset>
 					<hr>
 					<div class="form-group">
-					<div class="col-sm-11">		
-						<button type="button" class="btn btn-md btn-primary pull-right RbtnMargin" id="add-table-button">Add</button>									
+					<div class="col-sm-11">							
+						<input type="button" class="btn btn-md btn-danger pull-right" id="add-table-button" value = "Add" onclick="addTableToCanvas()">					
 					</div>
-					<br/>
+					</div>
 					<p id="add-table-error"></p>
-				</div>
-			</form>
+			</form>									
       </div>
     </div>
 

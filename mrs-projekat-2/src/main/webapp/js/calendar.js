@@ -123,14 +123,24 @@ function displayCalendar(){
 	                	
 	                	events.push({
 	                		title: item.employee.email,
-	                		start: item.date
+	                		start: item.date,
+	                		url: "menu"
 	                	});
 	                });
 	                callback(events);
 	            }
 	        });
 	    },
-		
+	    eventConstraint: {
+            start: moment().format('YYYY-MM-DD'),
+            end: '2100-01-01'
+        },
+        eventClick: function(event){
+        	if(event.url){
+        		return false;
+        	}
+        	console.log(event);
+        },
 		eventRender: function(event, element) {
 			var check = moment(event.start, 'DD.MM.YYYY').format('YYYY-MM-DD');
 		    var today = moment(new Date()).format('YYYY-MM-DD');
