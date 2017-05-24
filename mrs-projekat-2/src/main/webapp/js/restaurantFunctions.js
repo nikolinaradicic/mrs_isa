@@ -208,4 +208,66 @@ function changeInformation(){
 				location.href = "#";	
 		}
 	});
+}	
+
+function getRestaurants1(){
+		$.ajax({
+			url: "/restaurants",
+			type:"GET",
+			contentType:"application/json",
+			dataType:"json",
+			headers: createAuthorizationTokenHeader(),
+			complete: function(data) {
+				if (data.responseJSON){
+					$("#app-div").append($("<section class='wrapper'>" ).append($("<div class='col-md-4'>").append($("<button class='button' onclick='sortRestaurants()'>Sort</button>"))));
+					$("#app-div").append($("<section class='wrapper' id='restWrapper'>"));
+					displayRestaurants(data.responseJSON);
+				}
+			}
+		});
+	}	
+function sortRestaurants(){
+	$.ajax({
+		url: "/sortRestaurants",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+				displayRestaurants(data.responseJSON);	
+		}
+	});
+	
+	
+}
+function displayRestaurants(restaurants){
+	$("#restWrapper").html("");
+	$.each(restaurants, function(i, item) {
+		$("#restWrapper").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+								.append($("<div class='content-panel pn'>")
+									.append($("<div id='profile-01'>")
+										.append($("<h3>").text(item.name))
+										.append($("<h6>").text(item.description))
+									)
+									.append($("<div class='profile-01 centered'>")
+										.css('color','#802000')
+										.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
+											.css('padding-top','1px')
+											.css('padding-bottom','31px')
+											.append($("<p>").text("Add Manager").css('padding-botton','31px'))
+											
+										)
+									)
+									.append($("<div class='centered'>")
+										.append($("<h6>")
+											.append($("<i class='fa fa-envelope'>"))
+											.append($("<br/>"))
+											.text('ja')
+										)
+									)
+								)
+							);
+		
+	});
+	
 }
