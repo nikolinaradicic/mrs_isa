@@ -175,10 +175,10 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public Collection<Guest> getGuests(UserType type, String email) {
+	public Collection<Guest> getGuests(UserType type, String name) {
 		// TODO Auto-generated method stub
 		
-		return userRepository.findGuests(type, email);
+		return userRepository.findGuests(type, name);
 	}
 
 }
