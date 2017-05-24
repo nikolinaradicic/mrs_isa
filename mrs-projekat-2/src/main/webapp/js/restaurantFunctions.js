@@ -36,8 +36,9 @@ function getRestaurants(){
 		complete: function(data) {
 			if (data.responseJSON){
 				$("#app-div").html("");
+				$("#app-div").append($("<section class='wrapper' id = 'rest-wrap'>"));
 				$.each(data.responseJSON, function(i, item) {
-					$("#app-div").append($("<section class='wrapper'>").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+					$("#rest-wrap").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
 									.append($("<div class='content-panel pn'>")
 										.append($("<div id='profile-01'>")
 											.append($("<h3>").text(item.name))
@@ -58,7 +59,6 @@ function getRestaurants(){
 											)
 										)
 									)
-								)
 								);
 				});
 					

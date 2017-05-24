@@ -10,11 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, Long> {
 	
-/*	@Modifying
-	@Query("update Restaurant_table t set t.chair_number = ?1 where t.id = ?2")
+	@Modifying
+	@Query("update RestaurantTable t set t.chairNumber = ?1 where t.name = ?2 and t.segment = ?3")
 	@Transactional
-	int updateRestaurantTable(int chairNumber, Long id);*/
-
+	int updateRestaurantTable(int chairNumber, String name, Segment segment);
 
 	RestaurantTable findByNameAndSegment(String name, Segment segment);
 }

@@ -49,10 +49,10 @@ public class TableServiceImpl implements TableService {
 				tableRepository.delete(saved.getId());
 			}
 			else if(table.getOperation().equals("update")){
-				RestaurantTable saved = tableRepository.findByNameAndSegment(table.getName(), segment);
+				/*RestaurantTable saved = tableRepository.findByNameAndSegment(table.getName(), segment);
 				saved.setChairNumber(table.getChairNum());
-				tableRepository.save(saved);
-				//tableRepository.updateRestaurantTable(table.getChairNum(), table.getName(), segment.getId());
+				tableRepository.save(saved);*/
+				tableRepository.updateRestaurantTable(table.getChairNum(), table.getName(), segment);
 			}
 			else{
 				return false;
