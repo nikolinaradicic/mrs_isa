@@ -2,9 +2,11 @@ package mrs.app.service.implementation;
 
 import java.util.Collection;
 
+import mrs.app.DTOs.GuestDTO;
 import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
+import mrs.app.domain.UserType;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.repository.EmployeeRepository;
 import mrs.app.repository.RestaurantRepository;
@@ -81,14 +83,14 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public boolean addFriend(Guest user, Guest friend) {
+	public boolean addFriend(Guest user, GuestDTO friend) {
 		// TODO Auto-generated method stub
-		Guest currentUser = (Guest) userRepository.findOne(user.getId());
-		
+		//Guest currentUser = (Guest) userRepository.findOne(user.getId());
+		System.out.println(friend.getEmail());
 		Guest requestedFriend = (Guest) userRepository.findByEmail(friend.getEmail());
 		
 		if(requestedFriend != null){
-			requestedFriend.getRequests().add(currentUser);
+			requestedFriend.getRequests().add(user);
 			
 			userRepository.save(requestedFriend);
 			return true;
@@ -100,15 +102,15 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean acceptFriend(Guest current, Guest friend) {
 		// TODO Auto-generated method stub
-		Guest currentUser = (Guest) userRepository.findOne(current.getId());
+		//Guest currentUser = (Guest) userRepository.findOne(current.getId());
 		
 		Guest requestedFriend = (Guest) userRepository.findByEmail(friend.getEmail());
 		if (requestedFriend != null)
 		{
-			requestedFriend.getFriends().add(currentUser);
-			currentUser.getFriends().add(requestedFriend);
-			currentUser.getRequests().remove(requestedFriend);
-			userRepository.save(currentUser);
+			requestedFriend.getFriends().add(current);
+			current.getFriends().add(requestedFriend);
+			current.getRequests().remove(requestedFriend);
+			userRepository.save(current);
 			userRepository.save(requestedFriend);
 			return true;
 		}
@@ -137,14 +139,13 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public boolean unfriend(Guest current, Guest friend) {
-		// TODO Auto-generated method stub
-		Guest currentUser = (Guest) userRepository.findOne(current.getId());		
+		// TODO Auto-generated method stub		
 		Guest toUnfriend = (Guest) userRepository.findByEmail(friend.getEmail());
 		if (toUnfriend != null)
 		{
-			toUnfriend.getFriends().remove(currentUser);
-			currentUser.getFriends().remove(toUnfriend);
-			userRepository.save(currentUser);
+			toUnfriend.getFriends().remove(current);
+			current.getFriends().remove(toUnfriend);
+			userRepository.save(current);
 			userRepository.save(toUnfriend);
 			return true;
 		}
@@ -170,6 +171,14 @@ public class UserServiceImpl implements UserService{
 	public User findByUsername(String username) {
 		// TODO Auto-generated method stub
 		return userRepository.findByEmail(username);
+	}
+
+
+	@Override
+	public Collection<Guest> getGuests(UserType type, String email) {
+		// TODO Auto-generated method stub
+		
+		return userRepository.findGuests(type, email);
 	}
 
 }

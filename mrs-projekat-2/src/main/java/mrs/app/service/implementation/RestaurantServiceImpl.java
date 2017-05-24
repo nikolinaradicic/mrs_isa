@@ -1,6 +1,7 @@
 package mrs.app.service.implementation;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,6 @@ public class RestaurantServiceImpl implements RestaurantService{
         }
         
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        
         logger.info("< create");
         return savedRestaurant;
 	}
@@ -93,6 +93,12 @@ public class RestaurantServiceImpl implements RestaurantService{
 		// TODO Auto-generated method stub
 		return restaurantRepository.updateRestaurant(restaurant.getName(), restaurant.getDescription(), restaurant.getId());
 		
+	}
+
+	@Override
+	public List<Restaurant> findAllSort() {
+		// TODO Auto-generated method stub
+		return restaurantRepository.findAllByOrderByNameAsc();
 	}
 
 }

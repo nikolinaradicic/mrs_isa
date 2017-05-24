@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 	public List<Restaurant> findAll();
 	
+	public List<Restaurant> findAllByOrderByNameAsc();
+	
 	@Modifying
 	@Query("update Restaurant r set r.name = ?1, r.description = ?2 where r.id = ?3")
 	@Transactional

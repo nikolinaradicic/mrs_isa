@@ -1,10 +1,14 @@
 package mrs.app.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import mrs.app.domain.restaurant.Segment;
 
 import org.hibernate.annotations.Cascade;
 
@@ -20,9 +24,9 @@ public class Guest extends User{
 	
 	@ManyToMany
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Set<Guest> friends;
+	private List<Guest> friends;
 	
-	@OneToMany
+	@ManyToMany
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Set<Guest> requests;
 
@@ -35,18 +39,31 @@ public class Guest extends User{
 		this.requests = requests;
 	}
 	
-	@JsonIgnore
-	public Set<Guest> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(Set<Guest> friends) {
-		this.friends =friends;
-	}
-
 	public Guest() {
 		// TODO Auto-generated constructor stub
 		this.role=UserType.ROLE_GUEST;
 		this.firstTime="notvisited";
+	}
+	@JsonIgnore
+	public List<Guest> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(List<Guest> friends) {
+		this.friends = friends;
+	}
+
+	@Override
+	public boolean equals(Object obj){
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Guest))
+			return false;
+		Guest c = (Guest) obj;
+		if (this.id == c.id)
+			return true;
+		return false;
 	}
 }
