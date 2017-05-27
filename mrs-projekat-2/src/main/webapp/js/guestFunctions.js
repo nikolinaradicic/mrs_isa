@@ -10,7 +10,9 @@ function displayFriends()
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data.responseJSON);
+				console.log($("#friendTableBody"));
 				$.each(data.responseJSON, function(i, item){
+					console.log(item);
 					$("#friendTableBody").append($("<tr>")
 											.append($("<td>")
 												.text(item.name)
@@ -26,7 +28,6 @@ function displayFriends()
 													.click(function(){
 													unfriend(item.email);
 													})
-													.append($("<i class='fa fa-user-times'>"))
 												)
 											)
 										);
@@ -47,6 +48,7 @@ function getGuests(value){
 		complete: function(data) {
 			if (data.responseJSON){
 				console.log(data.responseJSON);
+				$("#friend-body").empty();
 				$.each(data.responseJSON, function(i, item){
 					$("#friend-body").append($("<tr>")
 											.append($("<td>")
@@ -99,7 +101,7 @@ function addFriend(item, i) {
 	});
 }
 
-function acceptFriend(id){
+function acceptFriend(id,p){
 	var user = {email : id};
 	var s = JSON.stringify(user);
 	$.ajax({
@@ -111,7 +113,8 @@ function acceptFriend(id){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				location.href = "#";
+				location.href="#";
+				p.remove();
 			}
 		}
 	});
@@ -133,7 +136,7 @@ function checkRequests(callback){
 			
 			$.each(data.responseJSON.requests,function(i,item){
 				
-				$("#dodatiZahteve").append($("<li>").append($("<a href='indexSysMan.html#'>")
+				$("#dodatiZahteve").append($("<li>").append($("<a href='#menu'>")
 														.append($("<span class='photo'>")
 																.append($("<img alt='avatar'>").attr('src','img/fr-11.jpg'))
 														)
@@ -143,7 +146,7 @@ function checkRequests(callback){
 														.append($("<input class='button' type='button' value='Confirm'>").hover(function(e) {
 															  $(this).css("background-color",e.type === "mouseenter"?"#b3b3e6":"#6666cc");
 														}).css('border','1px').css('background-color','#6666cc').css('width','80').css('height','30').css('color','#fff').css('border-radius','3px').click(function(){
-														    acceptFriend(item);
+														    acceptFriend(item,$(this));
 														}))
 													)
 										);
@@ -216,7 +219,7 @@ function displayFriendsName(friends){
 
 function sortFriendsLastName(){
 	$.ajax({
-		url: "/sortFriendsName",
+		url: "/sortFriendsLastName",
 		type:"GET",
 		contentType:"application/json",
 		dataType:"json",

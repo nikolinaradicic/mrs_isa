@@ -11,10 +11,12 @@ import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Order;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.Segment;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.OrderService;
 import mrs.app.service.RestaurantService;
 import mrs.app.service.SegmentService;
 import mrs.app.service.TableService;
@@ -267,6 +269,5 @@ public class RestaurantController {
 		return new ResponseEntity<Collection<Meal>>(restaurant.getMenu(), HttpStatus.OK);
 
 	}
-	
 	
 }

@@ -217,7 +217,7 @@ function getTable(tableId){
 function changeCanvas(segment){
 	var canvas = document.getElementById('canvas').fabric;
 	canvas.clear();
-	tables.clear();
+	tables = [];
 	if (segment.chart != "" && segment.chart != null){
 		var json = JSON.parse(segment.chart);
 		canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));

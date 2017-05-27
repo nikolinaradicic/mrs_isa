@@ -18,6 +18,9 @@ public class Shift {
 	private Restaurant restaurant;
 	
 	@Column(nullable = false)
+	private String name;
+	
+	@Column(nullable = false)
 	private String startTime;
 	
 	@Column(nullable = false)
@@ -58,6 +61,14 @@ public class Shift {
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

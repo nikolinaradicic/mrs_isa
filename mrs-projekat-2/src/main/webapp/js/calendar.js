@@ -15,7 +15,7 @@ function setupCalendarView(){
 					    				console.log(e);
 					      				events.push({
 					        			start: e.date,
-					        			title: "  "+e.restaurant.name
+					        			title: "  "+e.employee.name
 					      			});
 				    			});
 				    			$('#calendar1').show();
