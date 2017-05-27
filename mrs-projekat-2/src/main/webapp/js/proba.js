@@ -1,17 +1,19 @@
-$(document).ready(function() {
-	// convert all a/href to a#href
+function startApp() {
+	// convert all a/href to a#href;
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
+		console.log(href);
 		 // Push this URL "state" onto the history hash.
 		if(href != "menu"){
 			$.bbq.pushState(href,2);
+			// Prevent the default click behavior.
 			return false;
 		}
-			
-
-		// Prevent the default click behavior.
 		return true;
 	});
+	
+	$("#logoutButton").click(doLogout);
+
 	
 	$(window).bind( "hashchange", function(e) {
 		var url = $.param.fragment();
@@ -69,6 +71,9 @@ $(document).ready(function() {
  		else if(url == "restaurantSelect"){
  			showRestaurants();
  		}
+ 		else if(url == "shifts"){
+ 			showShifts();
+ 		}
 		// add more routes
 	});
 	
@@ -80,7 +85,7 @@ $(document).ready(function() {
 		console.log("usao");
 		$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 	}
-});
+}
 
 function showRestaurants(){
 	console.log("ja");
@@ -220,7 +225,11 @@ function doLogin() {
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
-            location.href = "indexSysMan.html";
+    		$("body").load("indexSysMan.html #container", function(){
+    			$.getScript("js/common-scripts.js", function(){
+    				startApp();
+    			});
+    			});
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -232,24 +241,30 @@ function doLogin() {
     });
 }
 
-    function doLogout() {
-        removeJwtToken();
-        location.href="login.html";
-    }
+function doLogout() {
+    removeJwtToken();
+    $("body").load("login.html #login-div");
+}
 
-    function createAuthorizationTokenHeader() {
-        var token = getJwtToken();
-        if (token) {
-            return {"Authorization": token};
-        } else {
-            return {};
-        }
+function createAuthorizationTokenHeader() {
+    var token = getJwtToken();
+    if (token) {
+        return {"Authorization": token};
+    } else {
+        return {};
     }
+}
 
-    
-    $("#logoutButton").click(doLogout);
-
-    // INITIAL CALLS =============================================================
-    if (getJwtToken()) {
-        
+$(document).ready(function(){
+	if (getJwtToken()) {
+		$("body").load("indexSysMan.html #container", function(){
+			$.getScript("js/common-scripts.js", function(){
+				console.log("usaooo");
+				startApp();
+			});
+			});
+    }else{
+    	console.log("tuu");
+    	$("body").load("login.html #login-div");
     }
+});

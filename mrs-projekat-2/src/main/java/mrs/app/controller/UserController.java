@@ -5,10 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import mrs.app.DTOs.GuestDTO;
 import mrs.app.DTOs.WorkingShiftDTO;
 import mrs.app.domain.Bartender;
@@ -41,8 +38,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @RestController
