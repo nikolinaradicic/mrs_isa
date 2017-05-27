@@ -106,6 +106,15 @@ function showSeatingChart(){
 	
 }
 
+function showSeatingChartWaiter(){
+	$("#app-div").html("");
+	$("#modals-div").load("seatingChart.html #modals");
+	$("#app-div").load("seatingChart.html #chart", function(){
+		setupChartWaiter();
+	});
+	
+}
+
 function showMainView(){
 	if(getJwtToken()){
 		$("#app-div").html("");
@@ -138,7 +147,8 @@ function showConfirmEmail(){
 	
 }
 function showFriends(){
-	$('#app-div').load('FriendsView.html #friendsList',displayFriends());
+	$('#app-div').load('FriendsView.html #friendsList', function (){
+	displayFriends()});
 	
 }
 function showaddFriend(){

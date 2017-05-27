@@ -13,6 +13,8 @@ function getUser(callback){
 					$("#restaurant-manage").hide();
 					$("#employee-manage").hide();
 					$("#manage").hide();
+					$("#calendar").hide();
+					$("#chart").hide();
 					
 					checkRequests(getRestaurants1);
 				}

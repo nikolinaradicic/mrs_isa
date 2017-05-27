@@ -36,9 +36,9 @@ function getRestaurants(){
 		complete: function(data) {
 			if (data.responseJSON){
 				$("#app-div").html("");
+				$("#app-div").append($("<section class='wrapper' id='sekcija'>"));
 				$.each(data.responseJSON, function(i, item) {
-					$("#app-div").append($("<section class='wrapper'>")
-									.append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+					$("#sekcija").append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
 										.append($("<div class='content-panel pn'>")
 											.append($("<div id='profile-01'>")
 												.append($("<h3>").text(item.name))
@@ -54,13 +54,11 @@ function getRestaurants(){
 											)
 											.append($("<div class='centered'>")
 												.append($("<h6>")
-													.append($("<i class='fa fa-envelope'>"))
 													.append($("<br/>"))
 												)
 											)
 										)
-									)
-								);
+									);
 				});
 					
 			}
@@ -273,20 +271,9 @@ function displayRestaurants(restaurants){
 										.append($("<h3>").text(item.name))
 										.append($("<h6>").text(item.description))
 									)
-									.append($("<div class='profile-01 centered'>")
-										.css('color','#802000')
-										.append($("<a class='button'>").attr("href", "addManager.html?id=" +item.id)
-											.css('padding-top','1px')
-											.css('padding-bottom','31px')
-											.append($("<p>").text("Add Manager").css('padding-botton','31px'))
-											
-										)
-									)
 									.append($("<div class='centered'>")
 										.append($("<h6>")
-											.append($("<i class='fa fa-envelope'>"))
 											.append($("<br/>"))
-											.text('ja')
 										)
 									)
 								)
