@@ -15,6 +15,7 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#calendar").hide();
 					$("#chart").hide();
+					$("#order").hide();
 					
 					checkRequests(getRestaurants1);
 				}
@@ -25,6 +26,7 @@ function getUser(callback){
 					$("#friends-section1").hide();
 					$("#calendar").hide();
 					$("#chart").hide();
+					$("#order").hide();
 					getRestaurants();
 				}
 				else if(data.responseJSON.role == "ROLE_RESTAURANT_MANAGER"){
@@ -35,6 +37,7 @@ function getUser(callback){
 					$("#friends-section1").hide();
 					$("#calendar").hide();
 					$("#chart").hide();
+					$("#order").hide();
 					displayRestaurant(data.responseJSON.restaurant);
 				}
 				else if(data.responseJSON.role =="ROLE_BIDDER"){
@@ -45,6 +48,7 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#calendar").hide();
 					$("#chart").hide();
+					$("#order").hide();
 				}
 				else if(data.responseJSON.role == "ROLE_BARTENDER"){
 					$("#restaurant-manage").hide();
@@ -53,6 +57,7 @@ function getUser(callback){
 					$("#poruke").remove();
 					$("#manage").hide();
 					$("#chart").hide();
+					$("#order").hide();
 				}
 				else if(data.responseJSON.role == "ROLE_CHEF"){
 					$("#restaurant-manage").hide();
@@ -61,6 +66,7 @@ function getUser(callback){
 					$("#poruke").remove();
 					$("#manage").hide();
 					$("#chart").hide();
+					$("#order").hide();
 				}
 				else if(data.responseJSON.role=="ROLE_WAITER"){
 					$("#restaurant-manage").hide();

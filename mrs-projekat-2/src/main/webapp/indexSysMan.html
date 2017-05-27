@@ -36,6 +36,7 @@
     <script src="js/fabric.canvasex.js"></script>
     <script src="js/seatingChart.js"></script>
     <script src="js/guestFunctions.js"></script>
+    <script src="js/orderFunctions.js"></script>
     
     <link href='fullcalendar-3.4.0/fullcalendar.min.css' rel='stylesheet' />
 	<link href='fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
@@ -82,32 +83,32 @@
       *********************************************************************************************************************************************************** -->
       <!--header start-->
       <header class="header black-bg">
-              <div class="sidebar-toggle-box">
-                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-              </div>
+            <div class="sidebar-toggle-box">
+      	      <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+           	</div>
             <!--logo start-->
             <a id="logo" href="#" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <section id="poruke">
-            <div class="nav notify-row" id="top_menu">
-                <!--  notification start -->
-                <ul class="nav top-menu">
-                	<li id="header_inbox_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="menu">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="badge bg-theme" id="brojZahteva"></span>
-                        </a>
-                        <ul class="dropdown-menu extended inbox" id="dodatiZahteve">
-                            <div class="notify-arrow notify-arrow-green"></div>
-                            <li>
-                                <p class="green" id="brojZahtevaPoruka"></p>
-                            </li>
-                        </ul>
-               	    </li>            
-                </ul>
-          	</div>
-          	</section>                
-            <div class="top-menu">
+            	<div class="nav notify-row" id="top_menu">
+                	<!--  notification start -->
+                	<ul class="nav top-menu">
+                		<li id="header_inbox_bar" class="dropdown">
+                        	<a data-toggle="dropdown" class="dropdown-toggle" href="menu">
+                            	<i class="fa fa-envelope-o"></i>
+                            	<span class="badge bg-theme" id="brojZahteva"></span>
+                        	</a>
+                        	<ul class="dropdown-menu extended inbox" id="dodatiZahteve">
+                            	<div class="notify-arrow notify-arrow-green"></div>
+                            	<li>
+                                	<p class="green" id="brojZahtevaPoruka"></p>
+                            	</li>
+                        	</ul>
+               	    	</li>            
+                	</ul>
+          		</div>
+          	</section>
+          	<div class="top-menu">
             	<ul class="nav pull-right top-menu">
                     <li><button class="logout" onclick="doLogout()">Logout</button></li>
             	</ul>
@@ -133,7 +134,7 @@
                     	<li><a href="personalData">Personal Data</a></li>
                       	<li><a  href="changePersData">Change Personal Data</a></li>
                         <li><a  href="changePass">Change Password</a></li>
-                    </ul>
+					</ul>
                	</li>  
                	<li class="sub-menu" id="restaurant-manage">
           	    	<a href="menu">
@@ -183,7 +184,10 @@
                 </li>
                <li class="sub-menu" id="chart">
                 	<span><a href="seatingChartWaiter"><h5>Seating Chart</h5></a></span>
-               	</li> 	 		
+               	</li>
+               	<li class="sub-menu" id="order">
+               		<span><a hrer="defineOrder"><h5>DefineOrder</h5></a></span>
+               	</li>	
             </ul>			
            	<!-- sidebar menu end-->
           </div>

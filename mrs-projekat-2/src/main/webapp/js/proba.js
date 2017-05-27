@@ -69,6 +69,9 @@ $(document).ready(function() {
  		else if(url == "restaurantSelect"){
  			showRestaurants();
  		}
+ 		else if(url=="defineOrder"){
+ 			showDefineOrder();
+ 		}
 		// add more routes
 	});
 	
@@ -82,11 +85,18 @@ $(document).ready(function() {
 	}
 });
 
+function showDefineOrder(){
+	$("#app-div").html("");
+	$("#app-div").load("defineOrder.html #defineOrder", function(){
+		setMeals();
+		setDrinks();
+	});
+}
+
 function showRestaurants(){
 	console.log("ja");
 	$("#app-div").html("");
 	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
-		console.log("usap");
 		getRestaurantsSelect();
 	});
 }
