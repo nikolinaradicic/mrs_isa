@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import mrs.app.DTOs.GuestDTO;
-import mrs.app.DTOs.WorkingShiftDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Bidder;
 import mrs.app.domain.Chef;
@@ -463,35 +462,7 @@ public class UserController {
 		return new ResponseEntity<Collection<Employee>>(employees, HttpStatus.OK);
 	}
 
-	@RequestMapping(
-			value = "/addWorkingShift",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<WorkingShift> addWorkingShift(@RequestBody WorkingShift shift, HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
-		Employee employee = (Employee) userService.findEmployee(shift.getEmployee().getEmail());
-		shift.setRestaurant(saved.getRestaurant());
-		shift.setEmployee(employee);
-		WorkingShift savedShift = workingShiftService.create(shift);
-		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
-	}
 	
-	@RequestMapping(
-			value = "/getWorkingShifts",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<WorkingShift>> getWorkingShifts(@RequestBody WorkingShiftDTO shift, HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        RestaurantManager current = (RestaurantManager) userService.findByUsername(username);
-		Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
-		return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
-	}
 	
 	@RequestMapping(
 			value = "/getWorkingShiftsForEmployee",

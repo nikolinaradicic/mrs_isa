@@ -4,11 +4,15 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import mrs.app.DTOs.WorkingShiftDTO;
+import mrs.app.domain.Employee;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.restaurant.Shift;
+import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.security.JwtTokenUtil;
 import mrs.app.service.ShiftService;
 import mrs.app.service.UserService;
+import mrs.app.service.WorkingShiftService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,9 @@ public class ShiftController {
 	
 	@Autowired
 	private ShiftService shiftSetvice;
+	
+	@Autowired
+	private WorkingShiftService workingShiftService;
 	
 	@Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -73,5 +80,39 @@ public class ShiftController {
 		logger.info("< add shift");
 		return new ResponseEntity<Shift>(savedShift,HttpStatus.OK);
 	}
+	
+	@RequestMapping(
+			value = "/getWorkingShifts",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<WorkingShift>> getWorkingShifts(@RequestBody WorkingShiftDTO shift, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager current = (RestaurantManager) userService.findByUsername(username);
+		Collection<WorkingShift> saved = workingShiftService.findForFilter(current.getRestaurant(), shift.getStart(), shift.getEnd());
+		return new ResponseEntity<Collection<WorkingShift>>(saved, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/addWorkingShift",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<WorkingShift> addWorkingShift(@RequestBody WorkingShift workingShift, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		Employee employee = (Employee) userService.findEmployee(workingShift.getEmployee().getEmail());
+		Shift shift = shiftSetvice.findByNameAndRestaurant(workingShift.getShift().getName(), employee.getRestaurant());
+		workingShift.setRestaurant(saved.getRestaurant());
+		workingShift.setEmployee(employee);
+		workingShift.setShift(shift);
+		WorkingShift savedShift = workingShiftService.create(workingShift);
+		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
+	}
+	
+	
 
 }

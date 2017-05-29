@@ -7,7 +7,6 @@ function addRestaurant() {
 	}
 	
 	var s = JSON.stringify(data);
-	console.log(s);
 	$.ajax({
 		url: "/addrestaurant",
 		type:"POST",

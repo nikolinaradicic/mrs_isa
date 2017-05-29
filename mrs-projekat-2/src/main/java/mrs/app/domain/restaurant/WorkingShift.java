@@ -2,6 +2,7 @@ package mrs.app.domain.restaurant;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,7 +21,11 @@ public class WorkingShift {
 	@ManyToOne
 	private Employee employee;
 	
+	@Column(nullable = false)
 	private Date date;
+	
+	@ManyToOne
+	private Shift shift;
 	
 	@ManyToOne
 	private Restaurant restaurant;
@@ -55,6 +60,14 @@ public class WorkingShift {
 
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
 	}
 	
 	

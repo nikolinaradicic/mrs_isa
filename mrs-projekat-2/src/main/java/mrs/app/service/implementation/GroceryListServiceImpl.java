@@ -1,48 +1,49 @@
 package mrs.app.service.implementation;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mrs.app.domain.restaurant.Restaurant;
-import mrs.app.domain.restaurant.Shift;
-import mrs.app.repository.ShiftRepository;
-import mrs.app.service.ShiftService;
+import mrs.app.domain.RestaurantManager;
+import mrs.app.domain.restaurant.GroceryList;
+import mrs.app.repository.GroceryListRepository;
+import mrs.app.service.GroceryListService;
 
 @Service
-public class ShiftServiceImpl implements ShiftService {
-	
+public class GroceryListServiceImpl implements GroceryListService {
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private ShiftRepository shiftRepository;
+	private GroceryListRepository groceryListRepository;
 
 	@Override
-	public Shift create(Shift s) throws Exception {
+	public GroceryList create(GroceryList gl) throws Exception {
 		// TODO Auto-generated method stub
 		logger.info("> create");
-		
-        if (s.getId() != null) {
+        if (gl.getId() != null) {
             logger.error("Pokusaj kreiranja novog entiteta, ali Id nije null.");
             throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
         }
         logger.info("< create");
-		return shiftRepository.save(s);
+		return groceryListRepository.save(gl);
+
 	}
 
 	@Override
-	public Collection<Shift> findShifts(Restaurant restaurant) {
+	public Collection<GroceryList> findByManager(RestaurantManager user, Date date) {
 		// TODO Auto-generated method stub
-		return shiftRepository.findByRestaurant(restaurant);
+		return groceryListRepository.findActive(user, date);
 	}
 
 	@Override
-	public Shift findByNameAndRestaurant(String name, Restaurant restaurant) {
+	public GroceryList findOne(Long id) {
 		// TODO Auto-generated method stub
-		return shiftRepository.findByNameAndRestaurant(name, restaurant);
+		return groceryListRepository.findOne(id);
 	}
 
 }

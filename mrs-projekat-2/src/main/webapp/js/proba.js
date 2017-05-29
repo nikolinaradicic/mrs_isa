@@ -2,7 +2,6 @@ function startApp() {
 	// convert all a/href to a#href;
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
-		console.log(href);
 		 // Push this URL "state" onto the history hash.
 		if(href != "menu"){
 			$.bbq.pushState(href,2);
@@ -20,6 +19,9 @@ function startApp() {
 		// url action mapping
 		if(url == ""){
 			showMainView();
+		}
+		else if(url == "supplies"){
+			showSupplies();
 		}
 		else if(url == "addRestaurant"){
 			//showUserList();
@@ -44,10 +46,13 @@ function startApp() {
 			showSeatingChart();
 		}
 		else if(url == "calendarView"){
-			showCalendarView();
+			setupCalendar();
 		}
 		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
 			showAddManager();
+		}
+		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
+			showSelectedSupply();
 		}
 		else if(url=="ConfirmEmail"){
 			showConfirmEmail();
@@ -91,7 +96,6 @@ function showRestaurants(){
 	console.log("ja");
 	$("#app-div").html("");
 	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
-		console.log("usap");
 		getRestaurantsSelect();
 	});
 }
@@ -116,14 +120,6 @@ function showMainView(){
 		$("#app-div").html("");
 		getUser();		
 	}
-}
-
-function showCalendarView(){
-	$("#app-div").html("");
-	$("#modals-div").load("calendarView.html #modals");
-	$('#app-div').load('calendarView.html #calendar', function (){
-		setupCalendar();
-	});
 }
 
 function showCalendar(){

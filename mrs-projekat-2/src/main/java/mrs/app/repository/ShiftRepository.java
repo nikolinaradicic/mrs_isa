@@ -11,4 +11,6 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
 	Collection<Shift> findByRestaurant(Restaurant restaurant);
 
+	Shift findByNameAndRestaurant(String name, Restaurant restaurant);
+
 }

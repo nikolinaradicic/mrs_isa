@@ -11,6 +11,11 @@ function showShifts(){
             	$.each(data, function(i, item){
             		displayShift(item);
             	});
+            	$("#addShiftButton").click(function(){
+            		$("#shift-error").html("");
+            		$("#shift-name").val("");
+            		$("#modalShift").modal('toggle');
+            	});
             	$("#modals-div").load("shifts.html #modals", function(){
                 	console.log("usaooo");
                 	$('#timepicker1').timepicker({
@@ -23,9 +28,6 @@ function showShifts(){
                         showSeconds: false,
                         showMeridian: false
                         });
-                    $("#addShiftButton").click(function(){
-                		$("#modalShift").modal('toggle');
-                	});
                 });
             });
             
@@ -57,21 +59,23 @@ function addShift(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
+		success: function(data) {
 				$("#modalShift").modal('toggle');
-				displayShift(data.responseJSON);
-			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
-			}
-		}
+				displayShift(data);
+
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 500) {
+            	$("#shift-error").text("Two shifts cannot have the same name").css("color","red");
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 	
 }
 
 function displayShift(item){
-	console.log(item);
 	$("#shifts-table-body").prepend($("<tr>")
 			.append($("<td>")
 				.text(item.name)
