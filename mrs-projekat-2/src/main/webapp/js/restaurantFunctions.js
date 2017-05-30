@@ -182,7 +182,7 @@ function addMeal(){
 	data.restaurant = {id: id};
 		
 	var s = JSON.stringify(data);
-		
+	console.log(data);
 	$.ajax({
 		url: "/addMeal",
 		type:"POST",

@@ -2,15 +2,28 @@ package mrs.app.service;
 
 import java.util.Collection;
 
+import mrs.app.domain.restaurant.BartenderDrink;
+import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
-import mrs.app.domain.restaurant.Order;
+import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.domain.restaurant.Restaurant;
 
 public interface OrderService {
 
-	Collection<Order> findAll();
+	Collection<WaiterOrd> findAll();
 
-	Order setOrder(Collection<Meal> meals, Collection<Drink> drinks, Restaurant r);
+	WaiterOrd setOrder(Collection<Meal> meals, Collection<Drink> drinks, Restaurant r);
+
+	WaiterOrd setOrderMeal(WaiterOrd order);
+	
+	ChefMeal getOrderChef(ChefMeal order);
+	
+	Collection<ChefMeal> getAllMeals();
+
+	Collection<BartenderDrink> getAllDrinks();
+
+	BartenderDrink saveDrinks(BartenderDrink order);
+	
 	
 }

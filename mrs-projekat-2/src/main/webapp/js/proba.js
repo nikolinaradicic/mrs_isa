@@ -70,6 +70,7 @@ $(document).ready(function() {
  			showRestaurants();
  		}
  		else if(url=="defineOrder"){
+ 		console.log("usao");
  			showDefineOrder();
  		}
 		// add more routes
@@ -86,10 +87,10 @@ $(document).ready(function() {
 });
 
 function showDefineOrder(){
+console.log("usao");
 	$("#app-div").html("");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
-		setDrinks();
 	});
 }
 

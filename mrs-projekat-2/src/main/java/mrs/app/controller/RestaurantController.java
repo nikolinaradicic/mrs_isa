@@ -11,7 +11,7 @@ import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.Meal;
-import mrs.app.domain.restaurant.Order;
+import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.Segment;
@@ -246,13 +246,22 @@ public class RestaurantController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST')")
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST') or hasRole('WAITER')")
 	public ResponseEntity<Collection<Drink>> getDrinkList(HttpServletRequest request,@RequestBody Restaurant r){
 		logger.info("> get drink list");
-        Restaurant restaurant= restaurantService.findOne(r.getId());
-        
-		logger.info("< get drink list");
-		return new ResponseEntity<Collection<Drink>>(restaurant.getDrinkList(), HttpStatus.OK);
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            logger.info("< get drink list");
+    		return new ResponseEntity<Collection<Drink>>(restaurant.getDrinkList(), HttpStatus.OK);
+        }else{
+        	Restaurant restaurant= restaurantService.findOne(r.getId());    
+        	logger.info("< get drink list");
+        	return new ResponseEntity<Collection<Drink>>(restaurant.getDrinkList(), HttpStatus.OK);
+        }
 
 	}
 	
@@ -261,12 +270,22 @@ public class RestaurantController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST')")
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER') or hasRole('GUEST') or hasRole('WAITER')")
 	public ResponseEntity<Collection<Meal>> getMealList(HttpServletRequest request,@RequestBody Restaurant r){
 		logger.info("> get meal list");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            logger.info("< get meal list");
+    		return new ResponseEntity<Collection<Meal>>(restaurant.getMenu(), HttpStatus.OK);
+        }else{
         Restaurant restaurant= restaurantService.findOne(r.getId());     
 		logger.info("< get meal list");
 		return new ResponseEntity<Collection<Meal>>(restaurant.getMenu(), HttpStatus.OK);
+        }
 
 	}
 	

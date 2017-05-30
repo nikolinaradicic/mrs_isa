@@ -19,6 +19,7 @@
     <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans:600'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+
     <script src="js/bootstrap.min.js"></script>
     <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="js/jquery.scrollTo.min.js"></script>
@@ -37,6 +38,7 @@
     <script src="js/seatingChart.js"></script>
     <script src="js/guestFunctions.js"></script>
     <script src="js/orderFunctions.js"></script>
+    <script src="js/list.js"></script>
     
     <link href='fullcalendar-3.4.0/fullcalendar.min.css' rel='stylesheet' />
 	<link href='fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
@@ -70,9 +72,13 @@
     		 	margin-bottom: 15px;
      		text-align: start;
  		}
-
+ 		#container{    
+ 		    overflow-y: scroll;
+ 		    min-height: 50%;
+		}
 
 	</style>
+
   </head>
 
   <body>
@@ -186,7 +192,7 @@
                 	<span><a href="seatingChartWaiter"><h5>Seating Chart</h5></a></span>
                	</li>
                	<li class="sub-menu" id="order">
-               		<span><a hrer="defineOrder"><h5>DefineOrder</h5></a></span>
+               		<span><a href="defineOrder"><h5>Define Order</h5></a></span>
                	</li>	
             </ul>			
            	<!-- sidebar menu end-->

@@ -58,6 +58,8 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					getDrinksBartender();
+					
 				}
 				else if(data.responseJSON.role == "ROLE_CHEF"){
 					$("#restaurant-manage").hide();
@@ -67,6 +69,7 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					getMealsChef();
 				}
 				else if(data.responseJSON.role=="ROLE_WAITER"){
 					$("#restaurant-manage").hide();
@@ -318,7 +321,6 @@ function addEmployee(){
 	else{
 		val = "Bartender";
 	}
-	
 	$.ajax({
 		url: "/register" + val,
 		type:"POST",
