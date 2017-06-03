@@ -275,18 +275,14 @@ function getDrinksBartender(){
 									)
 								)
 							);
-
+			
+			$("#drinks-body").empty();
 			$.each(data.responseJSON, function(i, item){
-					for(var j in item.drinks){
 						$("#drinks-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.drinks[j].name))
+												.append($("<label>").text("  "+item.name))
 											)
 										);
-						
-						//.append($("<h3>").text(item.drinks[j].name));	
-					}
-					
 										
 			});
 		}

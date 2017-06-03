@@ -179,7 +179,7 @@ public class OrderController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('BARTENDER')")
-	public ResponseEntity<Collection<BartenderDrink>> getBartenderDrinks(HttpServletRequest request
+	public ResponseEntity<Collection<Drink>> getBartenderDrinks(HttpServletRequest request
 			){
 		logger.info("> get all drinks bartender");
 		
@@ -189,11 +189,11 @@ public class OrderController {
         if(user.getClass()==Bartender.class){
         	Bartender bartender= (Bartender)user;
             Restaurant restaurant= restaurantService.findOne(bartender.getRestaurant().getId()); 
-            Collection<BartenderDrink> defineOrder=orderService.getAllDrinks(restaurant);
+            Collection<Drink> defineOrder=orderService.getAllDrinks(restaurant);
     		logger.info("< get all drinks bartender");
-    		return new ResponseEntity<Collection<BartenderDrink>>(defineOrder,HttpStatus.OK);
+    		return new ResponseEntity<Collection<Drink>>(defineOrder,HttpStatus.OK);
         }
-        return new ResponseEntity<Collection<BartenderDrink>>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Collection<Drink>>(HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(
@@ -209,15 +209,16 @@ public class OrderController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
-//        if(user.getClass()==Waiter.class){
-//        	Waiter waiter= (Waiter)user;
-//            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
-//        }
-        BartenderDrink defineOrder=orderService.saveDrinks(order);
-        
-		logger.info("< set order chef");
-		return new ResponseEntity<BartenderDrink>(defineOrder,HttpStatus.OK);
-
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            BartenderDrink defineOrder=orderService.saveDrinks(order,restaurant);
+            
+    		logger.info("< set order chef");
+    		return new ResponseEntity<BartenderDrink>(defineOrder,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<BartenderDrink>(HttpStatus.NOT_FOUND);
 	}
 	
 	

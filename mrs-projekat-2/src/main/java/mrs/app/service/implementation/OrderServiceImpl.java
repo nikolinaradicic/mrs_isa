@@ -94,10 +94,6 @@ public class OrderServiceImpl implements OrderService{
 			System.out.println(m.getName());
 			ord.getMeals().add(this.mealRepository.findOne(m.getId()));
 		}
-		for(Meal meal:ord.getMeals()){
-			System.out.println("\n+++++Meal+++++");
-			System.out.println(meal.getName());
-		}
 		return chefMealRepository.save(ord);
 	}
 
@@ -127,27 +123,38 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public Collection<BartenderDrink> getAllDrinks(Restaurant restaurant) {
+	public Collection<Drink> getAllDrinks(Restaurant restaurant) {
 		// TODO Auto-generated method stub
 		Restaurant r=restaurantRepository.findOne(restaurant.getId());
-		ArrayList<BartenderDrink> lista= (ArrayList<BartenderDrink>) bartenderDrinkRepository.findAll();
-		ArrayList<BartenderDrink> temp=(ArrayList<BartenderDrink>) bartenderDrinkRepository.findAll();
-		for(BartenderDrink bd : lista){
-			if(bd.getRestaurant().getId()!=r.getId())
-				temp.remove(bd);
+		ArrayList<WaiterOrd> listica= (ArrayList<WaiterOrd>) orderRepository.findAll();
+		ArrayList<WaiterOrd> templistica= new ArrayList<WaiterOrd>();
+		for(WaiterOrd wo : listica){
+			System.out.println("wo++++ "+wo.getRestaurant().getId());
+			System.out.println("rdid++++"+r.getId());
+			if(wo.getRestaurant().getId()==r.getId()){
+				templistica.add(wo);
+			}
 		}
-		return temp;
+		ArrayList<Drink> pica= new ArrayList<>();
+		for(WaiterOrd wo1:templistica){
+			for(Drink d:wo1.getDrinks()){
+				System.out.println("pice "+d.getName());
+				pica.add(d);
+			}
+		}
+		return pica;
 	}
 
 	@Override
-	public BartenderDrink saveDrinks(BartenderDrink order) {
+	public BartenderDrink saveDrinks(BartenderDrink order, Restaurant r) {
 		// TODO Auto-generated method stub
+		Restaurant restaurant = restaurantRepository.getOne(r.getId());
 		BartenderDrink ord=new BartenderDrink();
 		ord.setId(0L);
+		ord.setRestaurant(restaurant);
 		for(Drink d:order.getDrinks()){
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
-		}
-		
+		}	
 		return bartenderDrinkRepository.save(ord);
 	}
 	
