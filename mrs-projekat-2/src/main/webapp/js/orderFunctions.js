@@ -1,19 +1,13 @@
 	var meals = [];
-	var drinks= [];
-	
-		
+	var drinks= [];		
 	var ord_meals=[];
 	var ord_drinks=[];
-
-	
 	var number_drinks=0;
 	var number_meals=0;
 	var num_meal=0;
 	var num_drink=0;
-	
 	var num_of_orders=0;
 function setMeals(){
-
 	var counter_meals=0;
 	var temp_meals=0;
 	$.ajax({
@@ -112,10 +106,6 @@ function confirmMeals(){
 			}
 		}
 	}
-	/*for(var i in ord_drinks){
-		console.log("za porudzbinu pica");
-		console.log(ord_drinks[i]);
-	}*/
 
 	for(var i in meals){
 		for(var j in data){
@@ -163,7 +153,6 @@ function confirmMeals(){
 }
 
 function saveMealChef(){
-	console.log(chef_meals);
 	var order={"meals": chef_meals};
 	$.ajax({
 		url: "/saveChefMeals",
@@ -231,8 +220,7 @@ function getMealsChef(){
 											)
 										)
 									)
-								)
-				
+								)	
 				);
 				$("#meals-body").empty();
 			$.each(data.responseJSON, function(i, item){
@@ -240,12 +228,10 @@ function getMealsChef(){
 											.append($("<td>")
 												.append($("<label>").text("  "+item.name))
 											)
-										);
-										
+										);								
 			});
 		}
 	});
-	
 }
 function getDrinksBartender(){
 	var num=0;
@@ -282,15 +268,54 @@ function getDrinksBartender(){
 											.append($("<td>")
 												.append($("<label>").text("  "+item.name))
 											)
-										);
-										
+										);							
 			});
 		}
 	});
 	
 }
 
-
+function getMyOrder(){
+	var num=0;
+	$.ajax({
+		url: "/getMyOrders",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			$("#orders-body").empty();
+			$.each(data.responseJSON, function(i, item){
+			
+				$("#orders-body").append($("<tr>")
+											.append($("<td id='forChange'>")
+												.append($("<label class='fa fa-info-circle'>")
+																 .text("  Order #"+item.id))
+											)
+										);
+				for(var i in item.meals){
+					$("#orders-body").append($("<tr>")
+											.append($("<td>")
+												.append($("<label>").text("  "+item.meals[i].name))
+											)
+										);
+				}
+				for(var i in item.drinks){
+					$("#orders-body").append($("<tr>")
+											.append($("<td>")
+												.append($("<label>").text("  "+item.drinks[i].name))
+											)
+										);
+				}				
+				$("#orders-body").append($("<tr>")
+								.append($("<h4>")
+									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='confirmMeals()'>"))
+								)
+							);					
+			});
+		}
+	});
+}
 
 
 

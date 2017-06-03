@@ -13,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import mrs.app.domain.Waiter;
 
 import org.hibernate.mapping.Set;
 
@@ -32,6 +35,9 @@ public class WaiterOrd implements Serializable{
 	
 	@ManyToOne
 	private Restaurant restaurant;
+	
+	@ManyToOne
+	private Waiter waiter;
 
 	public WaiterOrd() {
 		// TODO Auto-generated constructor stub
@@ -77,5 +83,14 @@ public class WaiterOrd implements Serializable{
 		this.restaurant = restaurant;
 	}
 
+	public Waiter getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(Waiter waiter) {
+		this.waiter = waiter;
+	}
+
+	
 	
 }

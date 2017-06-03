@@ -2,6 +2,7 @@ package mrs.app.service;
 
 import java.util.Collection;
 
+import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
@@ -15,7 +16,7 @@ public interface OrderService {
 
 	WaiterOrd setOrder(Collection<Meal> meals, Collection<Drink> drinks, Restaurant r);
 
-	WaiterOrd setOrderMeal(WaiterOrd order,Restaurant restaurant);
+	WaiterOrd setOrderMeal(WaiterOrd order,Restaurant restaurant,Waiter waiter);
 	
 	ChefMeal getOrderChef(ChefMeal order, Restaurant restaurant);
 	
@@ -25,5 +26,6 @@ public interface OrderService {
 
 	BartenderDrink saveDrinks(BartenderDrink order, Restaurant restaurant);
 	
+	Collection<WaiterOrd> getMyOrder(Restaurant restaurant, Long id);
 	
 }

@@ -63,15 +63,16 @@ $(document).ready(function() {
  			showCalendar();
  		}
  		else if(url == "personalData"){
- 			console.log("usao");
  			showPersonalData();
  		}
  		else if(url == "restaurantSelect"){
  			showRestaurants();
  		}
  		else if(url=="defineOrder"){
- 		console.log("usao");
  			showDefineOrder();
+ 		}
+ 		else if(url=="getMyOrders"){
+ 			showMyOrders();
  		}
 		// add more routes
 	});
@@ -85,6 +86,13 @@ $(document).ready(function() {
 		$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 	}
 });
+
+function showMyOrders(){
+	$("#app-div").html("");
+	$("#app-div").load("showOrders.html #showOrder", function(){
+		getMyOrder();
+		});
+}
 
 function showDefineOrder(){
 console.log("usao");

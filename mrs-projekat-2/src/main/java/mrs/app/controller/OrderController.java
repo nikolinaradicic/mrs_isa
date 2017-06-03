@@ -70,7 +70,7 @@ public class OrderController {
         if(user.getClass()==Waiter.class){
         	Waiter waiter= (Waiter)user;
             Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId());
-            WaiterOrd defineOrder=orderService.setOrderMeal(order,restaurant);
+            WaiterOrd defineOrder=orderService.setOrderMeal(order,restaurant,waiter);
             logger.info("< set order");
     		return new ResponseEntity<WaiterOrd>(defineOrder,HttpStatus.OK);
         }
@@ -221,5 +221,26 @@ public class OrderController {
         return new ResponseEntity<BartenderDrink>(HttpStatus.NOT_FOUND);
 	}
 	
+	@RequestMapping(
+			value="/getMyOrders",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Collection<WaiterOrd>> saveBartenderDrink(HttpServletRequest request){
+		logger.info("> get my orders");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            Collection<WaiterOrd> defineOrder=orderService.getMyOrder(restaurant, waiter.getId());
+            
+    		logger.info("< get my orders");
+    		return new ResponseEntity<Collection<WaiterOrd>>(defineOrder,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<Collection<WaiterOrd>>(HttpStatus.NOT_FOUND);
+	}
 	
 }

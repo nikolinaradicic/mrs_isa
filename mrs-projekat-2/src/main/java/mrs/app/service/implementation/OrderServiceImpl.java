@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
+import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
@@ -16,6 +17,7 @@ import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
 import mrs.app.repository.RestaurantRepository;
+import mrs.app.repository.UserRepository;
 import mrs.app.service.OrderService;
 
 import org.slf4j.Logger;
@@ -46,6 +48,8 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private RestaurantRepository restaurantRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Override
 	public Collection<WaiterOrd> findAll() {
@@ -63,22 +67,19 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public WaiterOrd setOrderMeal(WaiterOrd order, Restaurant restaurant) {
+	public WaiterOrd setOrderMeal(WaiterOrd order, Restaurant restaurant,Waiter waiter) {
 		// TODO Auto-generated method stub
 		WaiterOrd ord=new WaiterOrd();
 		ord.setId(0L);
 		ord.setRestaurant(restaurant);
-		System.out.println(order.getDrinks().isEmpty());
-		System.out.println(order.getMeals().isEmpty());
-		for(Meal mm: order.getMeals()){
-			System.out.println(mm.getName());
-		}
+		Waiter w= (Waiter) userRepository.findOne(waiter.getId());
 		for(Drink d:order.getDrinks()){
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
 		}
 		for(Meal m:order.getMeals()){
 			ord.getMeals().add(this.mealRepository.findOne(m.getId()));
 		}
+		ord.setWaiter(w);
 		return orderRepository.save(ord);
 	}
 
@@ -156,6 +157,20 @@ public class OrderServiceImpl implements OrderService{
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
 		}	
 		return bartenderDrinkRepository.save(ord);
+	}
+
+	@Override
+	public Collection<WaiterOrd> getMyOrder(Restaurant r, Long id) {
+		// TODO Auto-generated method stub
+		Restaurant restaurant = restaurantRepository.getOne(r.getId());
+		Waiter waiter= (Waiter) userRepository.findOne(id);
+		ArrayList<WaiterOrd> orders=(ArrayList<WaiterOrd>) orderRepository.findAll();
+		ArrayList<WaiterOrd> lista=new ArrayList();
+		for(WaiterOrd wo:orders){
+			if(wo.getWaiter().getId()==waiter.getId())
+				lista.add(wo);
+		}
+		return lista;
 	}
 	
 }
