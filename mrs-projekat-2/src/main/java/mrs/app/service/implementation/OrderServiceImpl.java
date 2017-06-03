@@ -68,6 +68,11 @@ public class OrderServiceImpl implements OrderService{
 		WaiterOrd ord=new WaiterOrd();
 		ord.setId(0L);
 		ord.setRestaurant(restaurant);
+		System.out.println(order.getDrinks().isEmpty());
+		System.out.println(order.getMeals().isEmpty());
+		for(Meal mm: order.getMeals()){
+			System.out.println(mm.getName());
+		}
 		for(Drink d:order.getDrinks()){
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
 		}
@@ -84,33 +89,54 @@ public class OrderServiceImpl implements OrderService{
 		ChefMeal ord=new ChefMeal();
 		ord.setId(0L);
 		ord.setRestaurant(restaurant);
+		System.out.println("MEALS");		
 		for(Meal m:order.getMeals()){
+			System.out.println(m.getName());
 			ord.getMeals().add(this.mealRepository.findOne(m.getId()));
 		}
-		
+		for(Meal meal:ord.getMeals()){
+			System.out.println("\n+++++Meal+++++");
+			System.out.println(meal.getName());
+		}
 		return chefMealRepository.save(ord);
 	}
 
 	@Override
-	public Collection<ChefMeal> getAllMeals(Restaurant restaurant) {
+	public Collection<Meal> getAllMeals(Restaurant restaurant) {
 		Restaurant r=restaurantRepository.findOne(restaurant.getId());
-		if(r!=null){
-			System.out.println("nije NULL JE KONJU");
-			System.out.println("id je: "+r.getId());
-		}
+		ArrayList<WaiterOrd> listica= (ArrayList<WaiterOrd>) orderRepository.findAll();
+		ArrayList<WaiterOrd> templistica= new ArrayList<WaiterOrd>();
 		ArrayList<ChefMeal> lista= (ArrayList<ChefMeal>) chefMealRepository.findAll();
 		ArrayList<ChefMeal> temp=(ArrayList<ChefMeal>) chefMealRepository.findAll();
-		for(ChefMeal cf : lista){
-			if(cf.getRestaurant().getId()!=r.getId())
-				temp.remove(cf);
+		ArrayList<Meal> tempMeal= (ArrayList<Meal>) mealRepository.findAll();
+		for(WaiterOrd wo : listica){
+			System.out.println("wo++++ "+wo.getRestaurant().getId());
+			System.out.println("rdid++++"+r.getId());
+			if(wo.getRestaurant().getId()==r.getId()){
+				templistica.add(wo);
+			}
 		}
-		return temp;
+		ArrayList<Meal> jela= new ArrayList<>();
+		for(WaiterOrd wo1:templistica){
+			for(Meal m:wo1.getMeals()){
+				System.out.println("jelo "+m.getName());
+				jela.add(m);
+			}
+		}
+		return jela;
 	}
 
 	@Override
-	public Collection<BartenderDrink> getAllDrinks() {
+	public Collection<BartenderDrink> getAllDrinks(Restaurant restaurant) {
 		// TODO Auto-generated method stub
-		return bartenderDrinkRepository.findAll();
+		Restaurant r=restaurantRepository.findOne(restaurant.getId());
+		ArrayList<BartenderDrink> lista= (ArrayList<BartenderDrink>) bartenderDrinkRepository.findAll();
+		ArrayList<BartenderDrink> temp=(ArrayList<BartenderDrink>) bartenderDrinkRepository.findAll();
+		for(BartenderDrink bd : lista){
+			if(bd.getRestaurant().getId()!=r.getId())
+				temp.remove(bd);
+		}
+		return temp;
 	}
 
 	@Override

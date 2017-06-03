@@ -19,9 +19,9 @@ public interface OrderService {
 	
 	ChefMeal getOrderChef(ChefMeal order, Restaurant restaurant);
 	
-	Collection<ChefMeal> getAllMeals(Restaurant restaurant);
+	Collection<Meal> getAllMeals(Restaurant restaurant);
 
-	Collection<BartenderDrink> getAllDrinks();
+	Collection<BartenderDrink> getAllDrinks(Restaurant restaurant);
 
 	BartenderDrink saveDrinks(BartenderDrink order);
 	

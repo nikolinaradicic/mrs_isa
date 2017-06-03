@@ -234,16 +234,13 @@ function getMealsChef(){
 								)
 				
 				);
-				var meal=[];
+				$("#meals-body").empty();
 			$.each(data.responseJSON, function(i, item){
-					for(var j in item.meals){
 						$("#meals-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.meals[j].name))
+												.append($("<label>").text("  "+item.name))
 											)
 										);
-					}
-					
 										
 			});
 		}
