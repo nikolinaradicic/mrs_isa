@@ -15,11 +15,11 @@ public interface OrderService {
 
 	WaiterOrd setOrder(Collection<Meal> meals, Collection<Drink> drinks, Restaurant r);
 
-	WaiterOrd setOrderMeal(WaiterOrd order);
+	WaiterOrd setOrderMeal(WaiterOrd order,Restaurant restaurant);
 	
-	ChefMeal getOrderChef(ChefMeal order);
+	ChefMeal getOrderChef(ChefMeal order, Restaurant restaurant);
 	
-	Collection<ChefMeal> getAllMeals();
+	Collection<ChefMeal> getAllMeals(Restaurant restaurant);
 
 	Collection<BartenderDrink> getAllDrinks();
 

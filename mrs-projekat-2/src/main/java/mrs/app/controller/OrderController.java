@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import mrs.app.domain.Chef;
+import mrs.app.domain.Employee;
 import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
@@ -66,13 +68,15 @@ public class OrderController {
         User user= userService.findByUsername(username);
         if(user.getClass()==Waiter.class){
         	Waiter waiter= (Waiter)user;
-            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId());
+            WaiterOrd defineOrder=orderService.setOrderMeal(order,restaurant);
+            logger.info("< set order");
+    		return new ResponseEntity<WaiterOrd>(defineOrder,HttpStatus.OK);
         }
-        WaiterOrd defineOrder=orderService.setOrderMeal(order);
+
 //        Order order=orderService.setOrder(meal_list, drink_list, r);
-        
-		logger.info("< set order");
-		return new ResponseEntity<WaiterOrd>(defineOrder,HttpStatus.OK);
+        return new ResponseEntity<WaiterOrd>(HttpStatus.NOT_FOUND);
+		
 
 	}
 	
@@ -129,14 +133,16 @@ public class OrderController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
-//        if(user.getClass()==Waiter.class){
-//        	Waiter waiter= (Waiter)user;
-//            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
-//        }
-        ChefMeal defineOrder=orderService.getOrderChef(order);
-        
-		logger.info("< set order chef");
-		return new ResponseEntity<ChefMeal>(defineOrder,HttpStatus.OK);
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
+            ChefMeal defineOrder=orderService.getOrderChef(order,restaurant);     
+            
+    		logger.info("< set order chef");
+    		return new ResponseEntity<ChefMeal>(defineOrder,HttpStatus.OK);
+
+        }
+        return new ResponseEntity<ChefMeal>(HttpStatus.NOT_FOUND);
 
 	}
 	
@@ -152,14 +158,16 @@ public class OrderController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
-//        if(user.getClass()==Waiter.class){
-//        	Waiter waiter= (Waiter)user;
-//            Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
-//        }
-        Collection<ChefMeal> defineOrder=orderService.getAllMeals();
-        
-		logger.info("< set order chef");
-		return new ResponseEntity<Collection<ChefMeal>>(defineOrder,HttpStatus.OK);
+        if(user.getClass()==Chef.class){
+        	Employee chef= (Employee)user;
+            Restaurant restaurant= restaurantService.findOne(chef.getRestaurant().getId());
+            Collection<ChefMeal> defineOrder=orderService.getAllMeals(restaurant);
+            
+    		logger.info("< set order chef");
+    		return new ResponseEntity<Collection<ChefMeal>>(defineOrder,HttpStatus.OK);
+
+        }
+        return new ResponseEntity<Collection<ChefMeal>>(HttpStatus.NOT_FOUND);
 
 	}
 	

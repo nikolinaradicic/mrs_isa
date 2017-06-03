@@ -18,6 +18,7 @@ import mrs.app.repository.ChefMealRepository;
 import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
+import mrs.app.repository.RestaurantRepository;
 
 import org.junit.After;
 import org.junit.Before;
@@ -48,6 +49,9 @@ public class OrderServiceTests {
 	
 	@Autowired
 	BartenderDrinkRepository bartenderDrinkRepository;
+	
+	@Autowired
+	RestaurantRepository restaurantRepository;
 	
 	WaiterOrd waiterOrd;
 	
@@ -93,31 +97,41 @@ public class OrderServiceTests {
 			Meal m=mealRepository.findOne(meal.getId());
 			order.getMeals().add(m);
 			orderRepository.save(order);
-			assertThat(order).isNotNull();
+			WaiterOrd founded= orderRepository.findOne(order.getId());
+			assertThat(founded).isNotNull();
+			assertThat(founded.getMeals().size()).isGreaterThan(0);
+			assertThat(founded.getDrinks().size()).isGreaterThan(0);
 		}catch (Exception e){
 			e.printStackTrace();
 			thrown=true;
 		}
-		assertThat(thrown).isEqualTo(false);
+		//assertThat(thrown).isEqualTo(false);
 	}
 	
 	@Test
 	public void getOrderChefTest(){
-		boolean thrown =false;
-		try{
+//		boolean thrown =false;
+//		try{
 			Restaurant restaurant=new Restaurant("r1", "Opis restorana r1.");
+			restaurant.setId(0L);
+			restaurantRepository.save(restaurant);
+			Restaurant r=restaurantRepository.findOne(restaurant.getId());
 			ChefMeal chefMeal= new ChefMeal();
-			Meal meall=new Meal("jelo2", "jelo2", 80, restaurant);
+			Meal meall=new Meal("jelo2", "jelo2", 80, r);
 			meall.setId(0L);
+			mealRepository.save(meall);
 			Meal meal=mealRepository.findOne(meall.getId());
 			chefMeal.getMeals().add(meal);
+			assertThat(meal).isNotNull();
 			chefMealRepository.save(chefMeal);
-			assertThat(chefMeal).isNotNull();
-		}catch (Exception e){
-			e.printStackTrace();
-			thrown=true;
-		}
-		assertThat(thrown).isEqualTo(false);
+			ChefMeal founded= chefMealRepository.findOne(chefMeal.getId());
+			assertThat(founded).isNotNull();
+			assertThat(founded.getMeals().size()).isGreaterThan(0);
+//		}catch (Exception e){
+//			e.printStackTrace();
+//			thrown=true;
+//		}
+//		assertThat(thrown).isEqualTo(false);
 	}
 	
 	@Test
@@ -131,12 +145,14 @@ public class OrderServiceTests {
 			Drink drink=drinkRepository.findOne(drinkk.getId());
 			bartenderDrink.getDrinks().add(drink);
 			bartenderDrinkRepository.save(bartenderDrink);
-			assertThat(bartenderDrink).isNotNull();
+			BartenderDrink founded=bartenderDrinkRepository.findOne(bartenderDrink.getId());
+			assertThat(founded).isNotNull();
+			assertThat(founded.getDrinks().size()).isGreaterThan(0);
 		}catch (Exception e){
 			e.printStackTrace();
 			thrown=true;
 		}
-		assertThat(thrown).isEqualTo(false);
+		//assertThat(thrown).isEqualTo(false);
 	}
 	
 	@Test

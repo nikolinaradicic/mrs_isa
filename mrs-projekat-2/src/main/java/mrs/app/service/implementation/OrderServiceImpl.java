@@ -1,6 +1,8 @@
 package mrs.app.service.implementation;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.ChefMeal;
@@ -13,6 +15,7 @@ import mrs.app.repository.ChefMealRepository;
 import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
+import mrs.app.repository.RestaurantRepository;
 import mrs.app.service.OrderService;
 
 import org.slf4j.Logger;
@@ -40,6 +43,9 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private BartenderDrinkRepository bartenderDrinkRepository;
 	
+	@Autowired
+	private RestaurantRepository restaurantRepository;
+	
 	
 	@Override
 	public Collection<WaiterOrd> findAll() {
@@ -57,16 +63,11 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public WaiterOrd setOrderMeal(WaiterOrd order) {
+	public WaiterOrd setOrderMeal(WaiterOrd order, Restaurant restaurant) {
 		// TODO Auto-generated method stub
-		System.out.println("+++++++Pica+++++++");
-		for(Drink d:order.getDrinks()){
-			System.out.println(d.getId());
-		}
-		System.out.println("+++++++Hrana++++++");
-		System.out.println(order.getMeals());
 		WaiterOrd ord=new WaiterOrd();
 		ord.setId(0L);
+		ord.setRestaurant(restaurant);
 		for(Drink d:order.getDrinks()){
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
 		}
@@ -77,10 +78,12 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public ChefMeal getOrderChef(ChefMeal order) {
+	public ChefMeal getOrderChef(ChefMeal order, Restaurant r) {
 		// TODO Auto-generated method stub
+		Restaurant restaurant = restaurantRepository.getOne(r.getId());
 		ChefMeal ord=new ChefMeal();
 		ord.setId(0L);
+		ord.setRestaurant(restaurant);
 		for(Meal m:order.getMeals()){
 			ord.getMeals().add(this.mealRepository.findOne(m.getId()));
 		}
@@ -89,9 +92,19 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public Collection<ChefMeal> getAllMeals() {
-
-		return chefMealRepository.findAll();
+	public Collection<ChefMeal> getAllMeals(Restaurant restaurant) {
+		Restaurant r=restaurantRepository.findOne(restaurant.getId());
+		if(r!=null){
+			System.out.println("nije NULL JE KONJU");
+			System.out.println("id je: "+r.getId());
+		}
+		ArrayList<ChefMeal> lista= (ArrayList<ChefMeal>) chefMealRepository.findAll();
+		ArrayList<ChefMeal> temp=(ArrayList<ChefMeal>) chefMealRepository.findAll();
+		for(ChefMeal cf : lista){
+			if(cf.getRestaurant().getId()!=r.getId())
+				temp.remove(cf);
+		}
+		return temp;
 	}
 
 	@Override

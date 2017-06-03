@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class ChefMeal implements Serializable{
@@ -21,7 +22,18 @@ public class ChefMeal implements Serializable{
 
 	@ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
 	public Collection<Meal> meals;
+	
+	@ManyToOne
+	Restaurant restaurant;
  
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
 	public ChefMeal(){
 		this.meals=new ArrayList<Meal>();
 	}
