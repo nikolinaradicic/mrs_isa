@@ -8,10 +8,9 @@
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
     <title>MyRestaurant</title>
-
+    
     <script src="js/jquery.js"> </script>
-        
-    <link rel="stylesheet" href="css/font-awesome.css">
+    
     <link href="css/bootstrap.css" rel="stylesheet">  
     <link href="css/style.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
@@ -20,6 +19,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/bootstrap.min.js"></script>
     <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="js/jquery.scrollTo.min.js"></script>
@@ -39,7 +39,6 @@
     <script src="js/guestFunctions.js"></script>
     <script src="js/orderFunctions.js"></script>
     <script src="js/list.js"></script>
-    
     <link href='fullcalendar-3.4.0/fullcalendar.min.css' rel='stylesheet' />
 	<link href='fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
 	<script src='fullcalendar-3.4.0/lib/moment.min.js'></script>
@@ -89,32 +88,32 @@
       *********************************************************************************************************************************************************** -->
       <!--header start-->
       <header class="header black-bg">
-            <div class="sidebar-toggle-box">
-      	      <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-           	</div>
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
             <!--logo start-->
             <a id="logo" href="#" class="logo"><b>MyRESTAURANT</b></a>
             <!--logo end-->
             <section id="poruke">
-            	<div class="nav notify-row" id="top_menu">
-                	<!--  notification start -->
-                	<ul class="nav top-menu">
-                		<li id="header_inbox_bar" class="dropdown">
-                        	<a data-toggle="dropdown" class="dropdown-toggle" href="menu">
-                            	<i class="fa fa-envelope-o"></i>
-                            	<span class="badge bg-theme" id="brojZahteva"></span>
-                        	</a>
-                        	<ul class="dropdown-menu extended inbox" id="dodatiZahteve">
-                            	<div class="notify-arrow notify-arrow-green"></div>
-                            	<li>
-                                	<p class="green" id="brojZahtevaPoruka"></p>
-                            	</li>
-                        	</ul>
-               	    	</li>            
-                	</ul>
-          		</div>
-          	</section>
-          	<div class="top-menu">
+            <div class="nav notify-row" id="top_menu">
+                <!--  notification start -->
+                <ul class="nav top-menu">
+                	<li id="header_inbox_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="menu">
+                            <i class="fa fa-envelope-o"></i>
+                            <span class="badge bg-theme" id="brojZahteva"></span>
+                        </a>
+                        <ul class="dropdown-menu extended inbox" id="dodatiZahteve">
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <li>
+                                <p class="green" id="brojZahtevaPoruka"></p>
+                            </li>
+                        </ul>
+               	    </li>            
+                </ul>
+          	</div>
+          	</section>                
+            <div class="top-menu">
             	<ul class="nav pull-right top-menu">
                     <li><button class="logout" onclick="doLogout()">Logout</button></li>
             	</ul>
@@ -140,7 +139,7 @@
                     	<li><a href="personalData">Personal Data</a></li>
                       	<li><a  href="changePersData">Change Personal Data</a></li>
                         <li><a  href="changePass">Change Password</a></li>
-					</ul>
+                    </ul>
                	</li>  
                	<li class="sub-menu" id="restaurant-manage">
           	    	<a href="menu">
@@ -164,6 +163,17 @@
                     </ul>
                	</li>
                	
+               	<li class="sub-menu" id="bids-menu">
+          	    	<a href="menu" >
+                    	<i class="#"></i>
+                    	<span><h5>Bidding</h5></span>
+                   	</a>
+                    <ul class="sub">
+                    	<li><a href="#">My bids</a></li>
+                    	<li><a href="bidding">Active demands</a></li>
+                    </ul>
+               	</li>
+               	
                	<li class="sub-menu" id="employee-manage">
           	    	<a href="menu" >
                     	<i class="#"></i>
@@ -174,6 +184,8 @@
                     	<li><a href = "addEmployee">Add Employee</a>
                     	<li><a href = "seatingChart">Seating chart</a>
                     	<li><a href = "calendarView">Calendar</a></li>
+                    	<li><a href = "shifts">Shifts</a></li>
+                    	<li><a href = "supplies">Supplies</a>
                     </ul>
                	</li>
                	<li class="sub-menu" id="manage">
@@ -194,7 +206,7 @@
                	<li class="sub-menu" id="order">
                		<span><a href="defineOrder"><h5>Define Order</h5></a></span>
                		<span><a href="getMyOrders"><h5>My Orders</h5></a></span>
-               	</li>	
+               	</li>	 		
             </ul>			
            	<!-- sidebar menu end-->
           </div>
@@ -233,9 +245,9 @@
 						</div>
 					</div>
                     <div class="form-group">
-						<label class="control-label col-md-3">Description:</label>
-						<div class="col-md-8">
-							<textarea name="description" required id="description" rows="4"></textarea>
+						<label class="control-label col-sm-3">Description:</label>
+						<div class="col-sm-8">
+							<textarea name="description" required id="description" rows="4" cols="50"></textarea>
 						</div>
 					</div>
 					<div class="form-group">
@@ -279,9 +291,9 @@
 						</div>
 					</div>
                     <div class="form-group">
-						<label class="control-label col-md-3">Description:</label>
-						<div class="col-md-6">
-							<textarea name="description" required id="description" rows="4"></textarea>
+						<label class="control-label col-sm-3">Description:</label>
+						<div class="col-sm-8">
+							<textarea name="description" required id="description" rows="4" cols="50"></textarea>
 						</div>
 					</div>
 					<div class="form-group">
@@ -326,7 +338,7 @@
                     <div class="form-group">
 						<label class="control-label col-sm-3">Description:</label>
 						<div class="col-sm-8">
-							<textarea name="description" required id="r-description" rows="4"></textarea>
+							<textarea name="description" required id="r-description" rows="4" cols="50"></textarea>
 						</div>
 					</div>
 					</fieldset>

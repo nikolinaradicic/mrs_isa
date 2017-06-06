@@ -122,4 +122,18 @@ public class Restaurant {
 		this.segments = segments;
 	}
 
+	
+	@Override
+	public boolean equals(Object obj){
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Restaurant))
+			return false;
+		Restaurant c = (Restaurant) obj;
+		if (this.id == c.id)
+			return true;
+		return false;
+	}
 }

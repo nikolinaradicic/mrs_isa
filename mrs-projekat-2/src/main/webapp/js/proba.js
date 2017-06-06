@@ -1,23 +1,39 @@
-$(document).ready(function() {
-	// convert all a/href to a#href
+function startApp() {
+	// convert all a/href to a#href;
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
 		 // Push this URL "state" onto the history hash.
+		if(href.indexOf("collapse") !== -1){
+			return true;
+		}
+		
 		if(href != "menu"){
 			$.bbq.pushState(href,2);
+			// Prevent the default click behavior.
 			return false;
 		}
-			
-
-		// Prevent the default click behavior.
 		return true;
 	});
+	
+	$("#logoutButton").click(doLogout);
+
 	
 	$(window).bind( "hashchange", function(e) {
 		var url = $.param.fragment();
 		// url action mapping
 		if(url == ""){
-			showMainView();
+			if (getJwtToken()) {
+				getUser();
+		    }else{
+		    	$("body").load("login.html #login-div");
+		    }
+			
+		}
+		else if(url == "supplies"){
+			showSupplies();
+		}
+		else if(url == "bidding"){
+			displayDemands();
 		}
 		else if(url == "addRestaurant"){
 			//showUserList();
@@ -42,10 +58,13 @@ $(document).ready(function() {
 			showSeatingChart();
 		}
 		else if(url == "calendarView"){
-			showCalendarView();
+			setupCalendar();
 		}
 		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
 			showAddManager();
+		}
+		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
+			showSelectedSupply();
 		}
 		else if(url=="ConfirmEmail"){
 			showConfirmEmail();
@@ -68,8 +87,8 @@ $(document).ready(function() {
  		else if(url == "restaurantSelect"){
  			showRestaurants();
  		}
- 		else if(url=="defineOrder"){
- 			showDefineOrder();
+ 		else if(url == "shifts"){
+ 			showShifts();
  		}
  		else if(url=="getMyOrders"){
  			showMyOrders();
@@ -77,15 +96,8 @@ $(document).ready(function() {
 		// add more routes
 	});
 	
-	
-	if(window.location.hash==''){
-		showMainView(); // home page, show the default view
-	}else{
-		//showMainView();
-		console.log("usao");
-		$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-	}
-});
+	getUser();
+}
 
 function showMyOrders(){
 	$("#app-div").html("");
@@ -100,6 +112,7 @@ console.log("usao");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
 	});
+
 }
 
 function showRestaurants(){
@@ -125,29 +138,6 @@ function showSeatingChart(){
 	
 }
 
-function showSeatingChartWaiter(){
-	$("#app-div").html("");
-	$("#modals-div").load("seatingChart.html #modals");
-	$("#app-div").load("seatingChart.html #chart", function(){
-		setupChartWaiter();
-	});
-	
-}
-
-function showMainView(){
-	if(getJwtToken()){
-		$("#app-div").html("");
-		getUser();		
-	}
-}
-
-function showCalendarView(){
-	$("#app-div").html("");
-	$("#modals-div").load("calendarView.html #modals");
-	$('#app-div').load('calendarView.html #calendar', function (){
-		setupCalendar();
-	});
-}
 
 function showCalendar(){
  	$("#app-div").html("");
@@ -166,8 +156,7 @@ function showConfirmEmail(){
 	
 }
 function showFriends(){
-	$('#app-div').load('FriendsView.html #friendsList', function (){
-	displayFriends()});
+	$('#app-div').load('FriendsView.html #friendsList',displayFriends());
 	
 }
 function showaddFriend(){
@@ -249,7 +238,11 @@ function doLogin() {
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
-            location.href = "indexSysMan.html";
+    		$("body").load("indexSysMan.html #container", function(){
+    			$.getScript("js/common-scripts.js", function(){
+    				startApp();
+    			});
+    			});
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -261,24 +254,29 @@ function doLogin() {
     });
 }
 
-    function doLogout() {
-        removeJwtToken();
-        location.href="login.html";
-    }
+function doLogout() {
+    removeJwtToken();
+    location.href="#";
+    $("body").load("login.html #login-div");
+}
 
-    function createAuthorizationTokenHeader() {
-        var token = getJwtToken();
-        if (token) {
-            return {"Authorization": token};
-        } else {
-            return {};
-        }
+function createAuthorizationTokenHeader() {
+    var token = getJwtToken();
+    if (token) {
+        return {"Authorization": token};
+    } else {
+        return {};
     }
+}
 
-    
-    $("#logoutButton").click(doLogout);
-
-    // INITIAL CALLS =============================================================
-    if (getJwtToken()) {
-        
+$(document).ready(function(){
+	if (getJwtToken()) {
+		$("body").load("indexSysMan.html #container", function(){
+			$.getScript("js/common-scripts.js", function(){
+				startApp();
+			});
+			});
+    }else{
+    	$("body").load("login.html #login-div");
     }
+});

@@ -27,7 +27,12 @@ function setupCalendarView(){
 }
 
 function setupCalendar(){
-	fillEmployeeBox();
+	$("#modals-div").load("calendarView.html #modals", function(){
+		fillEmployeeBox();
+	});
+	$('#app-div').load('calendarView.html #calendar', function (){
+			displayCalendar();
+		});
 }
 
 function fillEmployeeBox(){
@@ -44,10 +49,27 @@ function fillEmployeeBox(){
 			        text : item.email 
 			    }));
 			});
-			displayCalendar();
+			fillShiftBox();
 		}
 	});
 }
+
+function fillShiftBox(){
+	$.ajax({
+		type : "GET",
+		url: '/getShifts',
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			$.each(data.responseJSON, function (i, item) {
+			    $('#shift-select').append($('<option>', { 
+			        value: item.name,
+			        text : item.name 
+			    }));
+			});
+		}
+	});}
 
 function addEvent(){
 	var $form = $("#add-event-form");
@@ -61,7 +83,7 @@ function addEvent(){
 		};
 	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
 	console.log(start_date);
-	var send_data = {date : check, employee : {email: data['employee-name']}};
+	var send_data = {date : check, employee : {email: data['employee-name']}, shift : {name: data['shift-name']}};
 	$.ajax({
 		type : "POST",
 		url: '/addWorkingShift',

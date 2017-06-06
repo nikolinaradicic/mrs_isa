@@ -42,11 +42,6 @@ function setupChart(){
 		$("#modalSegment").modal('toggle');
 	});
 	
-/*	$("#add-table-button").click(function(){
-		console.log("usaoooooooo");
-		addTableToCanvas();
-	});*/
-	
 	$('#new-table-button').click(function(){
 		$("#add-table-modal").modal('toggle');
 	});
