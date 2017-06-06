@@ -46,4 +46,10 @@ public class GroceryListServiceImpl implements GroceryListService {
 		return groceryListRepository.findOne(id);
 	}
 
+	@Override
+	public Collection<GroceryList> findAllActive(Date start) {
+		// TODO Auto-generated method stub
+		return groceryListRepository.findAllActive(start);
+	}
+
 }

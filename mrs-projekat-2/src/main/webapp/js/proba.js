@@ -3,6 +3,10 @@ function startApp() {
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
 		 // Push this URL "state" onto the history hash.
+		if(href.indexOf("collapse") !== -1){
+			return true;
+		}
+		
 		if(href != "menu"){
 			$.bbq.pushState(href,2);
 			// Prevent the default click behavior.
@@ -18,10 +22,18 @@ function startApp() {
 		var url = $.param.fragment();
 		// url action mapping
 		if(url == ""){
-			showMainView();
+			if (getJwtToken()) {
+				getUser();
+		    }else{
+		    	$("body").load("login.html #login-div");
+		    }
+			
 		}
 		else if(url == "supplies"){
 			showSupplies();
+		}
+		else if(url == "bidding"){
+			displayDemands();
 		}
 		else if(url == "addRestaurant"){
 			//showUserList();
@@ -82,14 +94,8 @@ function startApp() {
 		// add more routes
 	});
 	
-	
-	if(window.location.hash==''){
-		showMainView(); // home page, show the default view
-	}else{
-		//showMainView();
-		console.log("usao");
-		$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-	}
+	getUser();
+
 }
 
 function showRestaurants(){
@@ -115,12 +121,6 @@ function showSeatingChart(){
 	
 }
 
-function showMainView(){
-	if(getJwtToken()){
-		$("#app-div").html("");
-		getUser();		
-	}
-}
 
 function showCalendar(){
  	$("#app-div").html("");
@@ -239,6 +239,7 @@ function doLogin() {
 
 function doLogout() {
     removeJwtToken();
+    location.href="#";
     $("body").load("login.html #login-div");
 }
 
@@ -255,12 +256,10 @@ $(document).ready(function(){
 	if (getJwtToken()) {
 		$("body").load("indexSysMan.html #container", function(){
 			$.getScript("js/common-scripts.js", function(){
-				console.log("usaooo");
 				startApp();
 			});
 			});
     }else{
-    	console.log("tuu");
     	$("body").load("login.html #login-div");
     }
 });

@@ -8,6 +8,8 @@ import mrs.app.domain.restaurant.GroceryList;
 
 public interface GroceryListService {
 	public GroceryList create(GroceryList gl) throws Exception;
-	Collection<GroceryList> findByManager(RestaurantManager user, Date date);
+	public Collection<GroceryList> findByManager(RestaurantManager user, Date date);
 	public GroceryList findOne(Long id);
+	Collection<GroceryList> findAllActive(Date start);
+	
 }

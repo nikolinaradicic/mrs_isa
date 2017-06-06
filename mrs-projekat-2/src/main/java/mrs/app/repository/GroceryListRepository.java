@@ -14,4 +14,6 @@ public interface GroceryListRepository extends JpaRepository<GroceryList, Long> 
 	@Query("select g from GroceryList g where g.manager = ?1 and g.endDate > ?2")
 	Collection<GroceryList> findActive(RestaurantManager rm, Date date);
 
+	@Query("select g from GroceryList g where g.startDate <= ?1 and g.endDate >= ?1")
+	Collection<GroceryList> findAllActive(Date now);
 }

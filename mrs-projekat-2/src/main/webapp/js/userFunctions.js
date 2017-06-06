@@ -1,4 +1,4 @@
-function getUser(callback){
+function getUser(){
 	$.ajax({
 		url: "api/getUser",
 		type:"GET",
@@ -7,17 +7,21 @@ function getUser(callback){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data);
 				$("#account-name").text(data.responseJSON["name"]);
 				if (data.responseJSON.role == "ROLE_GUEST"){
 					$("#restaurant-manage").hide();
 					$("#employee-manage").hide();
+					$("#bids-menu").hide();
 					$("#manage").hide();
 					$("#calendar").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					if(window.location.hash==''){
+						checkRequests(getRestaurants1); // home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
 					
-					checkRequests(getRestaurants1);
 				}
 				else if(data.responseJSON.role == "ROLE_SYSTEM_MANAGER"){
 					$("#employee-manage").hide();
@@ -27,7 +31,14 @@ function getUser(callback){
 					$("#calendar").hide();
 					$("#chart").hide();
 					$("#order").hide();
-					getRestaurants();
+					$("#bids-menu").hide();
+					if(window.location.hash==''){
+						getRestaurants(); // home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
+					
+					
 				}
 				else if(data.responseJSON.role == "ROLE_RESTAURANT_MANAGER"){
 					$("#restaurant-manage").hide();
@@ -38,7 +49,13 @@ function getUser(callback){
 					$("#calendar").hide();
 					$("#chart").hide();
 					$("#order").hide();
-					displayRestaurant(data.responseJSON.restaurant);
+					$("#bids-menu").hide();
+					if(window.location.hash==''){
+						displayRestaurant(data.responseJSON.restaurant); // home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
+					
 				}
 				else if(data.responseJSON.role =="ROLE_BIDDER"){
 					$("#restaurant-manage").hide();
@@ -49,6 +66,13 @@ function getUser(callback){
 					$("#calendar").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					if(window.location.hash==''){
+						 // home page, show the default view
+						displayBids();
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
+					
 				}
 				else if(data.responseJSON.role == "ROLE_BARTENDER"){
 					$("#restaurant-manage").hide();
@@ -58,6 +82,12 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					$("#bids-menu").hide();
+					if(window.location.hash==''){
+						// home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
 				}
 				else if(data.responseJSON.role == "ROLE_CHEF"){
 					$("#restaurant-manage").hide();
@@ -67,6 +97,12 @@ function getUser(callback){
 					$("#manage").hide();
 					$("#chart").hide();
 					$("#order").hide();
+					$("#bids-menu").hide();
+					if(window.location.hash==''){
+						// home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
 				}
 				else if(data.responseJSON.role=="ROLE_WAITER"){
 					$("#restaurant-manage").hide();
@@ -74,10 +110,13 @@ function getUser(callback){
 					$("#friend-manage").hide();
 					$("#poruke").remove();
 					$("#manage").hide();
+					$("#bids-menu").hide();
+					if(window.location.hash==''){
+						// home page, show the default view
+					}else{
+						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+					}
 				}
-			}
-			else{
-				console.log(data);
 			}
 		}
 	});

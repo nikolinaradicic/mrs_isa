@@ -8,11 +8,23 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import mrs.app.domain.Bidder;
 
 @Entity
 public class Offer {
 	
+	public Offer(Bidder bidder, GroceryList groceryList, double price,
+			String message, boolean accepted) {
+		super();
+		this.bidder = bidder;
+		this.groceryList = groceryList;
+		this.price = price;
+		this.message = message;
+		this.accepted = accepted;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -55,6 +67,7 @@ public class Offer {
 		this.bidder = bidder;
 	}
 
+	@JsonIgnore
 	public GroceryList getGroceryList() {
 		return groceryList;
 	}
