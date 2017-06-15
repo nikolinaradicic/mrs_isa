@@ -2,6 +2,7 @@ package mrs.app.domain.restaurant;
 
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import mrs.app.domain.RestaurantManager;
+import javax.persistence.Version;
 
 @Entity
 public class GroceryList {
@@ -25,12 +25,12 @@ public class GroceryList {
 	@ManyToOne
 	private Restaurant restaurant;
 	
-	@ManyToOne
-	@JoinColumn(nullable = false)
-	private RestaurantManager manager;
-	
 	@OneToMany(cascade={CascadeType.ALL},fetch= FetchType.LAZY,mappedBy="groceryList")
 	private Set<Offer> offers;
+	
+	@Version
+	@Column(name="version")
+	private Long version;
 	
 	@OneToOne
 	@JoinColumn(nullable=true)
@@ -65,13 +65,6 @@ public class GroceryList {
 		this.restaurant = restaurant;
 	}
 
-	public RestaurantManager getManager() {
-		return manager;
-	}
-
-	public void setManager(RestaurantManager manager) {
-		this.manager = manager;
-	}
 
 	public Set<Offer> getOffers() {
 		return offers;

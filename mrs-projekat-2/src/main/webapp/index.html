@@ -10,6 +10,14 @@
     <title>MyRestaurant</title>
     
      <script src="js/jquery.js"> </script>
+	<!-- Koristi sockjs biblioteku da se konektuje na /stomp endpoint -->
+	<script type="text/javascript"
+		src="//cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js">
+		
+	</script>
+	<!-- Koristi stomp biblioteku da se pretplati na brokerov /topic/message endpoint -->
+	<script type="text/javascript"
+		src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
@@ -30,6 +38,7 @@
     <script src="js/jquery.ba-bbq.min.js"></script>
     <script src="js/proba.js"></script>
     <script src="js/userFunctions.js"></script>
+    <script src="js/orderFunctions.js"></script>
     <script src="js/restaurantFunctions.js"></script>
     <script src="js/fabric.js"></script>
     <script src="js/fabric.canvasex.js"></script>

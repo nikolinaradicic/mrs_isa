@@ -5,124 +5,133 @@ function getUser(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				$("#account-name").text(data.responseJSON["name"]);
-				if (data.responseJSON.role == "ROLE_GUEST"){
-					$("#restaurant-manage").hide();
-					$("#employee-manage").hide();
-					$("#bids-menu").hide();
-					$("#manage").hide();
-					$("#calendar").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					if(window.location.hash==''){
-						checkRequests(getRestaurants1); // home page, show the default view
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-					
-				}
-				else if(data.responseJSON.role == "ROLE_SYSTEM_MANAGER"){
-					$("#employee-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#friends-section1").hide();
-					$("#calendar").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					$("#bids-menu").hide();
-					if(window.location.hash==''){
-						getRestaurants(); // home page, show the default view
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-					
-					
-				}
-				else if(data.responseJSON.role == "ROLE_RESTAURANT_MANAGER"){
-					$("#restaurant-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#manage").hide();
-					$("#friends-section1").hide();
-					$("#calendar").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					$("#bids-menu").hide();
-					if(window.location.hash==''){
-						displayRestaurant(data.responseJSON.restaurant); // home page, show the default view
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-					
-				}
-				else if(data.responseJSON.role =="ROLE_BIDDER"){
-					$("#restaurant-manage").hide();
-					$("#employee-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#manage").hide();
-					$("#calendar").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					if(window.location.hash==''){
-						 // home page, show the default view
-						displayBids();
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-					
-				}
-				else if(data.responseJSON.role == "ROLE_BARTENDER"){
-					$("#restaurant-manage").hide();
-					$("#employee-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#manage").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					
+		success: function(data) {
+				$("body").load("indexSysMan.html #container", function(){
+					$.getScript("js/common-scripts.js", function(){
+						startApp();
+						$("#account-name").text(data["name"]);
+						if (data.role == "ROLE_GUEST"){
+							$("#restaurant-manage").hide();
+							$("#employee-manage").hide();
+							$("#bids-menu").hide();
+							$("#manage").hide();
+							$("#calendar").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							if(window.location.hash==''){
+								checkRequests(getRestaurants1); // home page, show the default view
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+						}
+						
+	
+						else if(data.role == "ROLE_SYSTEM_MANAGER"){
+							$("#employee-manage").hide();
+							$("#friend-manage").hide();
+							$("#poruke").remove();
+							$("#friends-section1").hide();
+							$("#calendar").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							$("#bids-menu").hide();
+							if(window.location.hash==''){
+								getRestaurants(); // home page, show the default view
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}	
+						}
+						
+						else if(data.role == "ROLE_RESTAURANT_MANAGER"){
+							$("#restaurant-manage").hide();
+							$("#friend-manage").hide();
+							$("#poruke").remove();
+							$("#manage").hide();
+							$("#friends-section1").hide();
+							$("#calendar").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							$("#bids-menu").hide();
+							if(window.location.hash==''){
+								displayRestaurant(data.restaurant); // home page, show the default view
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+							
+						}
+						else if(data.role =="ROLE_BIDDER"){
+							$("#restaurant-manage").hide();
+							$("#employee-manage").hide();
+							$("#friend-manage").hide();
+							//$("#poruke").remove();
+							$("#manage").hide();
+							$("#calendar").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							if(window.location.hash==''){
+								 // home page, show the default view
+								displayBids();
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+							
+						}
+						else if(data.role == "ROLE_BARTENDER"){
+							$("#restaurant-manage").hide();
+							$("#employee-manage").hide();
+							$("#friend-manage").hide();
+							$("#poruke").remove();
+							$("#manage").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							
+	
+							$("#bids-menu").hide();
+							if(window.location.hash==''){
+								// home page, show the default view
+								getDrinksBartender();
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+						}
+						else if(data.role == "ROLE_CHEF"){
+							$("#restaurant-manage").hide();
+							$("#employee-manage").hide();
+							$("#friend-manage").hide();
+							$("#poruke").remove();
+							$("#manage").hide();
+							$("#chart").hide();
+							$("#order").hide();
+							$("#bids-menu").hide();
+							if(window.location.hash==''){
+								// home page, show the default view
+								getMealsChef();
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+						}
+						else if(data.role=="ROLE_WAITER"){
+							$("#restaurant-manage").hide();
+							$("#employee-manage").hide();
+							$("#friend-manage").hide();
+							$("#poruke").remove();
+							$("#manage").hide();
+							$("#bids-menu").hide();
+							if(window.location.hash==''){
+								// home page, show the default view
+							}else{
+								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
+							}
+						}
+						setupWebSockets(data);
+	
+					});
+				});
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
 
-					$("#bids-menu").hide();
-					if(window.location.hash==''){
-						// home page, show the default view
-						getDrinksBartender();
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-				}
-				else if(data.responseJSON.role == "ROLE_CHEF"){
-					$("#restaurant-manage").hide();
-					$("#employee-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#manage").hide();
-					$("#chart").hide();
-					$("#order").hide();
-					$("#bids-menu").hide();
-					if(window.location.hash==''){
-						// home page, show the default view
-						getMealsChef();
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-				}
-				else if(data.responseJSON.role=="ROLE_WAITER"){
-					$("#restaurant-manage").hide();
-					$("#employee-manage").hide();
-					$("#friend-manage").hide();
-					$("#poruke").remove();
-					$("#manage").hide();
-					$("#bids-menu").hide();
-					if(window.location.hash==''){
-						// home page, show the default view
-					}else{
-						$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
-					}
-				}
-			}
-		}
+	    		$("body").load("login.html #login-div");
+	        },
 	});
 }
 

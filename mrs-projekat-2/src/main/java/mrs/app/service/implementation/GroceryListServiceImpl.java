@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.restaurant.GroceryList;
+import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.repository.GroceryListRepository;
 import mrs.app.service.GroceryListService;
 
@@ -35,9 +34,9 @@ public class GroceryListServiceImpl implements GroceryListService {
 	}
 
 	@Override
-	public Collection<GroceryList> findByManager(RestaurantManager user, Date date) {
+	public Collection<GroceryList> findByRestaurant(Restaurant r, Date date) {
 		// TODO Auto-generated method stub
-		return groceryListRepository.findActive(user, date);
+		return groceryListRepository.findActive(r, date);
 	}
 
 	@Override

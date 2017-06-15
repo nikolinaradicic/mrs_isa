@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import mrs.app.domain.Bidder;
@@ -19,6 +20,9 @@ public class OfferServiceImpl implements OfferService{
 	@Autowired
 	private OfferRepository offerRepository;
 	
+
+	@Autowired
+	SimpMessagingTemplate simp;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -51,6 +55,21 @@ public class OfferServiceImpl implements OfferService{
 	public Offer findByListAndBidder(GroceryList gl, Bidder user) {
 		// TODO Auto-generated method stub
 		return offerRepository.findByGroceryListAndBidder(gl, user);
+	}
+
+	@Override
+	public Offer acceptOffer(Offer offer) {
+		// TODO Auto-generated method stub
+		Offer saved = offerRepository.findOne(offer.getId());
+		saved.setAccepted(true);
+		
+		offerRepository.save(saved);
+		
+		String text = "vasa ponuda je prihvacena.";		
+				
+		simp.convertAndSend("/notify/" + saved.getBidder().getEmail() + "/receive", text);
+						
+		return saved;
 	}
 
 }
