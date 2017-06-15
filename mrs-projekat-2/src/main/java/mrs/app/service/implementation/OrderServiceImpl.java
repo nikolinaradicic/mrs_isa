@@ -93,6 +93,8 @@ public class OrderServiceImpl implements OrderService{
 		System.out.println("MEALS");		
 		for(Meal m:order.getMeals()){
 			System.out.println(m.getName());
+			Meal meal=this.mealRepository.findOne(m.getId());		
+			meal.setQuantity(m.getQuantity());
 			ord.getMeals().add(this.mealRepository.findOne(m.getId()));
 		}
 		return chefMealRepository.save(ord);
@@ -154,6 +156,8 @@ public class OrderServiceImpl implements OrderService{
 		ord.setId(0L);
 		ord.setRestaurant(restaurant);
 		for(Drink d:order.getDrinks()){
+			Drink drink=this.drinkRepository.findOne(d.getId());
+			drink.setQuantity(d.getQuantity());
 			ord.getDrinks().add(this.drinkRepository.findOne(d.getId()));
 		}	
 		return bartenderDrinkRepository.save(ord);

@@ -21,6 +21,8 @@ public class Meal implements Serializable{
 	private String description;
 	@Column(nullable = false)
 	private double price;
+	@Column(nullable=true)
+	private int quantity;
 	
 	public Meal(String name, String description, double price,
 			Restaurant restaurant) {
@@ -74,4 +76,14 @@ public class Meal implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
+	
 }
