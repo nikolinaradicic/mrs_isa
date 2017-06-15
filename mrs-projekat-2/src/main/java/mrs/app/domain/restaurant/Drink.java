@@ -29,6 +29,8 @@ public class Drink {
 	private String description;
 	@Column(nullable = false)
 	private double price;
+	@Column(nullable = true)
+	private double quantity;
 	
 	@ManyToOne
 	private Restaurant restaurant;
@@ -74,4 +76,13 @@ public class Drink {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+	}
+	
 }

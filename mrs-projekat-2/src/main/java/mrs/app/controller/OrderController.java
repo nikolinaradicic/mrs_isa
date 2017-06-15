@@ -130,7 +130,9 @@ public class OrderController {
 	public ResponseEntity<ChefMeal> saveChefMeals(HttpServletRequest request,
 			@RequestBody ChefMeal order){
 		logger.info("> set order chef");
-		
+		for(Meal m: order.meals){
+			System.out.println(",,,,,,"+m.getQuantity());
+		}
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
