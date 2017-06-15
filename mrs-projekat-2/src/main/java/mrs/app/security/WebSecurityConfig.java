@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js"
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/sendNotification/**").permitAll()
                 .antMatchers("/api/guestRegistration").permitAll()
                 .anyRequest().authenticated();
 

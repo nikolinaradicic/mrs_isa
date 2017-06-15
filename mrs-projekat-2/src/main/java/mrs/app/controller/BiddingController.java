@@ -63,7 +63,6 @@ public class BiddingController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
 		gl.setRestaurant(user.getRestaurant());
-		gl.setManager(user);
 		GroceryList saved = groceryListService.create(gl);
 		logger.info("< add grocery list");
 		return new ResponseEntity<GroceryList>(saved, HttpStatus.CREATED);
@@ -80,7 +79,7 @@ public class BiddingController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
-		Collection<GroceryList> saved = groceryListService.findByManager(user, new Date());
+		Collection<GroceryList> saved = groceryListService.findByRestaurant(user.getRestaurant(), new Date());
 		logger.info("< get grocery lists");
 		return new ResponseEntity<Collection<GroceryList>>(saved, HttpStatus.CREATED);
 		
@@ -126,6 +125,24 @@ public class BiddingController {
 			return new ResponseEntity<GroceryList>(saved, HttpStatus.OK);
 		}
 		return new ResponseEntity<GroceryList>(HttpStatus.FORBIDDEN);
+	}
+	
+	@RequestMapping(
+			value = "/acceptOffer",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<GroceryList> acceptOffer( @RequestBody Offer offer, HttpServletRequest request) throws Exception {
+		logger.info("> accept offer");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
+		Offer saved = offerService.acceptOffer(offer);
+		GroceryList gl = saved.getGroceryList();
+		gl.setAcceptedOffer(saved);
+		logger.info("< accept offer");
+		return new ResponseEntity<GroceryList>(gl, HttpStatus.OK);
 	}
 	
 	@RequestMapping(

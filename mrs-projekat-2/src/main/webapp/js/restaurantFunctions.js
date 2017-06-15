@@ -110,27 +110,30 @@ function getMeals(restaurant){
 }
 
 function displayRestaurant(restaurant){
-	$("#add-drink-form input[name=restaurant]").val(restaurant.id);
-	$("#add-meal-form input[name=restaurant]").val(restaurant.id);
-	$("#app-div").load("restaurant.html #choosenRestaurant", function(){
-			$("#name_rest").text(restaurant.name);
-			$("#desc_rest").text(restaurant.description);
-			$("#editRest").click(function(){
-								$("#modalInformation").modal('toggle');
-								});
-			$("#addMeal").click(function(){
-								$("#modalMeal").modal('toggle');
-								});
-			$("#addDrink").click(function(){
-								$("#modalDrink").modal('toggle');
-								});
-			getDrinks(restaurant);
-			getMeals(restaurant);
-	});
+	$("#modals-div").load("restaurant.html #modals-div", function(){
+		$("#add-drink-form input[name=restaurant]").val(restaurant.id);
+		$("#add-meal-form input[name=restaurant]").val(restaurant.id);
+		$("#app-div").load("restaurant.html #choosenRestaurant", function(){
+				$("#name_rest").text(restaurant.name);
+				$("#desc_rest").text(restaurant.description);
+				$("#editRest").click(function(){
+									$("#modalInformation").modal('toggle');
+									});
+				$("#addMeal").click(function(){
+									$("#modalMeal").modal('toggle');
+									});
+				$("#addDrink").click(function(){
+									$("#modalDrink").modal('toggle');
+									});
+				getDrinks(restaurant);
+				getMeals(restaurant);
+		});
 
-	$("#r-name").attr("value", restaurant.name);
-	$("#r-description").text(restaurant.description);
-	
+		$("#r-name").attr("value", restaurant.name);
+		$("#r-description").text(restaurant.description);
+
+	});
+		
 	
 }
 
