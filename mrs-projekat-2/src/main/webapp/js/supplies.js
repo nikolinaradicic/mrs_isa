@@ -92,7 +92,7 @@ function showSelectedSupply(){
 				$("#startDate").text(moment(data.startDate).format('YYYY-MM-DD'));
 				$("#endDate").text(moment(data.endDate).format('YYYY-MM-DD'));
 				if(data.offers){
-					displayOffers(data.offers);
+					displayOffers(data.offers, data.id);
 				}
 				});
 	        },
@@ -146,7 +146,7 @@ function showActiveLists(lists){
 	});
 }
 
-function displayOffers(offers){
+function displayOffers(offers, supId){
 	$.each(offers, function(i,item){
 		$("#bids-div").prepend($('<div>')
 					  .attr("class", "list-group-item")
@@ -180,7 +180,7 @@ function displayOffers(offers){
 												.attr("id", "like-button")
 												.text("Accept")
 												.click(function(){
-													acceptOffer(item.id);
+													acceptOffer(item.id, supId);
 												})
 											)
 								)
@@ -190,8 +190,8 @@ function displayOffers(offers){
 	});
 }
 
-function acceptOffer(offerId){
-	var s = {id: offerId};
+function acceptOffer(offerId, supId){
+	var s = {id: offerId, groceryListId:supId};
 	$.ajax({
 		url: "/acceptOffer",
 		type:"POST",

@@ -1,6 +1,7 @@
 package mrs.app.domain.restaurant;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class GroceryList {
 	@ManyToOne
 	private Restaurant restaurant;
 	
-	@OneToMany(cascade={CascadeType.ALL},fetch= FetchType.LAZY,mappedBy="groceryList")
+	@OneToMany(cascade={CascadeType.ALL},fetch= FetchType.EAGER,mappedBy="groceryList")
 	private Set<Offer> offers;
 	
 	@Version
@@ -47,7 +48,22 @@ public class GroceryList {
 	public GroceryList() {
 		super();
 		// TODO Auto-generated constructor stub
+		offers = new HashSet<Offer>();
 	}
+	
+	
+
+	public GroceryList(Restaurant restaurant, Date startDate, Date endDate,
+			String text) {
+		super();
+		this.restaurant = restaurant;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.text = text;
+		offers = new HashSet<Offer>();
+	}
+
+
 
 	public Long getId() {
 		return id;
@@ -104,6 +120,18 @@ public class GroceryList {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+
+
+	public Long getVersion() {
+		return version;
+	}
+
+
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 
 	

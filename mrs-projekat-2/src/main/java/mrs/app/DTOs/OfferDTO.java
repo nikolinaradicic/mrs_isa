@@ -5,6 +5,8 @@ public class OfferDTO {
 	
 	private Long groceryListId;
 	
+	private Long id;
+	
 	private double price;
 	
 	private String message;
@@ -23,6 +25,15 @@ public class OfferDTO {
 		this.groceryListId = groceryListId;
 	}
 
+
+
+	public OfferDTO(Long id2, double price2, String message2, Long id3) {
+		// TODO Auto-generated constructor stub
+		this.groceryListId = id2;
+		this.price = price2;
+		this.message = message2;
+		this.id = id3;
+	}
 
 
 	public Long getGroceryListId() {
@@ -59,6 +70,16 @@ public class OfferDTO {
 
 	public void setRestaurant(String restaurant) {
 		this.restaurant = restaurant;
+	}
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 
