@@ -288,5 +288,21 @@ public class RestaurantController {
         }
 
 	}
+	@RequestMapping(
+			value = "/addDate",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Segment> addDate(@RequestBody Segment segment, HttpServletRequest request) throws Exception{
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		segment.setRestaurant(saved.getRestaurant());
+		Segment savedSegment = segmentService.create(segment);
+		return new ResponseEntity<Segment>(savedSegment, HttpStatus.CREATED);
+			
+	}
 	
 }
