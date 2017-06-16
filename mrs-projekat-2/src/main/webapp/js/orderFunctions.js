@@ -26,8 +26,11 @@ function setMeals(){
 			$.each(data.responseJSON, function(i, item){
 				$("#meal-body").append($("<tr>")
 									.append($("<td>")
-										.append($("<input type='checkbox'>").attr('name',item.id).attr('value',item.name))
+										.append($("<input type='checkbox'>").attr('name',"jelo").attr('value',item.name))
 										.append($("<label>").text("  "+item.name))
+									)
+									.append($("<td>")
+										.append($("<input id='dynamic-number-meals' type='number' required autocomplete='off' name='quantity_meals'>"))
 									)
 								);
 								meals[temp_meals-counter_meals]=item;
@@ -55,14 +58,15 @@ function setMeals(){
 			$.each(data.responseJSON, function(i, item){
 				$("#drink-body").append($("<tr>")
 									.append($("<td>")
-										.append($("<input type='checkbox'>").attr('name',item.id).attr('value',item.name))
+										.append($("<input type='checkbox'>").attr('name','pice').attr('value',item.name))
 										.append($("<label>").text("  "+item.name))
+									)
+									.append($("<td>")
+										.append($("<input id='dynamic-number-drinks' type='number' required autocomplete='off' name='quantity_drinks'>"))
 									)
 								);
 								drinks[temp_drinks-counter_drinks]=item;
-								counter_drinks--;
-								
-								
+								counter_drinks--;								
 			});
 			$("#drink-body").append($("<br>"));
 		}
@@ -78,7 +82,10 @@ function setMeals(){
 
 function confirmMeals(){
 	var data=$('#meal-form').serializeArray();
-	console.log(data);
+	var quantity_meals=$('#dynamic-number-meals').serializeArray();
+	var quantity_drinks=$('#dynamic-number-drinks').serializeArray();
+	//console.log(quantity);
+	//console.log(data);
 	if(!validateForm(data)){
 		$("#addManager-error").text("Fields must be filled in").css("color","red");
 		return;
@@ -87,36 +94,87 @@ function confirmMeals(){
 	ord_drinks=[];
 	var counter=0;
 	var temp_counter=0;
-	for(var i in data){
-		counter++;
+	for(var i in quantity_drinks){
+
 		console.log("counter");
-		console.log(data[i]);
+		console.log(quantity_drinks);
+	}
+	var vrednost=0;
+	var data_temp=[];
+	var data_drinks=[];
+	var data_number_dr=[];
+	var data_number_ml=[];
+	var broj_num=0;
+	var broj=0;
+	
+	//jela 
+	broj=0;
+	var broj_pica=0;
+	var broj_jela=0;
+	for(var i=0;i<data.length;i++){
+		if(data[i].name!="quantity_meals" && data[i].name!="quantity_meals" && data[i].name=="jelo"){
+			data_temp[broj]=data[i];
+			console.log("jelaaaa");
+			console.log(data_temp[broj].value);
+			broj++;
+			console.log(broj);
+		}
+		if(data[i].name=="quantity_drinks"){
+		
+			data_number_dr[broj_pica]=data[i].value;
+			broj_pica++;
+		}
+		
+		if(data[i].name=="quantity_meals"){
+			data_number_ml[broj_jela]=data[i].value;
+			broj_jela++;
+		}
 	}
 	
+	//pica
+	broj=0;
+	for(var i=0;i<data.length;i++){
+		if(data[i].name!="quantity_meals" && data[i].name!="quantity_meals" && data[i].name=="pice"){
+			data_drinks[broj]=data[i];
+			console.log("picaaaa");
+			console.log(data_drinks[broj].value);
+			broj++;
+			console.log(broj);
+		}
+	}
+	
+	var pomocni_broj=0;
 	temp_counter=counter;
 	var temp=temp_counter;
 	var temp1=counter;
 	for(var i in drinks){
-		for(var j in data){
-			if((drinks[i].name)==data[j].value){
+		for(var j=0;j<data_drinks.length;j++){
+		console.log("kkk");
+			if((drinks[i].name)==data_drinks[j].value){
+				drinks[i].quantity=data_number_dr[pomocni_broj];
+				console.log("objekat pica");
+				console.log(drinks[i]);
 				ord_drinks[temp_counter-counter]=drinks[i];
 				bartender_drinks[num_drink]=drinks[i];
 				num_drink++;
 				counter--;
+				pomocni_broj++;
 			}
 		}
 	}
-
+	var pomocni_broj=0;
 	for(var i in meals){
-		for(var j in data){
-			console.log("stavljam hranu");
-			console.log(data[j]);
-			if((meals[i].name)==data[j].value){
-			console.log("stavljam hranu");
+		for(var j =0;j<data_temp.length;j++){
+			//console.log(data[j].value);
+			if((meals[i].name)==data_temp[j].value){
+				console.log("stavljam hranu");
+				meals[i].quantity=data_number_ml[pomocni_broj];
+				console.log(meals[i]);
 				ord_meals[temp_counter-temp1]=meals[i];
 				chef_meals[num_meal]=meals[i];
 				num_meal++;
 				temp1--;
+				pomocni_broj++;
 			}
 		}
 	}
@@ -126,8 +184,8 @@ function confirmMeals(){
 	}
 	
 	for(var i in meals){
-		console.log("za porudzbinu hrana");
-		console.log(meals[i]);
+		//console.log("za porudzbinu hrana");
+		//console.log(meals[i]);
 	}
 	
 	var order={"meals": ord_meals,
@@ -148,11 +206,18 @@ function confirmMeals(){
 			}
 		}
 	});
+	console.log("ovde");
 	saveMealChef();
+	console.log("ovdwe");
 	saveDrinkBartender();
 }
 
 function saveMealChef(){
+		for(var i in chef_meals){
+		console.log("chefmeals");
+		console.log(chef_meals[i]);
+	}
+
 	var order={"meals": chef_meals};
 	$.ajax({
 		url: "/saveChefMeals",
@@ -224,9 +289,13 @@ function getMealsChef(){
 				);
 				$("#meals-body").empty();
 			$.each(data.responseJSON, function(i, item){
+			console.log(item);
 						$("#meals-body").append($("<tr>")
 											.append($("<td>")
 												.append($("<label>").text("  "+item.name))
+											)
+											.append($("<td>")
+												.append($("<label>").text("  "+item.quantity))
 											)
 										);								
 			});
@@ -267,6 +336,9 @@ function getDrinksBartender(){
 						$("#drinks-body").append($("<tr>")
 											.append($("<td>")
 												.append($("<label>").text("  "+item.name))
+											)
+											.append($("<td>")
+												.append($("<label>").text("  "+item.quantity))
 											)
 										);							
 			});

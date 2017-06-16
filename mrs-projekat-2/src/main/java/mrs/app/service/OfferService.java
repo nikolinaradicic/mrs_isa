@@ -13,4 +13,6 @@ public interface OfferService {
 	public Collection<Offer> findForBidder(Bidder user);
 
 	public Offer findByListAndBidder(GroceryList gl, Bidder user);
+	
+	public Offer acceptOffer(Offer offer);
 }

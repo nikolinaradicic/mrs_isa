@@ -93,10 +93,13 @@ function startApp() {
  		else if(url=="getMyOrders"){
  			showMyOrders();
  		}
+ 		else if(url=="defineOrder"){
+ 			showDefineOrder();
+ 		}
 		// add more routes
 	});
 	
-	getUser();
+	//getUser();
 }
 
 function showMyOrders(){
@@ -238,11 +241,8 @@ function doLogin() {
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
-    		$("body").load("indexSysMan.html #container", function(){
-    			$.getScript("js/common-scripts.js", function(){
-    				startApp();
-    			});
-    			});
+    		getUser();
+    		//setupWebsockets();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -270,13 +270,21 @@ function createAuthorizationTokenHeader() {
 }
 
 $(document).ready(function(){
-	if (getJwtToken()) {
-		$("body").load("indexSysMan.html #container", function(){
-			$.getScript("js/common-scripts.js", function(){
-				startApp();
-			});
-			});
-    }else{
-    	$("body").load("login.html #login-div");
-    }
+	getUser();
 });
+
+
+function setupWebSockets(user){
+	var socketClient = new SockJS("/sendNotification");
+	stompClient = Stomp.over(socketClient);
+	stompClient.connect({}, function(frame){
+		stompClient.subscribe("/notify/" + user.email + "/receive", function(retVal){
+			if (retVal != null && retVal.body != null && retVal.body != ""){
+				//var notifikacija = JSON.parse(retVal.body);
+				//console.log(notifikacija);
+				window.alert(retVal.body);
+				//dodajNotifikaciju(notifikacija);
+			}
+		});
+	});
+}

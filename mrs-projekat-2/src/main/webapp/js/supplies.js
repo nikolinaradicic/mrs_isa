@@ -86,10 +86,14 @@ function showSelectedSupply(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function (data, textStatus, jqXHR) {
+			console.log(data);
 			$("#app-div").load("GroceryList.html #list-section", function(){
 				$("#description").text(data.text);
 				$("#startDate").text(moment(data.startDate).format('YYYY-MM-DD'));
 				$("#endDate").text(moment(data.endDate).format('YYYY-MM-DD'));
+				if(data.offers){
+					displayOffers(data.offers);
+				}
 				});
 	        },
 	    error: function (jqXHR, textStatus, errorThrown) {
@@ -139,6 +143,73 @@ function showActiveLists(lists){
 							)
 				
 			);
+	});
+}
+
+function displayOffers(offers){
+	$.each(offers, function(i,item){
+		$("#bids-div").prepend($('<div>')
+					  .attr("class", "list-group-item")
+					  .append($('<div>')
+					    .attr("class","media")
+						.append($('<div>')
+						  .attr("class", "media-left media-top")
+						  .append($('<img>')
+								.attr("src", "img/person.jpg")
+								.attr("class", "pull-left")
+								.css("width","60px")
+							)
+						  
+						)
+					    .append($('<div>')
+						  .attr("class", "media-body")
+						  .append($('<h4>')
+							.attr("class","media-heading")
+							.text(item.bidder.name + " " + item.bidder.lastname)
+						)
+					)
+				)
+				.append($('<div>').append($('<p>')
+							.text(item.message)
+							.css("word-wrap","break-word")
+							)
+							.append($('<p>')
+								.text("Asking price: " + item.price)
+									.append($('<button>')
+												.attr("class","btn btn-link")
+												.attr("id", "like-button")
+												.text("Accept")
+												.click(function(){
+													acceptOffer(item.id);
+												})
+											)
+								)
+						)
+					);
+
+	});
+}
+
+function acceptOffer(offerId){
+	var s = {id: offerId};
+	$.ajax({
+		url: "/acceptOffer",
+		type:"POST",
+		contentType:"application/json",
+		dataType:"json",
+		data: JSON.stringify(s),
+		headers: createAuthorizationTokenHeader(),
+		success: function (data, textStatus, jqXHR) {
+	            //showActiveSupplies(data);
+				console.log("prihvaceno");
+	        },
+	    error: function (jqXHR, textStatus, errorThrown) {
+	            if (jqXHR.status === 401) {
+	            	
+	            } else {
+	                window.alert("an unexpected error occured: " + errorThrown);
+	            }
+	        }
 	});
 }
 
