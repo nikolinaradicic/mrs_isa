@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import mrs.app.domain.Guest;
 
@@ -37,11 +40,18 @@ public class Reservation implements Serializable{
 	@Column(nullable=false)
 	private String endTime;
 	
-	@Column(nullable=false)
-	private Set<Guest> invatedFriends;
+	@ManyToOne
+	private Restaurant restaurant;
 	
-	@Column(nullable=false)
-	private Set<RestaurantTable> reservedTable;
+	@OneToMany
+	private Set<Invitation> invited;
+
+	
+	@ManyToMany
+	private Set<RestaurantTable> restaurantTable;
+	
+	@Column 
+	private int brojStolica;
 	
 	public Reservation(){
 		super();
@@ -80,17 +90,6 @@ public class Reservation implements Serializable{
 		this.endTime = endTime;
 	}
 
-	public Set<Guest> getInvatedFriends() {
-		return invatedFriends;
-	}
-
-	public void setInvatedFriends(Set<Guest> invatedFriends) {
-		this.invatedFriends = invatedFriends;
-	}
-
-	public Set<RestaurantTable> getReservedTable() {
-		return reservedTable;
-	}
 	
 	public Long getId() {
 		return id;
@@ -100,9 +99,48 @@ public class Reservation implements Serializable{
 		this.id = id;
 	}
 	
-	public void setReservedTable(Set<RestaurantTable> reservedTable) {
-		this.reservedTable = reservedTable;
+
+
+	public int getBrojStolica() {
+		return brojStolica;
 	}
+
+
+	public void setBrojStolica(int brojStolica) {
+		this.brojStolica = brojStolica;
+	}
+
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+
+	public Set<Invitation> getInvitation() {
+		return invited;
+	}
+
+
+	public void setInvitation(Set<Invitation> invited) {
+		this.invited= invited;
+	}
+
+
+	public Set<RestaurantTable> getRestaurant_table() {
+		return restaurantTable;
+	}
+
+
+	public void setRestaurant_table(Set<RestaurantTable> restaurant_table) {
+		this.restaurantTable = restaurant_table;
+	}
+	
+	
 
 	
 	
