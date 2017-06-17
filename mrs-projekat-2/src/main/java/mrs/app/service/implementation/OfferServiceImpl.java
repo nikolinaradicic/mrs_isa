@@ -19,8 +19,6 @@ public class OfferServiceImpl implements OfferService{
 	@Autowired
 	private OfferRepository offerRepository;
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	@Override
 	public Collection<Offer> findForBidder(Bidder user) {
 		// TODO Auto-generated method stub

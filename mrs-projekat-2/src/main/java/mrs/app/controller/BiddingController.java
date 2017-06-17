@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import mrs.app.DTOs.GroceryListDTO;
 import mrs.app.DTOs.OfferDTO;
 import mrs.app.domain.Bidder;
+import mrs.app.domain.Notification;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.restaurant.GroceryList;
 import mrs.app.domain.restaurant.Offer;
 import mrs.app.security.JwtTokenUtil;
 import mrs.app.service.GroceryListService;
+import mrs.app.service.NotificationService;
 import mrs.app.service.OfferService;
 import mrs.app.service.UserService;
 
@@ -52,6 +54,9 @@ public class BiddingController {
 	
 	@Autowired
 	private OfferService offerService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 
 	@Autowired
@@ -155,19 +160,21 @@ public class BiddingController {
 		return new ResponseEntity<GroceryList>(gl, HttpStatus.OK);
 	}
 	
-	private void notifySuppliers(Set<Offer> offers) {
+	private void notifySuppliers(Set<Offer> offers) throws Exception {
 		// TODO Auto-generated method stub
 
 		String text = "vasa ponuda je prihvacena.";	
 		String text2 = "vasa ponuda nije prihvacena";
-		for (Offer o : offers){	
+		for (Offer o : offers){
+			Notification notif = new Notification(o.getBidder(),false);
 			if(o.isAccepted()){
-
-				simp.convertAndSend("/notify/" + o.getBidder().getEmail() + "/receive", text);
+				notif.setText(text);
 			}else{
-
-				simp.convertAndSend("/notify/" + o.getBidder().getEmail() + "/receive", text2);
+				notif.setText(text2);
 			}
+			
+			notificationService.create(notif);
+			simp.convertAndSend("/notify/" + o.getBidder().getEmail() + "/receive", notif);
 		}
 	}
 
@@ -185,6 +192,16 @@ public class BiddingController {
 		ArrayList<OfferDTO> retVal = new ArrayList<OfferDTO>();
 		for (Offer o : saved){
 			OfferDTO od = new OfferDTO(o.getGroceryList().getId(),o.getPrice(),o.getMessage());
+			if(o.isAccepted()){
+				od.setStatus("ACCEPTED");
+			}
+			else if(o.getGroceryList().getAcceptedOffer() == null){
+				od.setStatus("WAITING");
+			}
+			else{
+				od.setStatus("REJECTED");
+			}
+			
 			od.setRestaurant(o.getGroceryList().getRestaurant().getName());
 			retVal.add(od);
 		}
@@ -235,6 +252,7 @@ public class BiddingController {
     		return new ResponseEntity<OfferDTO>(retVal, HttpStatus.CREATED);
         }
         
+        offer.setId(exists.getId());
         Offer toSave = groceryListService.updateOffer(offer, gl);
 
 		OfferDTO retVal = new OfferDTO(toSave.getGroceryList().getId(), toSave.getPrice(), toSave.getMessage());

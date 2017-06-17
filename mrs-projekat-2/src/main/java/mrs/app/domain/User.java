@@ -12,6 +12,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
 
+import mrs.app.domain.restaurant.Restaurant;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -108,6 +110,20 @@ public class User implements Serializable{
 
 	public void setFirstTime(String firstTime) {
 		this.firstTime = firstTime;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof User))
+			return false;
+		User c = (User) obj;
+		if (this.id == c.id)
+			return true;
+		return false;
 	}
 
 	

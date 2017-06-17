@@ -162,7 +162,6 @@ function doLogin() {
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
     		getUser();
-    		//setupWebsockets();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -177,6 +176,8 @@ function doLogin() {
 function doLogout() {
     removeJwtToken();
     location.href="#";
+    stompClient.disconnect();
+    num_notifications = 0;
     $("body").load("login.html #login-div");
 }
 
@@ -196,6 +197,7 @@ $(document).ready(function(){
 		// url action mapping
 		if(url == ""){
 			if (getJwtToken()) {
+		    	stompClient.disconnect();
 				getUser();
 		    }else{
 		    	$("body").load("login.html #login-div");
@@ -275,7 +277,7 @@ $(document).ready(function(){
 	getUser();
 });
 
-
+var stompClient;
 function setupWebSockets(user){
 	var socketClient = new SockJS("/sendNotification");
 	stompClient = Stomp.over(socketClient);
@@ -283,7 +285,9 @@ function setupWebSockets(user){
 		stompClient.subscribe("/notify/" + user.email + "/receive", function(retVal){
 			if (retVal != null && retVal.body != null && retVal.body != ""){
 				
-				window.alert(retVal.body);
+				var notification = JSON.parse(retVal.body);
+				addNotification(notification);
+				$("#brojZahteva").text(num_notifications);
 			}
 		});
 	});

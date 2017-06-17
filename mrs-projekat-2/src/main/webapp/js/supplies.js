@@ -38,6 +38,9 @@ function displayBids(){
 								.append($("<td>")
 									.text(item.message)
 								)
+								.append($("<td>")
+									.text(item.status)
+								)
 							);
 	
 					});
@@ -92,7 +95,7 @@ function showSelectedSupply(){
 				$("#startDate").text(moment(data.startDate).format('YYYY-MM-DD'));
 				$("#endDate").text(moment(data.endDate).format('YYYY-MM-DD'));
 				if(data.offers){
-					displayOffers(data.offers, data.id);
+					displayOffers(data);
 				}
 				});
 	        },
@@ -146,8 +149,8 @@ function showActiveLists(lists){
 	});
 }
 
-function displayOffers(offers, supId){
-	$.each(offers, function(i,item){
+function displayOffers(data){
+	$.each(data.offers, function(i,item){
 		$("#bids-div").prepend($('<div>')
 					  .attr("class", "list-group-item")
 					  .append($('<div>')
@@ -175,14 +178,22 @@ function displayOffers(offers, supId){
 							)
 							.append($('<p>')
 								.text("Asking price: " + item.price)
-									.append($('<button>')
+									.append(function (){
+											if(data.acceptedOffer == null)
+												return $('<button>')
 												.attr("class","btn btn-link")
 												.attr("id", "like-button")
 												.text("Accept")
 												.click(function(){
-													acceptOffer(item.id, supId);
-												})
-											)
+													acceptOffer(item.id, data.id);
+												});
+											if(item.accepted)
+												return "Accepted";
+											
+											return "Rejected";
+											
+											}
+									)
 								)
 						)
 					);
@@ -200,8 +211,8 @@ function acceptOffer(offerId, supId){
 		data: JSON.stringify(s),
 		headers: createAuthorizationTokenHeader(),
 		success: function (data, textStatus, jqXHR) {
-	            //showActiveSupplies(data);
-				console.log("prihvaceno");
+	            window.alert("ponuda uspjesno prihvacena");
+	            $(window).trigger( "hashchange" );
 	        },
 	    error: function (jqXHR, textStatus, errorThrown) {
 	            if (jqXHR.status === 401) {

@@ -124,7 +124,7 @@ function getUser(){
 							}
 						}
 						setupWebSockets(data);
-	
+						getNotifications();
 					});
 				});
 			},
@@ -133,6 +133,80 @@ function getUser(){
 	    		$("body").load("login.html #login-div");
 	        },
 	});
+}
+
+
+var num_notifications = 0;
+
+
+function addNotification(notification){
+	console.log(notification);
+	num_notifications++;
+	$("#dodatiZahteve").append($("<li>").attr("id", "notif" + notification.id)
+						 .append($("<a href='#menu'>")
+							.append($("<span class='photo'>")
+								.append($("<img alt='avatar'>").attr('src','img/fr-11.jpg'))
+								)
+							.append($("<span class='subject'>")
+									.append($("<span class='from'>").text(notification.text))
+								)
+							.append($("<input class='button' type='button' value='Ok'>")
+									.hover(function(e) {
+										$(this).css("background-color",e.type === "mouseenter"?"#b3b3e6":"#6666cc");
+									}).css('border','1px')
+									.css('background-color','#6666cc')
+									.css('width','80')
+									.css('height','30')
+									.css('color','#fff')
+									.css('border-radius','3px')
+									.click( function() {
+											notifSeen(notification.id);
+											})
+									)
+								)
+							);
+}
+
+function notifSeen(id){
+	$.ajax({
+		url: "api/updateNotification/" + id,
+		type:"POST",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+			$("#notif"+id).remove();
+			num_notifications--;
+			$("#brojZahteva").text(num_notifications);
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+
+	        }
+	});
+}
+
+function getNotifications(){
+	$.ajax({
+		url: "api/getNotifications",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+			$.each(data, function(i, item){
+				addNotification(item);
+			});
+
+			$("#brojZahteva").text(num_notifications);
+			if(num_notifications > 0){
+				$("#brojZahtevaPoruka").text("You have new notifications.");
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+
+        }
+	});
+	
 }
 
 function displayData(){

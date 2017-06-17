@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface GroceryListRepository extends JpaRepository<GroceryList, Long> {
 	
-	@Query("select g from GroceryList g where g.restaurant = ?1 and g.endDate > ?2")
+	@Query("select g from GroceryList g where g.restaurant = ?1 and g.endDate > ?2 and g.acceptedOffer is NULL")
 	Collection<GroceryList> findActive(Restaurant r, Date date);
 
-	@Query("select g from GroceryList g where g.startDate <= ?1 and g.endDate >= ?1")
+	@Query("select g from GroceryList g where g.startDate <= ?1 and g.endDate >= ?1 and g.acceptedOffer is NULL")
 	Collection<GroceryList> findAllActive(Date now);
 }

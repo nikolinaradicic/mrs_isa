@@ -5,13 +5,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import mrs.app.DTOs.GuestDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Bidder;
 import mrs.app.domain.Chef;
 import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
+import mrs.app.domain.Notification;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.SystemManager;
 import mrs.app.domain.User;
@@ -19,6 +22,7 @@ import mrs.app.domain.UserType;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.NotificationService;
 import mrs.app.service.UserService;
 import mrs.app.service.WorkingShiftService;
 
@@ -33,10 +37,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @RestController
@@ -46,6 +52,10 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+
+	@Autowired
+	private NotificationService notificationService;
 	
 	@Autowired
 	private WorkingShiftService workingShiftService;
@@ -507,6 +517,35 @@ public class UserController {
 		}
 		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
+	
+	@RequestMapping(
+			value = "/api/getNotifications",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<Notification>> getNotifications(HttpServletRequest request) {
+		logger.info("> get notifications");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+        Collection<Notification> retVal = notificationService.findByUser(saved);
+		logger.info("<  get notifications");
+		return new ResponseEntity<Collection<Notification>>(retVal,HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/api/updateNotification/{id}",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Notification> updateNotification(@PathVariable Long id, HttpServletRequest request) {
+		logger.info("> update notifications");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+        Notification retVal = notificationService.updateNotification(id, saved);
+		logger.info("<  update notification");
+		return new ResponseEntity<Notification>(retVal,HttpStatus.OK);
+	}
+	
 	
 	
 }
