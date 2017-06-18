@@ -22,7 +22,7 @@ public class ChefMeal implements Serializable{
 	private Long id;	
 
 	@ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
-	public Collection<Meal> meals;
+	public Collection<ItemMeal> meals;
 	
 	@ManyToOne
 	Restaurant restaurant;
@@ -36,7 +36,7 @@ public class ChefMeal implements Serializable{
 	}
 
 	public ChefMeal(){
-		this.meals=new ArrayList<Meal>();
+		this.meals=new ArrayList<ItemMeal>();
 	}
 
 	public Long getId() {
@@ -47,11 +47,11 @@ public class ChefMeal implements Serializable{
 		this.id = id;
 	}
 
-	public Collection<Meal> getMeals() {
+	public Collection<ItemMeal> getMeals() {
 		return meals;
 	}
 
-	public void setMeals(Collection<Meal> meals) {
+	public void setMeals(Collection<ItemMeal> meals) {
 		this.meals = meals;
 	}
 	

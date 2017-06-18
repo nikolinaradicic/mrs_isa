@@ -16,101 +16,29 @@ function startApp() {
 	});
 	
 	$("#logoutButton").click(doLogout);
-
-	
-	$(window).bind( "hashchange", function(e) {
-		var url = $.param.fragment();
-		// url action mapping
-		if(url == ""){
-			if (getJwtToken()) {
-				getUser();
-		    }else{
-		    	$("body").load("login.html #login-div");
-		    }
-			
-		}
-		else if(url == "supplies"){
-			showSupplies();
-		}
-		else if(url == "bidding"){
-			displayDemands();
-		}
-		else if(url == "addRestaurant"){
-			//showUserList();
-			showAddRestaurant();
-		}
-		else if(url == "changePersData"){
-			showChangePersData();
-		}
-		else if(url == "changePass"){
-			showChangePass();
-		}
-		else if(url == "addSysMan"){
-			showAddSysMan();
-		}
-		else if(url == "addBidder"){
-			showAddBidder();
-		}
-		else if(url == "addEmployee"){
-			showAddEmployee();
-		}
-		else if(url == "seatingChart"){
-			showSeatingChart();
-		}
-		else if(url == "calendarView"){
-			setupCalendar();
-		}
-		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
-			showAddManager();
-		}
-		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
-			showSelectedSupply();
-		}
-		else if(url=="ConfirmEmail"){
-			showConfirmEmail();
-		}
-		else if(url=="friends"){
-			showFriends();			
-		}
-		else if(url =="addFriend"){
-			showaddFriend();
-		}
-		else if(url == "seatingChartWaiter"){
- 			showSeatingChartWaiter();
- 		}
- 		else if(url == "calendar"){
- 			showCalendar();
- 		}
- 		else if(url == "personalData"){
- 			showPersonalData();
- 		}
- 		else if(url == "restaurantSelect"){
- 			showRestaurants();
- 		}
- 		else if(url == "shifts"){
- 			showShifts();
- 		}
- 		else if(url=="getMyOrders"){
- 			showMyOrders();
- 		}
- 		else if(url=="defineOrder"){
- 			showDefineOrder();
- 		}
-		// add more routes
-	});
 	
 	//getUser();
 }
 
 function showMyOrders(){
-	$("#app-div").html("");
+	$("#app-div").html("");	
+	
 	$("#app-div").load("showOrders.html #showOrder", function(){
 		getMyOrder();
+		$("#modals-div").load("showOrders.html #modals-div", function(){
+			$("#changeInfo").click(function(){
+				setInfo();
+			});
+			$("#changeInfoMeal").click(function(){
+				setInfoMeal();
+			});
 		});
+	});
+	
+
 }
 
 function showDefineOrder(){
-console.log("usao");
 	$("#app-div").html("");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
@@ -270,6 +198,90 @@ function createAuthorizationTokenHeader() {
 }
 
 $(document).ready(function(){
+$(window).bind( "hashchange", function(e) {
+		console.log("promjena");
+		var url = $.param.fragment();
+		// url action mapping
+		if(url == ""){
+			if (getJwtToken()) {
+				getUser();
+		    }else{
+		    	$("body").load("login.html #login-div");
+		    }
+			
+		}
+		else if(url == "supplies"){
+			showSupplies();
+		}
+		else if(url == "bidding"){
+			displayDemands();
+		}
+		else if(url == "addRestaurant"){
+			//showUserList();
+			showAddRestaurant();
+		}
+		else if(url == "changePersData"){
+			showChangePersData();
+		}
+		else if(url == "changePass"){
+			showChangePass();
+		}
+		else if(url == "addSysMan"){
+			showAddSysMan();
+		}
+		else if(url == "addBidder"){
+			showAddBidder();
+		}
+		else if(url == "addEmployee"){
+			showAddEmployee();
+		}
+		else if(url == "seatingChart"){
+			showSeatingChart();
+		}
+		else if(url == "calendarView"){
+			setupCalendar();
+		}
+		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
+			showAddManager();
+		}
+		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
+			showSelectedSupply();
+		}
+		else if(url=="ConfirmEmail"){
+			showConfirmEmail();
+		}
+		else if(url=="friends"){
+			showFriends();			
+		}
+		else if(url =="addFriend"){
+			showaddFriend();
+		}
+		else if(url == "seatingChartWaiter"){
+ 			showSeatingChartWaiter();
+ 		}
+ 		else if(url == "calendar"){
+ 			showCalendar();
+ 		}
+ 		else if(url == "personalData"){
+ 			showPersonalData();
+ 		}
+ 		else if(url == "restaurantSelect"){
+ 			showRestaurants();
+ 		}
+ 		else if(url == "shifts"){
+ 			showShifts();
+ 		}
+ 		else if(url=="getMyOrders"){
+ 			console.log("prvi");
+ 			showMyOrders();
+ 		}
+ 		else if(url=="defineOrder"){
+ 			console.log("prvi");
+ 			showDefineOrder();
+ 		}
+		// add more routes
+	});
+	console.log("reload");
 	getUser();
 });
 

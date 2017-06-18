@@ -6,6 +6,7 @@ function getUser(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
+				console.log("uspjeh");
 				$("body").load("indexSysMan.html #container", function(){
 					$.getScript("js/common-scripts.js", function(){
 						startApp();
@@ -84,11 +85,10 @@ function getUser(){
 							$("#manage").hide();
 							$("#chart").hide();
 							$("#order").hide();
-							
-	
 							$("#bids-menu").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
+								console.log("pozivam ucitavanje")
 								getDrinksBartender();
 							}else{
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
@@ -123,8 +123,7 @@ function getUser(){
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 							}
 						}
-						setupWebSockets(data);
-	
+						setupWebSockets(data);	
 					});
 				});
 			},
