@@ -21,7 +21,7 @@ public class BartenderDrink implements Serializable{
 	private Long id;	
 	
 	@ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
-	public Collection<Drink> drinks;
+	public Collection<ItemDrink> drinks;
 	
 	@ManyToOne
 	public Restaurant restaurant;
@@ -36,7 +36,7 @@ public class BartenderDrink implements Serializable{
 
 	public BartenderDrink() {
 		// TODO Auto-generated constructor stub
-		this.drinks=new ArrayList<Drink>();
+		this.drinks=new ArrayList<ItemDrink>();
 	}
 
 	public Long getId() {
@@ -47,11 +47,11 @@ public class BartenderDrink implements Serializable{
 		this.id = id;
 	}
 
-	public Collection<Drink> getDrinks() {
+	public Collection<ItemDrink> getDrinks() {
 		return drinks;
 	}
 
-	public void setDrinks(Collection<Drink> drinks) {
+	public void setDrinks(Collection<ItemDrink> drinks) {
 		this.drinks = drinks;
 	}
 

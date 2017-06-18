@@ -17,20 +17,27 @@ function startApp() {
 	
 	$("#logoutButton").click(doLogout);
 
-	
-	
-	//getUser();
 }
 
 function showMyOrders(){
-	$("#app-div").html("");
+	$("#app-div").html("");	
+	
 	$("#app-div").load("showOrders.html #showOrder", function(){
 		getMyOrder();
+		$("#modals-div").load("showOrders.html #modals-div", function(){
+			$("#changeInfo").click(function(){
+				setInfo();
+			});
+			$("#changeInfoMeal").click(function(){
+				setInfoMeal();
+			});
 		});
+	});
+	
+
 }
 
 function showDefineOrder(){
-console.log("usao");
 	$("#app-div").html("");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
@@ -190,8 +197,8 @@ function createAuthorizationTokenHeader() {
 }
 
 $(document).ready(function(){
-	$(window).bind( "hashchange", function(e) {
-		console.log("promjena");
+
+$(window).bind( "hashchange", function(e) {
 		var url = $.param.fragment();
 		// url action mapping
 		if(url == ""){
@@ -267,11 +274,14 @@ $(document).ready(function(){
  			showMyOrders();
  		}
  		else if(url=="defineOrder"){
+ 			console.log("prvi");
+ 			showMyOrders();
+ 		}
+ 		else if(url=="defineOrder"){
  			showDefineOrder();
  		}
 		// add more routes
 	});
-	
 	getUser();
 });
 

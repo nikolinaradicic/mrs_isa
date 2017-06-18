@@ -7,9 +7,13 @@
 	var num_meal=0;
 	var num_drink=0;
 	var num_of_orders=0;
+	var chef_meals=[];
+	var bartender_drinks=[];
 function setMeals(){
 	var counter_meals=0;
 	var temp_meals=0;
+	//meals=[];
+	//drinks=[];
 	$.ajax({
 		url: "/getMeals1",
 		type:"GET",
@@ -17,10 +21,8 @@ function setMeals(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
-
 			$.each(data.responseJSON, function(i, item){
 				counter_meals++;
-				console.log(counter_meals);
 			});
 			temp_meals=counter_meals;
 			$.each(data.responseJSON, function(i, item){
@@ -35,8 +37,10 @@ function setMeals(){
 								);
 								meals[temp_meals-counter_meals]=item;
 								counter_meals--;
+								
 
 			});
+			console.log(meals);
 			$("#meal-body").append($("<br>"));
 			
 		}
@@ -71,7 +75,7 @@ function setMeals(){
 			$("#drink-body").append($("<br>"));
 		}
 	});
-	
+	console.log(drinks);
 	$("#meal-form").append($("<tr>")
 								.append($("<h4>")
 									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='confirmMeals()'>"))
@@ -81,24 +85,14 @@ function setMeals(){
 }
 
 function confirmMeals(){
+	chef_meals=[];
+	bartender_drinks=[];
 	var data=$('#meal-form').serializeArray();
-	var quantity_meals=$('#dynamic-number-meals').serializeArray();
-	var quantity_drinks=$('#dynamic-number-drinks').serializeArray();
-	//console.log(quantity);
 	//console.log(data);
-	if(!validateForm(data)){
-		$("#addManager-error").text("Fields must be filled in").css("color","red");
-		return;
-	}
-	ord_meals=[];
-	ord_drinks=[];
+
 	var counter=0;
 	var temp_counter=0;
-	for(var i in quantity_drinks){
 
-		console.log("counter");
-		console.log(quantity_drinks);
-	}
 	var vrednost=0;
 	var data_temp=[];
 	var data_drinks=[];
@@ -108,88 +102,68 @@ function confirmMeals(){
 	var broj=0;
 	
 	//jela 
-	broj=0;
+	broj_zaj=0;
+	broj_zap=0;
 	var broj_pica=0;
 	var broj_jela=0;
 	for(var i=0;i<data.length;i++){
-		if(data[i].name!="quantity_meals" && data[i].name!="quantity_meals" && data[i].name=="jelo"){
-			data_temp[broj]=data[i];
-			console.log("jelaaaa");
-			console.log(data_temp[broj].value);
-			broj++;
-			console.log(broj);
-		}
-		if(data[i].name=="quantity_drinks"){
-		
+		if(data[i].name=="jelo"){
+		//jela
+			data_temp[broj_zaj]=data[i];
+			broj_zaj++;
+		}else if(data[i].name=="quantity_drinks" && data[i].value!=""){
+		//quantity
 			data_number_dr[broj_pica]=data[i].value;
 			broj_pica++;
-		}
-		
-		if(data[i].name=="quantity_meals"){
+		}else if(data[i].name=="quantity_meals" && data[i].value!=""){
+		//quantity
 			data_number_ml[broj_jela]=data[i].value;
 			broj_jela++;
+		}else if(data[i].name=="pice"){
+		//pica
+			data_drinks[broj_zap]=data[i];
+			broj_zap++;
 		}
 	}
-	
-	//pica
-	broj=0;
-	for(var i=0;i<data.length;i++){
-		if(data[i].name!="quantity_meals" && data[i].name!="quantity_meals" && data[i].name=="pice"){
-			data_drinks[broj]=data[i];
-			console.log("picaaaa");
-			console.log(data_drinks[broj].value);
-			broj++;
-			console.log(broj);
-		}
-	}
+	console.log(data_temp);
+	console.log(data_drinks);
+	console.log(data_number_dr);
+	console.log(data_number_ml);
 	
 	var pomocni_broj=0;
+	counter=0;
 	temp_counter=counter;
 	var temp=temp_counter;
 	var temp1=counter;
+	num_drink=0;
 	for(var i in drinks){
 		for(var j=0;j<data_drinks.length;j++){
-		console.log("kkk");
 			if((drinks[i].name)==data_drinks[j].value){
 				drinks[i].quantity=data_number_dr[pomocni_broj];
-				console.log("objekat pica");
-				console.log(drinks[i]);
-				ord_drinks[temp_counter-counter]=drinks[i];
 				bartender_drinks[num_drink]=drinks[i];
 				num_drink++;
-				counter--;
 				pomocni_broj++;
 			}
 		}
 	}
+	num_meal=0;
 	var pomocni_broj=0;
 	for(var i in meals){
+		//console.log(meals[i]);
 		for(var j =0;j<data_temp.length;j++){
-			//console.log(data[j].value);
+			//console.log(data_temp[j].value);
 			if((meals[i].name)==data_temp[j].value){
-				console.log("stavljam hranu");
+			console.log(meals[i].name);
 				meals[i].quantity=data_number_ml[pomocni_broj];
-				console.log(meals[i]);
-				ord_meals[temp_counter-temp1]=meals[i];
 				chef_meals[num_meal]=meals[i];
 				num_meal++;
-				temp1--;
 				pomocni_broj++;
 			}
 		}
 	}
-	for(var i in ord_meals){
-		console.log("stvarna za porudzbinu hrana");
-		console.log(ord_meals[i]);
-	}
 	
-	for(var i in meals){
-		//console.log("za porudzbinu hrana");
-		//console.log(meals[i]);
-	}
-	
-	var order={"meals": ord_meals,
-           		"drinks": ord_drinks};
+	var order={meals: chef_meals,
+           		drinks: bartender_drinks};
 	$.ajax({
 		url: "/setMealss",
 		type:"POST",
@@ -206,63 +180,12 @@ function confirmMeals(){
 			}
 		}
 	});
-	console.log("ovde");
-	saveMealChef();
-	console.log("ovdwe");
-	saveDrinkBartender();
-}
-
-function saveMealChef(){
-		for(var i in chef_meals){
-		console.log("chefmeals");
-		console.log(chef_meals[i]);
-	}
-
-	var order={"meals": chef_meals};
-	$.ajax({
-		url: "/saveChefMeals",
-		type:"POST",
-		data :JSON.stringify(order),
-		contentType:"application/json",
-		dataType:"json",
-		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "#";
-				num_of_orders++;
-			}
-			else{
-				console.log(data);
-			}
-		}
-	});
-}
-
-function saveDrinkBartender(){
-	var order={"drinks": bartender_drinks};
-	$.ajax({
-		url: "/saveBartenderDrinks",
-		type:"POST",
-		data :JSON.stringify(order),
-		contentType:"application/json",
-		dataType:"json",
-		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "#";
-				num_of_orders++;
-			}
-			else{
-				console.log(data);
-			}
-		}
-	});
 }
 
 function getMealsChef(){
 	var num=0;
 	$.ajax({
-		url: "/getChefMeals",
+		url: "/getBartenderDrinks",
 		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
@@ -280,6 +203,7 @@ function getMealsChef(){
 													)
 													//.append($("<hr>"))
 													.append($("<tbody id='meals-body'>")
+														
 													)
 												)
 											)
@@ -287,17 +211,45 @@ function getMealsChef(){
 									)
 								)	
 				);
-				$("#meals-body").empty();
+				//$("#meals-body").empty();
 			$.each(data.responseJSON, function(i, item){
-			console.log(item);
+			console.log(item.id);
+							$("#meals-body").append($("<tr>")
+											.append($("<td>")
+												.append($("<label class='fa fa-info-circle'>")
+																 .text("  Order #"+item.id))
+											)
+											.append($("<td>").append($("<label class='fa fa-info-circle'>")
+																 .text("  Quantity")
+																 ))
+			
+            								.append($("<td>").append($("<label class='fa fa-info-circle'>")
+            													.text("  Action")
+            								))
+								)
+				$.each(item.meals,function(i,meal){
 						$("#meals-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.name))
+												.append($("<label>").text("  "+meal.meal.name))
 											)
 											.append($("<td>")
-												.append($("<label>").text("  "+item.quantity))
+												.append($("<label>").text("  "+meal.quantity))
 											)
-										);								
+											.append($("<td>")
+												.append($("<div>")
+													.append($("<input type='button' value='Accept' style='margin-right: 5px'  class='btn btn-warning btn-xs'>").click(function(){
+														acceptMeal(meal);
+													})
+													)
+													.append($("<input type='button' value='Prepared' style='margin-right: 5px' class='btn btn-success btn-xs'>").click(function(){
+														preparedMeal(meal);
+													})
+												)
+												)
+												
+											)
+										);
+				});								
 			});
 		}
 	});
@@ -330,17 +282,43 @@ function getDrinksBartender(){
 									)
 								)
 							);
-			
-			$("#drinks-body").empty();
 			$.each(data.responseJSON, function(i, item){
-						$("#drinks-body").append($("<tr>")
+				if(item.drinks!=0){
+				$("#drinks-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.name))
+												.append($("<label class='fa fa-info-circle'>")
+																 .text("  Order #"+item.id))
+											)
+											.append($("<td>").append($("<label class='fa fa-info-circle'>")
+																 .text("  Quantity")
+																 ))
+			
+            								.append($("<td>").append($("<label class='fa fa-info-circle'>")
+            													.text("  Action")
+            								))
+								)
+				}
+				$.each(item.drinks, function(i, drink){
+						$("#drinks-body")
+										.append($("<tr>")
+											.append($("<td>")
+												.append($("<label>").text("  "+drink.drink.name))
 											)
 											.append($("<td>")
-												.append($("<label>").text("  "+item.quantity))
+												.append($("<label>").text("  "+drink.quantity))
 											)
-										);							
+											.append($("<td>")
+												.append($("<input type='button' id='acceptDrinkButton' value='Accept'  style='margin-right: 5px' class='btn btn-warning btn-xs'>").click(function(){
+														acceptDrink(drink);
+													})
+												)
+												.append($("<input type='button' value='Prepared' style='margin-right: 5px' class='btn btn-success btn-xs'>").click(function(){
+														preparedDrink(drink);
+													})
+												)
+											)
+										);
+						});							
 			});
 		}
 	});
@@ -358,36 +336,334 @@ function getMyOrder(){
 		complete: function(data) {
 			$("#orders-body").empty();
 			$.each(data.responseJSON, function(i, item){
-			
+			console.log(item);
 				$("#orders-body").append($("<tr>")
 											.append($("<td id='forChange'>")
 												.append($("<label class='fa fa-info-circle'>")
 																 .text("  Order #"+item.id))
 											)
-										);
-				for(var i in item.meals){
+											.append($("<td>").append($("<label class='fa fa-info-circle'>")
+																 .text("  Quantity")
+																 ))
+			
+            								.append($("<td>").append($("<label class='fa fa-info-circle'>")
+            													.text("  Action")
+            								))
+											.append($("<td>").append($("<label class='fa fa-info-circle'>")
+																 	.text("  Status")
+															)
+											)
+											
+										);						
+				$.each(item.meals, function(i, mm){
+				console.log(mm);
 					$("#orders-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.meals[i].name))
+												.append($("<label>").text("  "+mm.meal.name))
 											)
+											.append($("<td>")
+												.append($("<label>").text("  "+mm.quantity))
+											)
+											.append($("<td>")
+												.append($("<input type='button' value='Edit'  style='margin-right: 5px' class='btn btn-blue btn-xs'>").click(function(){
+														editMeal(mm);
+													})
+												)
+												.append($("<input type='button' value='Delete'  style='margin-right: 5px' class='btn btn-red btn-xs'>").click(function(){
+														console.log("brisem");
+														deleteMeal(mm,item.id);
+														
+													})
+												)
+												
+												
+											)
+											.append($("<td>")
+												.append($("<span class='label label-success'>").text(mm.status))
+											)
+											
 										);
-				}
-				for(var i in item.drinks){
+				});
+				$.each(item.drinks, function(i, dd){
 					$("#orders-body").append($("<tr>")
 											.append($("<td>")
-												.append($("<label>").text("  "+item.drinks[i].name))
+												.append($("<label>").text("  "+dd.drink.name))
+											)
+											.append($("<td>")
+												.append($("<label>").text("  "+dd.quantity))
+											)
+											.append($("<td>")
+												.append($("<input type='button' value='Edit' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
+														editDrink(dd);
+													})
+												)
+												.append($("<input type='button' value='Delete' style='margin-right: 5px'  class='btn btn-red btn-xs'>").click(function(){
+														deleteDrink(dd,item.id);
+													})
+												)
+											)
+											.append($("<td>")
+												.append($("<span class='label label-success'>").text(dd.status))
 											)
 										);
-				}				
+				});				
 				$("#orders-body").append($("<tr>")
-								.append($("<h4>")
-									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='confirmMeals()'>"))
-								)
+								.append($("<td>"))
+								.append($("<td>"))
+								.append($("<td>"))
+								.append($("<td>"))
+
+								
 							);					
 			});
 		}
 	});
+	
+	
+}
+
+function editMeal(meal){
+	if(meal.status=="Accepted" || meal.status=="Prepared"){
+		window.alert("Nije moguce menjati porudzinu!");
+		return;
+	}
+	$("#modalInformationMeal").modal('toggle');
+	$("#r-name-meal").html(meal.meal.name);
+	$("#r-quantity-meal").attr("value",meal.quantity);	
+	$("#idMeal").attr("value",meal.id);
+}
+
+function editDrink(drink){
+	if(drink.status=="Accepted" || drink.status=="Prepared"){
+		window.alert("Nije moguce menjati porudzinu!");
+		return;
+	}
+	console.log("udjem u metodu");
+	$("#modalInformation").modal('toggle');
+	$("#r-name").html(drink.drink.name);
+	$("#r-quantity").attr("value",drink.quantity);	
+	$("#id").attr("value",drink.id);
+}
+
+function setInfo(){
+	
+	var data= $("#id");
+	console.log(data[0].value);
+	var id=data[0].value;
+	var quantity=$("#r-quantity");
+	var vrednost=quantity[0].valueAsNumber;
+	$("#modalInformation").modal('toggle');
+	var itemDrink={id:id, quantity:vrednost};
+	$.ajax({
+		url: "/updateItemDrink",
+		type:"POST",
+		data :JSON.stringify(itemDrink),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+function setInfoMeal(){
+	
+	var data= $("#idMeal");
+	console.log(data[0].value);
+	var id=data[0].value;
+	var quantity=$("#r-quantity-meal");
+	var vrednost=quantity[0].valueAsNumber;
+	$("#modalInformationMeal").modal('toggle');
+	var itemMeal={id:id, quantity:vrednost};
+	$.ajax({
+		url: "/updateItemMeal",
+		type:"POST",
+		data :JSON.stringify(itemMeal),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+function acceptMeal(meal){
+	if(meal.status!="notaccepted"){
+		window.alert("Vec ste prihvatili jelo!");
+		return;
+	}else{
+	console.log(meal);
+	meal.status="Accepted";
+	var itemMeal=meal;
+	console.log(itemMeal);
+		$.ajax({
+		url: "/updateItemMealStatus",
+		type:"POST",
+		data :JSON.stringify(itemMeal),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	}
+}
+
+function preparedMeal(meal){
+	if(meal.status!="Accepted"){
+		if(meal.status=="Prepared"){
+			window.alert("Jelo je vec spremno!");
+			return;
+		}else if(meal.status=="notaccepted"){
+			window.alert("Jelo prvo morate prihvatiti!");
+			return;
+		}
+		
+	}else{
+	console.log(meal);
+	meal.status="Prepared";
+	var itemMeal=meal;
+	console.log(itemMeal);
+		$.ajax({
+		url: "/updateItemMealStatus",
+		type:"POST",
+		data :JSON.stringify(itemMeal),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	}
 }
 
 
+function acceptDrink(drink){
+	if(drink.status!="notaccepted"){
+		window.alert("Vec ste prihvatili pice!");
+		return;
+	}else{
+	//$("#acceptDrinkButton").onclick=function(){
+		//	console.log("prosao");
+		//$("#acceptDrinkButton").value="Accepted";
+
+	//};
+	drink.status="Accepted";
+	var itemDrink=drink;
+		$.ajax({
+		url: "/updateItemDrinkStatus",
+		type:"POST",
+		data :JSON.stringify(itemDrink),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	}
+}
+
+function preparedDrink(drink){
+	if(drink.status!="Accepted"){
+		if(drink.status=="Prepared"){
+			window.alert("Pice je vec spremno!");
+			return;
+		}else if(drink.status=="notaccepted"){
+			window.alert("Pice prvo morate prihvatiti!");
+			return;
+		}
+		
+	}else{
+	drink.status="Prepared";
+	var itemDrink=drink;
+		$.ajax({
+		url: "/updateItemDrinkStatus",
+		type:"POST",
+		data :JSON.stringify(itemDrink),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	}
+}
+
+function deleteMeal(meal,id){
+	console.log(id);
+	console.log("usao u brisanje");
+	var item={idItemMeal:meal.id,idWaiterOrd:id}
+	$.ajax({
+		url: "/deleteItemMeal",
+		type:"POST",
+		data :JSON.stringify(item),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+function deleteDrink(drink,id){
+	var item={idItemDrink:drink.id,idWaiterOrd:id};
+	$.ajax({
+		url: "/deleteItemDrink",
+		type:"POST",
+		data :JSON.stringify(item),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
 
