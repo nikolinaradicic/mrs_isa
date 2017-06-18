@@ -28,7 +28,23 @@ function setupCalendarView(){
 
 function setupCalendar(){
 	$("#modals-div").load("calendarView.html #modals", function(){
-		fillEmployeeBox();
+		fillShiftBox();
+		$("#step1-btn").click(function () {
+		    $("#step1").hide();
+		    $("#step2").show();
+		    fillEmployeeBox();
+		});
+		$("#step2-btn").click(function () {
+			var co = $('#employee-select').find(":selected").attr("class");
+			if(co == "ROLE_WAITER"){
+				$("#step2").hide();
+			    $("#step3").show();
+			    fillSegments();
+			}
+			else{
+				addEvent();
+			}
+		});
 	});
 	$('#app-div').load('calendarView.html #calendar', function (){
 			displayCalendar();
@@ -36,23 +52,55 @@ function setupCalendar(){
 }
 
 function fillEmployeeBox(){
+	var $form = $("#add-event-form");
+	var data = getFormData($form);
+	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
+	var send_data = {date : check, shift : {name: data['shift-name']}};
 	$.ajax({
-		type : "GET",
-		url: '/getEmployees',
+		type : "POST",
+		url: '/getAvailableEmployees',
 		contentType:"application/json",
 		dataType:"json",
+		data: JSON.stringify(send_data),
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
+			$("#employee-select").empty();
 			$.each(data.responseJSON, function (i, item) {
+				console.log(item);
 			    $('#employee-select').append($('<option>', { 
 			        value: item.email,
-			        text : item.email 
-			    }));
+			        text : item.email
+			    }).attr("class", item.role));
 			});
-			fillShiftBox();
 		}
 	});
 }
+
+function fillSegments(){
+	var $form = $("#add-event-form");
+	var data = getFormData($form);
+	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
+	var send_data = {date : check, shift : {name: data['shift-name']}};
+	$.ajax({
+		type : "POST",
+		url: '/getAvailableSegments',
+		contentType:"application/json",
+		dataType:"json",
+		data: JSON.stringify(send_data),
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			$("#segment-select").empty();
+			$.each(data.responseJSON, function (i, item) {
+				console.log(item);
+			    $('#segment-select').append($('<option>', { 
+			        value: item.name,
+			        text : item.name
+			    }));
+			});
+		}
+	});
+}
+
 
 function fillShiftBox(){
 	$.ajax({
@@ -74,16 +122,22 @@ function fillShiftBox(){
 function addEvent(){
 	var $form = $("#add-event-form");
 	var data = getFormData($form);
-	
-	$("#modalEvent").modal('toggle');
-	eventData = {
-			title: data['employee-name'],
-			start: start_date,
-			end: end_date
-		};
 	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
-	console.log(start_date);
 	var send_data = {date : check, employee : {email: data['employee-name']}, shift : {name: data['shift-name']}};
+	
+	var co = $('#employee-select').find(":selected").attr("class");
+	if(co == "ROLE_WAITER"){
+		if($('#input1 option').size() != 0) 
+			send_data["segment"] = {name: data['segment-name']};
+		else{
+			$("#error").text("A segment must be assigned to a waiter").css("color", "red");
+			return;
+		}
+	}
+
+	$("#modalEvent").modal('toggle');
+	console.log("salje seeeee");
+	console.log(send_data);
 	$.ajax({
 		type : "POST",
 		url: '/addWorkingShift',
@@ -91,12 +145,49 @@ function addEvent(){
 		dataType:"json",
 		data : JSON.stringify(send_data),
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			console.log(data.responseJSON);
+		success: function(data) {
+			console.log(data);
+			eventData = {
+					title: data.employee.name,
+					start: data.date,
+					end: data.date,
+					id: data.id
+				};
 			$('#calendar-div').fullCalendar('renderEvent', eventData, true);
-		}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
+
+function updateEvent(event){
+	var check = moment(event.start._d, 'DD.MM.YYYY').format('YYYY-MM-DD');
+	var send_data = {date : check, id: event.id};
+	console.log(send_data);
+	$.ajax({
+		type : "POST",
+		url: '/updateWorkingShift',
+		contentType:"application/json",
+		dataType:"json",
+		data : JSON.stringify(send_data),
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+}
+
 
 
 function displayCalendar(){
@@ -106,7 +197,7 @@ function displayCalendar(){
 			center: 'title',
 			right: 'month,agendaWeek,agendaDay'
 		},
-		defaultDate: '2017-05-12',
+		defaultDate: moment(new Date()).format('YYYY-MM-DD'),
 		navLinks: true, // can click day/week names to navigate views
 		selectable: true,
 		selectHelper: true,
@@ -120,6 +211,10 @@ function displayCalendar(){
 		    else{
 		    	start_date = start;
 		    	end_date = end;
+		    	$("#error").text("");
+		    	$("#step2").hide();
+		    	$("#step3").hide();
+		    	$("#step1").show();
 		    	$("#modalEvent").modal('toggle');
 		    }
 			
@@ -139,14 +234,14 @@ function displayCalendar(){
 	                end: end
 	            }),
 	            success: function(doc) {
-	            	console.log(doc);
 	                var events = [];
 	                $.each(doc, function(i,item){
 	                	
 	                	events.push({
 	                		title: item.employee.email,
 	                		start: item.date,
-	                		url: "menu"
+	                		url: "menu",
+	                		id: item.id
 	                	});
 	                });
 	                callback(events);
@@ -161,8 +256,11 @@ function displayCalendar(){
         	if(event.url){
         		return false;
         	}
-        	console.log(event);
         },
+        eventDrop: function(event, delta, revertFunc) {
+        	updateEvent(event);
+	 },
+	
 		eventRender: function(event, element) {
 			var check = moment(event.start, 'DD.MM.YYYY').format('YYYY-MM-DD');
 		    var today = moment(new Date()).format('YYYY-MM-DD');

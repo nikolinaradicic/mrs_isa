@@ -1,5 +1,7 @@
 package mrs.app.repository;
 
+import java.util.Collection;
+
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Segment;
 
@@ -16,5 +18,7 @@ public interface SegmentRepository extends JpaRepository<Segment, Long> {
 	@Query("update Segment s set s.chart = ?1 where s.id = ?2")
 	@Transactional
 	int updateSegment(String chart, Long id);
+	
+	Collection<Segment> findByRestaurant(Restaurant r); 
 
 }

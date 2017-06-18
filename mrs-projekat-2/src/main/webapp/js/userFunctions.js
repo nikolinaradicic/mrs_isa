@@ -123,7 +123,9 @@ function getUser(){
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 							}
 						}
-						setupWebSockets(data);
+						if(typeof stompClient === 'undefined' || !stompClient){
+							setupWebSockets(data);
+						}
 						getNotifications();
 					});
 				});
@@ -140,7 +142,6 @@ var num_notifications = 0;
 
 
 function addNotification(notification){
-	console.log(notification);
 	num_notifications++;
 	$("#dodatiZahteve").append($("<li>").attr("id", "notif" + notification.id)
 						 .append($("<a href='#menu'>")

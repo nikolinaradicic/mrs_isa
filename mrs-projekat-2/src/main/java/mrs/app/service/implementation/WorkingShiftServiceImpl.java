@@ -2,11 +2,10 @@ package mrs.app.service.implementation;
 
 import java.util.Collection;
 import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.Shift;
 import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.repository.WorkingShiftRepository;
 import mrs.app.service.WorkingShiftService;
@@ -34,6 +33,20 @@ public class WorkingShiftServiceImpl implements WorkingShiftService{
 	public Collection<WorkingShift> findShiftsForEmployee(Restaurant restaurant) {
 		Collection<WorkingShift> shifts=wsRepository.findShForRest(restaurant);
 		return shifts;
+	}
+
+	@Override
+	public Collection<WorkingShift> findByDateShiftRestaurant(Date date,
+			Shift shift, Restaurant rest) {
+		// TODO Auto-generated method stub
+		return wsRepository.findByDateAndShiftAndRestaurant(date, shift, rest);
+	}
+
+	@Override
+	public WorkingShift updateDate(WorkingShift workingShift) {
+		// TODO Auto-generated method stub
+		wsRepository.updateWorkingShift(workingShift.getDate(), workingShift.getId());
+		return wsRepository.findOne(workingShift.getId());
 	}
 
 }

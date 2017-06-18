@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import mrs.app.DTOs.WorkingShiftDTO;
 import mrs.app.domain.Employee;
 import mrs.app.domain.RestaurantManager;
+import mrs.app.domain.UserType;
+import mrs.app.domain.restaurant.Segment;
 import mrs.app.domain.restaurant.Shift;
 import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.SegmentService;
 import mrs.app.service.ShiftService;
 import mrs.app.service.UserService;
 import mrs.app.service.WorkingShiftService;
@@ -38,6 +41,10 @@ public class ShiftController {
 	
 	@Autowired
 	private WorkingShiftService workingShiftService;
+	
+
+	@Autowired
+	private SegmentService segmentService;
 	
 	@Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -109,10 +116,70 @@ public class ShiftController {
 		workingShift.setRestaurant(saved.getRestaurant());
 		workingShift.setEmployee(employee);
 		workingShift.setShift(shift);
+		if(employee.getRole() == UserType.ROLE_WAITER){
+			if(workingShift.getSegment() == null){
+				return new ResponseEntity<WorkingShift>(HttpStatus.NOT_FOUND);
+			}
+			Segment assigned = segmentService.findSegment(workingShift.getSegment().getName(), saved.getRestaurant());
+			
+			workingShift.setSegment(assigned);
+		}
 		WorkingShift savedShift = workingShiftService.create(workingShift);
 		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
 	}
 	
+	@RequestMapping(
+			value = "/updateWorkingShift",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<WorkingShift> updateWorkingShift(@RequestBody WorkingShift workingShift, HttpServletRequest request){
+		WorkingShift savedShift = workingShiftService.updateDate(workingShift);
+		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
+	}
 	
+	
+	@RequestMapping(
+			value = "/getAvailableEmployees",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Collection<Employee>> getEmployees(@RequestBody WorkingShift ws, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		Collection<Employee> employees = userService.findEmployees(saved.getRestaurant());
+		Shift shift = shiftSetvice.findByNameAndRestaurant(ws.getShift().getName(), saved.getRestaurant());
+		Collection<WorkingShift> wshifts = workingShiftService.findByDateShiftRestaurant(ws.getDate(), shift, saved.getRestaurant());
+		System.out.println(wshifts.size());
+		for(WorkingShift s : wshifts){
+			employees.remove(s.getEmployee());
+		}
+		return new ResponseEntity<Collection<Employee>>(employees, HttpStatus.OK);
+	}
 
+	@RequestMapping(
+			value = "/getAvailableSegments",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Collection<Segment>> getSegments(@RequestBody WorkingShift ws, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		Collection<Segment> segments = segmentService.findForRestaurant(saved.getRestaurant());
+		Shift shift = shiftSetvice.findByNameAndRestaurant(ws.getShift().getName(), saved.getRestaurant());
+		Collection<WorkingShift> wshifts = workingShiftService.findByDateShiftRestaurant(ws.getDate(), shift, saved.getRestaurant());
+		for(WorkingShift s : wshifts){
+			if(s.getSegment() != null){
+				segments.remove(s.getSegment());
+			}
+		}
+		return new ResponseEntity<Collection<Segment>>(segments, HttpStatus.OK);
+	}
+
+	
 }

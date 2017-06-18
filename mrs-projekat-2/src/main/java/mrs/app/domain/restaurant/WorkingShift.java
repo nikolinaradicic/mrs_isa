@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import mrs.app.domain.Employee;
@@ -19,7 +20,12 @@ public class WorkingShift {
 	private Long id;
 	
 	@ManyToOne
+	@JoinColumn(nullable = false)
 	private Employee employee;
+	
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Segment segment;
 	
 	@Column(nullable = false)
 	private Date date;
@@ -68,6 +74,14 @@ public class WorkingShift {
 
 	public void setShift(Shift shift) {
 		this.shift = shift;
+	}
+
+	public Segment getSegment() {
+		return segment;
+	}
+
+	public void setSegment(Segment segment) {
+		this.segment = segment;
 	}
 	
 	

@@ -151,7 +151,6 @@ function doLogin() {
 		$("#login-error").text("Please enter your email and password").css("color","red");
 		return;
 	}
-	
 	var s = JSON.stringify(data);
     $.ajax({
         url: "/auth",
@@ -175,8 +174,8 @@ function doLogin() {
 
 function doLogout() {
     removeJwtToken();
+	stompClient.disconnect();
     location.href="#";
-    stompClient.disconnect();
     num_notifications = 0;
     $("body").load("login.html #login-div");
 }
@@ -197,7 +196,6 @@ $(document).ready(function(){
 		// url action mapping
 		if(url == ""){
 			if (getJwtToken()) {
-		    	stompClient.disconnect();
 				getUser();
 		    }else{
 		    	$("body").load("login.html #login-div");
@@ -277,7 +275,6 @@ $(document).ready(function(){
 	getUser();
 });
 
-var stompClient;
 function setupWebSockets(user){
 	var socketClient = new SockJS("/sendNotification");
 	stompClient = Stomp.over(socketClient);
