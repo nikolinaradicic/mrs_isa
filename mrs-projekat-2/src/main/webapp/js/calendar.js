@@ -127,7 +127,7 @@ function addEvent(){
 	
 	var co = $('#employee-select').find(":selected").attr("class");
 	if(co == "ROLE_WAITER"){
-		if($('#input1 option').size() != 0) 
+		if($('#segment-select option').size() != 0) 
 			send_data["segment"] = {name: data['segment-name']};
 		else{
 			$("#error").text("A segment must be assigned to a waiter").css("color", "red");

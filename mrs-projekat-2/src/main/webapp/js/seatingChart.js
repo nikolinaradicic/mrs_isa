@@ -81,17 +81,6 @@ function setupChart(){
 	fillSegmentBox();
 }
 
-function setupChartWaiter(){
-	var canvas = new fabric.CanvasEx("canvas");
-	document.getElementById('canvas').fabric = canvas;
-	canvas.setHeight(450);
-	canvas.setWidth(800);
-	canvas.selection = false;
-
-	fillSegmentBox();
-}
-
-
 function displaySegment(){
 	console.log("promjena selecta");
 	var x = document.getElementById("segmentSelect").value;

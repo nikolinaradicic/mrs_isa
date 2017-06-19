@@ -41,6 +41,8 @@ function showDefineOrder(){
 	$("#app-div").html("");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
+		$("#modals-div").load("defineOrder.html #modals-div");
+		
 	});
 
 }
@@ -196,6 +198,14 @@ function createAuthorizationTokenHeader() {
     }
 }
 
+function showSeatingChartWaiter(){
+		$("#app-div").html("");
+ 		$("#app-div").load("seatingChartWaiter.html #chart", function(){
+ 			setupChartWaiter();
+ 		});
+	
+}
+
 $(document).ready(function(){
 
 $(window).bind( "hashchange", function(e) {
@@ -271,10 +281,6 @@ $(window).bind( "hashchange", function(e) {
  			showShifts();
  		}
  		else if(url=="getMyOrders"){
- 			showMyOrders();
- 		}
- 		else if(url=="defineOrder"){
- 			console.log("prvi");
  			showMyOrders();
  		}
  		else if(url=="defineOrder"){

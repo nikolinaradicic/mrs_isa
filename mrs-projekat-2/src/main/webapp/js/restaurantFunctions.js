@@ -1,3 +1,28 @@
+function setupChartWaiter(){
+	$.ajax({
+		url: "/getWorkingShiftWaiter",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				console.log(data.responseJSON);
+				var canvas = new fabric.CanvasEx("canvas");
+				document.getElementById('canvas').fabric = canvas;
+				canvas.setHeight(450);
+				canvas.setWidth(800);
+				canvas.selection = false;
+				fillSegmentBox();
+				window.alert("Vasa smena je "+data.responseJSON.shift.name);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
 function addRestaurant() {
 	var $form = $("#addRestaurant");
 	var data = getFormData($form);

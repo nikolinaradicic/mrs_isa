@@ -1,6 +1,10 @@
 package mrs.app.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,10 +12,13 @@ import mrs.app.DTOs.WorkingShiftDTO;
 import mrs.app.domain.Employee;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.UserType;
+import mrs.app.domain.Waiter;
+import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Segment;
 import mrs.app.domain.restaurant.Shift;
 import mrs.app.domain.restaurant.WorkingShift;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.RestaurantService;
 import mrs.app.service.SegmentService;
 import mrs.app.service.ShiftService;
 import mrs.app.service.UserService;
@@ -54,6 +61,9 @@ public class ShiftController {
 	
 	@Autowired
     private UserService userService;
+	
+	@Autowired
+    private RestaurantService restaurantService;
 	
 	@RequestMapping(
 			value = "/getShifts",
@@ -181,5 +191,45 @@ public class ShiftController {
 		return new ResponseEntity<Collection<Segment>>(segments, HttpStatus.OK);
 	}
 
+	
+	@RequestMapping(
+			value = "/getWorkingShiftWaiter",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<WorkingShift> getWorkingShiftWaiter(HttpServletRequest request) throws ParseException{
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Waiter current = (Waiter) userService.findByUsername(username);
+        Calendar now = Calendar.getInstance();
+        logger.info(">started here");
+        System.out.println(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
+        
+        Restaurant restaurant= restaurantService.findOne(current.getRestaurant().getId());
+        Collection<Shift> shifts=shiftSetvice.findShifts(restaurant);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf1=new SimpleDateFormat("HH:MM");
+        SimpleDateFormat sdf2=new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date trenutnoVreme=new Date();
+        Shift smena=new Shift();
+        for(Shift sh:shifts){
+            String trenutniDatum1=sdf.format(trenutnoVreme);
+            String trenutniDatum2=sdf.format(trenutnoVreme);
+        	trenutniDatum1+=" "+sh.getStartTime();
+        	trenutniDatum2+=" "+sh.getEndTime();
+        	Date datumSmenePocetak=sdf2.parse(trenutniDatum1);
+        	Date datumSmeneKraj=sdf2.parse(trenutniDatum2);
+        	if(trenutnoVreme.before(datumSmeneKraj) && trenutnoVreme.after(datumSmenePocetak)){
+        		System.err.println("dobro je");
+        		smena=sh;
+        		break;
+        	}
+        }
+
+        String trenutni=sdf.format(trenutnoVreme);
+		WorkingShift saved = workingShiftService.findShiftForWaiter(current,trenutni,smena);
+		System.err.println(saved);
+		return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+	}
 	
 }

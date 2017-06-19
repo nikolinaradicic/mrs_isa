@@ -11,6 +11,7 @@ import mrs.app.domain.Chef;
 import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
+import mrs.app.domain.restaurant.Bill;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.ItemDrink;
@@ -336,6 +337,21 @@ public class OrderController {
         logger.info("< delete Item Meal");
         return new ResponseEntity<Integer>(1,HttpStatus.OK);
 	}
+	
+	
+	@RequestMapping(
+			value="/defineCheck",
+			method = RequestMethod.POST,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Integer> deleteItemMeal(HttpServletRequest request,
+			@RequestBody Bill bill){
+		logger.info("> define check ");		
+        orderService.createCheck(bill);
+        logger.info("< define check");
+        return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	
 	
 	
 }
