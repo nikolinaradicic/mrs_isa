@@ -6,6 +6,7 @@ import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
+import mrs.app.domain.restaurant.Bill;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
@@ -39,5 +40,7 @@ public interface OrderService {
 	void deleteItemDrink(ItemDrinkDTO orderDTO);
 
 	void deleteItemMeal(ItemMealDTO orderDTO);
+
+	void createCheck(Bill check);
 	
 }

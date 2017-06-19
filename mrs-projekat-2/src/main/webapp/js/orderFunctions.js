@@ -78,13 +78,13 @@ function setMeals(){
 	console.log(drinks);
 	$("#meal-form").append($("<tr>")
 								.append($("<h4>")
-									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='confirmMeals()'>"))
+									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='showModal()'>"))
 								)
 							);
 	
 }
 
-function confirmMeals(){
+function confirmMeals(sto){
 	chef_meals=[];
 	bartender_drinks=[];
 	var data=$('#meal-form').serializeArray();
@@ -163,7 +163,8 @@ function confirmMeals(){
 	}
 	
 	var order={meals: chef_meals,
-           		drinks: bartender_drinks};
+           		drinks: bartender_drinks,
+           		table: sto};
 	$.ajax({
 		url: "/setMealss",
 		type:"POST",
@@ -411,10 +412,15 @@ function getMyOrder(){
 								.append($("<td>"))
 								.append($("<td>"))
 								.append($("<td>"))
-								.append($("<td>"))
+								.append($("<td>")
+									.append($("<input type='button' value='Edit' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
+														getCheck(item);
+													})
+									
+								)
 
 								
-							);					
+							));					
 			});
 		}
 	});
@@ -666,4 +672,104 @@ function deleteDrink(drink,id){
 		}
 	});
 }
+var table;
+var canvas;
+var segment;
+function showModal(){
+	console.log("usao");
+	
+	$.ajax({
+		url: "/getWorkingShiftWaiter",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				console.log(data.responseJSON);
+		segment=data.responseJSON.segment;
+				
+				canvas = new fabric.CanvasEx("canvas");
+		if (segment.chart != ""  && segment.chart != null){
+			var json = JSON.parse(segment.chart);
+			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+			setTimeout(function(){
+				canvas.forEachObject(function(o) {
+					console.log("usao");
+  					o.selectable = true;
+  					o.lockMovementX=true;
+  					o.lockMovementY=true;
+  					o.hasControls = false;
+				});
+			},1000);
+		}
+				
+				
+				console.log(table);
+				
+				
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	
+	$("#modal-tables").modal('toggle');	
+}
 
+function choose(){
+table=canvas.getActiveObject();
+	console.log(table);
+
+	var x =segment.name;
+	var data = {name : table.name};
+	$.ajax({
+		url: "/getTable/" + x,
+		type:"POST",
+		data: JSON.stringify(data),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			console.log(data);
+			if (data.responseJSON){
+				var sto=data.responseJSON;
+				confirmMeals(sto);
+			}
+		}
+	});
+}
+
+function getCheck(order){
+	//pravim racun, trebam izracunati vrednost i ubaciti order
+	var price=0;
+	
+		$.each(order.meals,function(i,meall){
+			price+=meall.quantity*meall.meal.price;
+		});
+		$.each(order.drinks,function(i,drinkk){
+			price+=drinkk.quantity*drinkk.drink.price;
+		});
+	
+	
+	var item={order:order,final_price:price};
+	$.ajax({
+		url: "/defineCheck",
+		type:"POST",
+		data :JSON.stringify(item),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				window.location.reload(true/false);
+			}
+			else{
+				$("#add-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+	
+	
+}

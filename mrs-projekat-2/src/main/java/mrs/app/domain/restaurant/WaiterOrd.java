@@ -39,6 +39,9 @@ public class WaiterOrd implements Serializable{
 	
 	@ManyToOne
 	private Waiter waiter;
+	
+	@OneToOne
+	private RestaurantTable table;
 
 	public WaiterOrd() {
 		// TODO Auto-generated constructor stub
@@ -92,5 +95,14 @@ public class WaiterOrd implements Serializable{
 	public void setWaiter(Waiter waiter) {
 		this.waiter = waiter;
 	}
+
+	public RestaurantTable getTable() {
+		return table;
+	}
+
+	public void setTable(RestaurantTable table) {
+		this.table = table;
+	}
+	
 	
 }

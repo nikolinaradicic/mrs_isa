@@ -7,14 +7,17 @@ import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
+import mrs.app.domain.restaurant.Bill;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.repository.BartenderDrinkRepository;
+import mrs.app.repository.CheckRepository;
 import mrs.app.repository.ChefMealRepository;
 import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.ItemDrinkRepository;
@@ -22,6 +25,7 @@ import mrs.app.repository.ItemMealRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
 import mrs.app.repository.RestaurantRepository;
+import mrs.app.repository.RestaurantTableRepository;
 import mrs.app.repository.UserRepository;
 import mrs.app.service.OrderService;
 
@@ -37,6 +41,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private CheckRepository checkRepository;
 	
 	@Autowired
 	private ItemDrinkRepository itemDrinkRepository;
@@ -62,6 +69,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RestaurantTableRepository restTableRepository;
 	
 	@Override
 	public Collection<WaiterOrd> findAll() {
@@ -97,6 +107,8 @@ public class OrderServiceImpl implements OrderService{
 			System.out.println("jelo koje?  "+im.getMeal().getName());
 			ord.getMeals().add(im);
 		}
+		RestaurantTable table=restTableRepository.findOne(order.getTable().getId());
+		ord.setTable(table);
 		ord.setWaiter(w);
 		return orderRepository.save(ord);
 	}
@@ -223,6 +235,17 @@ public class OrderServiceImpl implements OrderService{
 		ItemDrink itemDrink=itemDrinkRepository.findOne(orderDTO.getIdItemDrink());
 		order.getDrinks().remove(itemDrink);
 		orderRepository.save(order);
+	}
+
+	@Override
+	public void createCheck(Bill bill) {
+		// TODO Auto-generated method stub
+		WaiterOrd order=orderRepository.findOne(bill.getOrder().getId());
+		Bill definedCheck=new Bill();
+		definedCheck.setOrder(order);
+		definedCheck.setFinal_price(bill.getFinal_price());
+		definedCheck.setId(0L);
+		checkRepository.save(definedCheck);
 	}
 
 
