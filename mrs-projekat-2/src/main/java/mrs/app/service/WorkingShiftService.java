@@ -15,4 +15,5 @@ public interface WorkingShiftService {
 	
 	public Collection<WorkingShift> findByDateShiftRestaurant(Date date, Shift shift, Restaurant rest);
 	public WorkingShift updateDate(WorkingShift workingShift);
+	public boolean delete(WorkingShift workingShift);
 }

@@ -63,7 +63,7 @@ public class GroceryListServiceImpl implements GroceryListService {
 	}
 	
 	@Override
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRED)
 	public Offer createOffer(Offer o, GroceryList gl) {
 		// TODO Auto-generated method stub
 		logger.info("> create");

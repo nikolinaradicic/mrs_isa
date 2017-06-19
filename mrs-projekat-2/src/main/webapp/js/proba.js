@@ -3,6 +3,8 @@ function startApp() {
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
 		 // Push this URL "state" onto the history hash.
+		if(typeof href === 'undefined')
+			return;
 		if(href.indexOf("collapse") !== -1){
 			return true;
 		}
