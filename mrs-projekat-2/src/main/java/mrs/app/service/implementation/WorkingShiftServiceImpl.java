@@ -49,4 +49,15 @@ public class WorkingShiftServiceImpl implements WorkingShiftService{
 		return wsRepository.findOne(workingShift.getId());
 	}
 
+	@Override
+	public boolean delete(WorkingShift workingShift) {
+		// TODO Auto-generated method stub
+		WorkingShift saved = wsRepository.findOne(workingShift.getId());
+		if(saved != null){
+			wsRepository.delete(saved);
+			return true;
+		}
+		return false;
+	}
+
 }

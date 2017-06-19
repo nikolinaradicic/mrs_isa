@@ -66,7 +66,6 @@ function fillEmployeeBox(){
 		complete: function(data) {
 			$("#employee-select").empty();
 			$.each(data.responseJSON, function (i, item) {
-				console.log(item);
 			    $('#employee-select').append($('<option>', { 
 			        value: item.email,
 			        text : item.email
@@ -91,7 +90,6 @@ function fillSegments(){
 		complete: function(data) {
 			$("#segment-select").empty();
 			$.each(data.responseJSON, function (i, item) {
-				console.log(item);
 			    $('#segment-select').append($('<option>', { 
 			        value: item.name,
 			        text : item.name
@@ -124,10 +122,11 @@ function addEvent(){
 	var data = getFormData($form);
 	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
 	var send_data = {date : check, employee : {email: data['employee-name']}, shift : {name: data['shift-name']}};
-	
+	console.log("salje seeee:");
+	console.log(send_data);
 	var co = $('#employee-select').find(":selected").attr("class");
 	if(co == "ROLE_WAITER"){
-		if($('#input1 option').size() != 0) 
+		if($('#segment-select option').size() != 0) 
 			send_data["segment"] = {name: data['segment-name']};
 		else{
 			$("#error").text("A segment must be assigned to a waiter").css("color", "red");
@@ -136,8 +135,6 @@ function addEvent(){
 	}
 
 	$("#modalEvent").modal('toggle');
-	console.log("salje seeeee");
-	console.log(send_data);
 	$.ajax({
 		type : "POST",
 		url: '/addWorkingShift',
@@ -146,7 +143,6 @@ function addEvent(){
 		data : JSON.stringify(send_data),
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			console.log(data);
 			eventData = {
 					title: data.employee.name,
 					start: data.date,
@@ -168,7 +164,6 @@ function addEvent(){
 function updateEvent(event){
 	var check = moment(event.start._d, 'DD.MM.YYYY').format('YYYY-MM-DD');
 	var send_data = {date : check, id: event.id};
-	console.log(send_data);
 	$.ajax({
 		type : "POST",
 		url: '/updateWorkingShift',
@@ -240,7 +235,6 @@ function displayCalendar(){
 	                	events.push({
 	                		title: item.employee.email,
 	                		start: item.date,
-	                		url: "menu",
 	                		id: item.id
 	                	});
 	                });
@@ -253,9 +247,7 @@ function displayCalendar(){
             end: '2100-01-01'
         },
         eventClick: function(event){
-        	if(event.url){
-        		return false;
-        	}
+        	
         },
         eventDrop: function(event, delta, revertFunc) {
         	updateEvent(event);
@@ -268,10 +260,33 @@ function displayCalendar(){
 		    {
 		    	element.append( "<span class='closeon'>X</span>" );
 	            element.find(".closeon").click(function() {
-	               $('#calendar-div').fullCalendar('removeEvents',event._id);
+	            	deleteEvent(event);
 	            });
 		    }
 		}
 	});
 	
+}
+
+function deleteEvent(event){
+	var send_data = {id: event.id};
+	$.ajax({
+		type : "POST",
+		url: '/deleteWorkingShift',
+		contentType:"application/json",
+		dataType:"json",
+		data : JSON.stringify(send_data),
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+            $('#calendar-div').fullCalendar('removeEvents',event._id);
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+
 }

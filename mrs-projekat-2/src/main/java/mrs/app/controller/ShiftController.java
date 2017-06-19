@@ -134,9 +134,22 @@ public class ShiftController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<WorkingShift> updateWorkingShift(@RequestBody WorkingShift workingShift, HttpServletRequest request){
+	public ResponseEntity<WorkingShift> updateWorkingShift(@RequestBody WorkingShift workingShift){
 		WorkingShift savedShift = workingShiftService.updateDate(workingShift);
 		return new ResponseEntity<WorkingShift>(savedShift, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/deleteWorkingShift",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Boolean> deleteWorkingShift(@RequestBody WorkingShift workingShift){
+		boolean deleted = workingShiftService.delete(workingShift);
+		if(deleted)
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		else
+			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
 	}
 	
 	
