@@ -75,13 +75,31 @@ function getDrinks(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
-				$("#drinks_inf").append($("<div class='col-md-12'>")
-									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(item.name))
-									.append($("<h6>").text(item.description))
-									.append($("<h6>").text(item.price))
-									)
-								);
+				$("#drinks-table-body").append($("<tr>").attr("id", "drink"+item.id)
+						.append($("<td>")
+								.text(item.name)
+							)
+							.append($("<td>")
+								.text(item.description)
+							)
+							.append($("<td>")
+								.text(item.price)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-success btn-xs' value='Edit'>")
+									.click(function(){
+									openUpdateDrink(item);
+									})
+								)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-danger btn-xs' value='Delete'>")
+									.click(function(){
+									deleteDrink(item);
+									})
+								)
+							)
+						);
 			});	
 		}
 	});
@@ -97,13 +115,32 @@ function getMeals(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
-				$("#meal_inf").append($("<div class='col-md-12'>")
-									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(item.name))
-									.append($("<h6>").text(item.description))
-									.append($("<h6>").text(item.price))
-									)
-								);
+				$("#meals-table-body").append($("<tr>").attr("id", "meal"+item.id)
+						.append($("<td>")
+								.text(item.name)
+							)
+							.append($("<td>")
+								.text(item.description)
+							)
+							.append($("<td>")
+								.text(item.price)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-success btn-xs' value='Edit'>")
+									.click(function(){
+									openUpdateMeal(item);
+									})
+								)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-danger btn-xs' value='Delete'>")
+									.click(function(){
+									deleteMeal(item);
+									})
+								)
+							)
+						);
+		
 			});	
 		}
 	});
@@ -116,6 +153,18 @@ function displayRestaurant(restaurant){
 		$("#app-div").load("restaurant.html #choosenRestaurant", function(){
 				$("#name_rest").text(restaurant.name);
 				$("#desc_rest").text(restaurant.description);
+				$("#meals-btn").click(function(){
+					$("#drinks-btn").removeClass("active");
+					$("#meals-btn").addClass("active");
+					$("#drinks-div").addClass("hide-me");
+					$("#meals-div").removeClass("hide-me");
+				});
+				$("#drinks-btn").click(function(){
+					$("#meals-btn").removeClass("active");
+					$("#drinks-btn").addClass("active");
+					$("#drinks-div").removeClass("hide-me");
+					$("#meals-div").addClass("hide-me");
+				});
 				$("#editRest").click(function(){
 									$("#modalInformation").modal('toggle');
 									});
@@ -125,6 +174,31 @@ function displayRestaurant(restaurant){
 				$("#addDrink").click(function(){
 									$("#modalDrink").modal('toggle');
 									});
+				$("#location-btn").click(function(){
+					console.log("usaooo");
+					$('#us3').locationpicker({
+	                     location: {
+	                         latitude: restaurant.latitude,
+	                         longitude: restaurant.longitude
+	                     },
+	                     radius: 0,
+	                     inputBinding: {
+	                         latitudeInput: $('#us3-lat'),
+	                         longitudeInput: $('#us3-lon'),
+	                         locationNameInput: $('#us3-address')
+	                     },
+	                     enableAutocomplete: true,
+	                     markerIcon: 'img/map-marker-2-xl.png'
+	                 });
+	                 $('#us6-dialog').on('shown.bs.modal', function () {
+	                     $('#us3').locationpicker('autosize');
+	                 });
+					$("#us6-dialog").modal('toggle');
+				});
+				$("#save-location-btn").click(function(){
+					setLocation($("#us3-lat").val(),$("#us3-lon").val());
+				});
+				
 				getDrinks(restaurant);
 				getMeals(restaurant);
 		});
@@ -137,6 +211,51 @@ function displayRestaurant(restaurant){
 	
 }
 
+function openUpdateDrink(drink)
+{
+
+	var name = $('#drinks-table-body #drink'+drink.id).children('td:eq(0)').text();
+	var description = $('#drinks-table-body #drink'+drink.id).children('td:eq(1)').text();
+	var price = $('#drinks-table-body #drink'+drink.id).children('td:eq(2)').text();
+	console.log(name);
+	$("#update-drink-form input[name=id]").val(drink.id);
+	$("#update-drink-form input[name=name]").val(name);
+	$("#update-drink-form textarea[name=description]").val(description);
+	$("#update-drink-form input[name=price]").val(price);
+	$("#updateDrinkModal").modal("toggle");
+}
+
+function openUpdateMeal(meal)
+{
+
+	var name = $('#meals-table-body #meal'+meal.id).children('td:eq(0)').text();
+	var description = $('#meals-table-body #meal'+meal.id).children('td:eq(1)').text();
+	var price = $('#meals-table-body #meal'+meal.id).children('td:eq(2)').text();
+	$("#update-meal-form input[name=id]").val(meal.id);
+	$("#update-meal-form input[name=name]").val(name);
+	$("#update-meal-form").find('textarea').val(description);
+	$("#update-meal-form input[name=price]").val(price);
+	$("#updateMealModal").modal("toggle");
+
+}
+
+
+function setLocation(lat, lon){
+	var s = {latitude:lat, longitude:lon};
+	$.ajax({
+		url: "/updateLocation",
+		type:"POST",
+		data: JSON.stringify(s),
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+				$("#us6-dialog").modal('toggle');
+		}
+	});
+
+}
+
 function addDrink(){
 	var $form = $("#add-drink-form");
 	var data = getFormData($form);
@@ -147,7 +266,6 @@ function addDrink(){
 	var id = data.restaurant;
 	data.restaurant = {id: id};
 	var s = JSON.stringify(data);
-	console.log(s);
 	$.ajax({
 		url: "/addDrink",
 		type:"POST",
@@ -155,23 +273,77 @@ function addDrink(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
+		success: function(data) {
 				$("#modalDrink").modal('toggle');
-				$("#drinks_inf").prepend($("<div class='col-md-12'>")
-									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(data.responseJSON.name))
-									.append($("<h6>").text(data.responseJSON.description))
-									.append($("<h6>").text(data.responseJSON.price))
-									)
-								);
-			}
-			else{
-				$("#form-error").text("Username already exists").css("color","red");
-			}
-		}
+				$("#drinks-table-body").prepend($("<tr>").attr("id", "drink"+data.id)
+						.append($("<td>")
+								.text(data.name)
+							)
+							.append($("<td>")
+								.text(data.description)
+							)
+							.append($("<td>")
+								.text(data.price)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-success btn-xs' value='Edit'>")
+									.click(function(){
+									openUpdateDrink(data);
+									})
+								)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-danger btn-xs' value='Delete'>")
+									.click(function(){
+									deleteDrink(data);
+									})
+								)
+							)
+						);
+
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
+
+
+function updateDrink(){
+	var $form = $("#update-drink-form");
+	var data = getFormData($form);
+	if (!validateForm(data)){
+		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+	var s = JSON.stringify(data);
+	$.ajax({
+		url: "/updateDrink",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+				$("#updateDrinkModal").modal('toggle');
+				$('#drinks-table-body #drink'+data.id).children('td:eq(0)').text(data.name);
+				$('#drinks-table-body #drink'+data.id).children('td:eq(1)').text(data.description);
+				$('#drinks-table-body #drink'+data.id).children('td:eq(2)').text(data.price);
+				},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+}
+
 
 function addMeal(){
 	var $form = $("#add-meal-form");
@@ -184,7 +356,6 @@ function addMeal(){
 	data.restaurant = {id: id};
 		
 	var s = JSON.stringify(data);
-	console.log(data);
 	$.ajax({
 		url: "/addMeal",
 		type:"POST",
@@ -192,23 +363,127 @@ function addMeal(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
+		success: function(data) {
 				$("#modalMeal").modal('toggle');
-								$("#meal_inf").prepend($("<div class='col-md-12'>")
-									.append($("<div class='col-md-4'>").css('border','1px solid grey')
-									.append($("<h4>").text(data.responseJSON.name))
-									.append($("<h6>").text(data.responseJSON.description))
-									.append($("<h6>").text(data.responseJSON.price))
-									)
-								);
-			}
-			else{
-				$("#form-error").text("An error has ocured").css("color","red");
-			}
-		}
+				$("#meals-table-body").prepend($("<tr>").attr("id", "meal"+data.id)
+							.append($("<td>")
+									.text(data.name)
+							)
+							.append($("<td>")
+								.text(data.description)
+							)
+							.append($("<td>")
+								.text(data.price)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-success btn-xs' value='Edit'>")
+									.click(function(){
+									updateMeal(data);
+									})
+								)
+							)
+							.append($("<td>")
+								.append($("<input type='button' class='btn btn-danger btn-xs' value='Delete'>")
+									.click(function(){
+									deleteMeal(data);
+									})
+							)
+						)
+					);
+
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
+	        if (jqXHR.status === 401) {
+	        	
+	        } else {
+	            window.alert("an unexpected error occured: " + errorThrown);
+	        }
+	    }
 	});
 }
+
+
+function updateMeal(){
+	var $form = $("#update-meal-form");
+	var data = getFormData($form);
+	if (!validateForm(data)){
+		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+	var s = JSON.stringify(data);
+	console.log("tujiiiiii");
+	$.ajax({
+		url: "/updateMeal",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+				$("#updateMealModal").modal('toggle');
+				$('#meals-table-body #meal'+data.id).children('td:eq(0)').text(data.name);
+				$('#meals-table-body #meal'+data.id).children('td:eq(1)').text(data.description);
+				$('#meals-table-body #meal'+data.id).children('td:eq(2)').text(data.price);
+				
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+}
+
+
+function deleteMeal(meal){
+	var s = JSON.stringify(meal);
+	$.ajax({
+		url: "/deleteMeal",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+			$('#meals-table-body tr#meal'+meal.id).remove();
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+}
+
+
+function deleteDrink(drink){
+	var s = JSON.stringify(drink);
+	$.ajax({
+		url: "/deleteDrink",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function(data) {
+			console.log(drink.id);
+			$('#drinks-table-body tr#drink'+drink.id).remove();
+			},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
+	});
+}
+
+
 
 function changeInformation(){
 	var $form = $("#change-information-form");
@@ -219,7 +494,6 @@ function changeInformation(){
 	}
 		
 	var s = JSON.stringify(data);
-	console.log(s);
 	$.ajax({
 		url: "/changeInformation",
 		type:"POST",

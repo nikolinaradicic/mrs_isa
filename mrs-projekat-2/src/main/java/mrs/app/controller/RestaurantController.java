@@ -113,6 +113,26 @@ public class RestaurantController {
 		
 	}
 	
+	
+	@RequestMapping(
+			value = "/updateLocation",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Restaurant> updateLocation(
+			@RequestBody Restaurant restaurant, HttpServletRequest request) throws Exception {
+		logger.info("> update location");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+		restaurant.setId(saved.getRestaurant().getId());
+		restaurantService.updateLocation(restaurant);
+		logger.info("< update location");
+		return new ResponseEntity<Restaurant>(restaurant,HttpStatus.OK);
+		
+	}
+	
 	@RequestMapping(
 			value = "/addDrink",
 			method = RequestMethod.POST,
@@ -124,6 +144,19 @@ public class RestaurantController {
 		Drink savedDrink = restaurantService.addDrink(drink);
 		logger.info("< add drink");
 		return new ResponseEntity<Drink>(savedDrink, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(
+			value = "/updateDrink",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Drink> updateDrink(@RequestBody Drink drink) throws Exception {
+		logger.info("> update drink");
+		Drink savedDrink = restaurantService.updateDrink(drink);
+		logger.info("< update drink");
+		return new ResponseEntity<Drink>(savedDrink, HttpStatus.OK);
 	}
 		
 	@RequestMapping(
@@ -138,6 +171,51 @@ public class RestaurantController {
 		logger.info("< add meal");
 		return new ResponseEntity<Meal>(savedMeal, HttpStatus.CREATED);
 		
+	}
+	
+	@RequestMapping(
+			value = "/updateMeal",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Meal> updateMeal(@RequestBody Meal meal) throws Exception {
+		logger.info("> update meal");
+		Meal savedMeal = restaurantService.updateMeal(meal);
+		logger.info("< update meal");
+		return new ResponseEntity<Meal>(savedMeal, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(
+			value = "/deleteMeal",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Boolean> deleteMeal(@RequestBody Meal meal) throws Exception {
+		logger.info("> update meal");
+		boolean exists = restaurantService.deleteMeal(meal);
+		logger.info("< update meal");
+		if(!exists)
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		else
+			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+	}
+	
+	
+	@RequestMapping(
+			value = "/deleteDrink",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Boolean> deleteDrink(@RequestBody Drink drink) throws Exception {
+		logger.info("> delete drink");
+		boolean exists = restaurantService.deleteDrink(drink);
+		logger.info("< delete drink");
+		if(!exists)
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		else
+			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(

@@ -276,10 +276,6 @@ $(window).bind( "hashchange", function(e) {
  			showMyOrders();
  		}
  		else if(url=="defineOrder"){
- 			console.log("prvi");
- 			showMyOrders();
- 		}
- 		else if(url=="defineOrder"){
  			showDefineOrder();
  		}
 		// add more routes

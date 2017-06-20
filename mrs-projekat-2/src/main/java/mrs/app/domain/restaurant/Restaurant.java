@@ -29,6 +29,10 @@ public class Restaurant {
 	@Column(nullable = false)
 	private String description;
 	
+	private String longitude;
+	
+	private String latitude;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Meal> menu;
@@ -135,5 +139,21 @@ public class Restaurant {
 		if (this.id == c.id)
 			return true;
 		return false;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
 }

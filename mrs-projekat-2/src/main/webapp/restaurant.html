@@ -1,33 +1,101 @@
 <section class="wrapper" id="choosenRestaurant">
-<h2 id="name_rest"></h2>
-<h4 id="desc_rest"></h4>
-<div class="col-md-3">	
-	<button id="editRest">Edit Info</button>
-</div>
-<div class="col-md-3">	
-	<button id="addMeal">Add Meal</button>
-</div>
-<div class="col-md-3">	
-	<button id="addDrink">Add Drink</button>
-</div>
-<br><br>
-	<div class="login-html">
-		<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Drinks</label>
-		<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Meals</label>
-		<div class="login-form">
-			<form class="sign-in-htm" id="login">
-				<div class="group" id="drinks_inf">
-				</div>
-			</form>
-			<form class="sign-up-htm" id="register-form">
-				<div class="group" id="meal_inf">
-				</div>
-			</form>	
+	<h2 id="name_rest"></h2>
+	<h4 id="desc_rest"></h4>
+	<div class="col-md-3">	
+		<button id="editRest">Edit Info</button>
+	</div>
+	<div class="col-md-3">	
+		<button id="addMeal">Add Meal</button>
+	</div>
+	<div class="col-md-3">	
+		<button id="addDrink">Add Drink</button>
+	</div>
+	<div class="col-md-3">	
+		<button id="location-btn">Location</button>
+	</div>
+	<br><br>
+	<div class="row">
+		<div class="col-sm-3">
+			<button id="drinks-btn" class="btn btn-link active"><h3>Drinks</h3></button>
 		</div>
+		<div class="col-sm-3">
+			<button id="meals-btn" class="btn btn-link"><h3>Meals</h3></button>
+		</div>
+	</div>
+	<div id="meals-div" class="hide-me">
+		<table class="table table-striped table-advance table-hover">
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Price</th>
+				<th></th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody id="meals-table-body"></tbody>		
+		</table>
+	</div>
+	<div id="drinks-div">
+		<table class="table table-striped table-advance table-hover">	
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Price</th>
+				<th></th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody id="drinks-table-body"></tbody>		
+		</table>
 	</div>
 </section>
 
 <div id="modals-div">
+<div id="us6-dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal" style="width: 550px">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Location:</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="us3-address" />
+                            </div>
+                        </div>
+                        <div id="us3" style="width: 100%; height: 400px;"></div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="m-t-small">
+                            <label class="p-r-small col-sm-1 control-label">Lat.:</label>
+
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" style="width: 110px" id="us3-lat" />
+                            </div>
+                            <label class="p-r-small col-sm-2 control-label">Long.:</label>
+
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" style="width: 110px" id="us3-lon" />
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="save-location-btn" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
  
   <div id="modalDrink" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -75,6 +143,54 @@
   </div>
 </div>
 
+
+<div id="updateDrinkModal" class="modal fade">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Change drink</h4>
+      </div>
+      <div class="modal-body">
+       <form id="update-drink-form" class="form-horizontal">
+				<fieldset>
+                    <div class="form-group">
+						<label class="control-label col-sm-3">Name:</label>
+						<div class="col-sm-8">
+						<input required class="pull-right form-control" type="text" name="name">
+						<input type="hidden" name="id">
+						</div>
+					</div>
+                    <div class="form-group">
+						<label class="control-label col-sm-3">Description:</label>
+						<div class="col-sm-8">
+							<textarea name="description" required id="description" rows="4" cols="50"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-3">Price:</label>
+						<div class="col-sm-8">
+						<input required class="pull-right form-control" type="text" name="price">
+						</div>
+					</div>
+					</fieldset>
+					<hr>
+					<div class="form-group">
+					<div class="col-sm-11">
+						<input type="button" id="update-drink-btn" class="btn btn-md btn-primary pull-right" value="Save" onclick="updateDrink()"/>
+					</div>
+					<br/>
+				</div>
+			</form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
   <div id="modalMeal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -121,6 +237,54 @@
   </div>
 </div>
 
+
+  <div id="updateMealModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Change Meal</h4>
+      </div>
+      <div class="modal-body">
+       <form id="update-meal-form" class="form-horizontal">
+				<fieldset>
+                    <div class="form-group">
+						<label class="control-label col-sm-3">Name:</label>
+						<div class="col-sm-8">
+						<input required class="pull-right form-control" type="text" name="name">
+						<input type="hidden" name="id">
+						</div>
+					</div>
+                    <div class="form-group">
+						<label class="control-label col-sm-3">Description:</label>
+						<div class="col-sm-8">
+							<textarea name="description" required rows="4" cols="50"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-3">Price:</label>
+						<div class="col-sm-8">
+						<input required class="pull-right form-control" type="text" name="price">
+						</div>
+					</div>
+					</fieldset>
+					<hr>
+					<div class="form-group">
+					<div class="col-sm-11">
+						<input id="update-meal-btn" class="btn btn-md btn-primary pull-right" value="Save" onclick="updateMeal()"/>
+					</div>
+					<br/>
+				</div>
+			</form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
   <div id="modalInformation" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -140,7 +304,7 @@
 						</div>
 					</div>
                     <div class="form-group">
-						<label class="control-label col-sm-3">Quantity:</label>
+						<label class="control-label col-sm-3">Description:</label>
 						<div class="col-sm-8">
 							<textarea name="description" required id="r-description" rows="4" cols="50"></textarea>
 						</div>

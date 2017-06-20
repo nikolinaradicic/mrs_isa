@@ -108,4 +108,46 @@ public class RestaurantServiceImpl implements RestaurantService{
 	 		return restaurantRepository.findOne(id);
 	 	}
 
+	@Override
+	public Restaurant updateLocation(Restaurant restaurant) {
+		// TODO Auto-generated method stub
+		restaurantRepository.updateLocation(restaurant.getId(), restaurant.getLongitude(), restaurant.getLatitude());
+		return restaurantRepository.findOne(restaurant.getId());
+	}
+
+	@Override
+	public Meal updateMeal(Meal meal) {
+		// TODO Auto-generated method stub
+		int numUpdated = mealRepository.updateMeal(meal.getName(), meal.getDescription(), meal.getPrice(), meal.getId());
+		if(numUpdated == 1){
+			return meal;
+		}
+		return null;
+	}
+
+	@Override
+	public Drink updateDrink(Drink drink) {
+		// TODO Auto-generated method stub
+		int numUpdated = drinkRepository.updateDrink(drink.getName(),drink.getDescription(),drink.getPrice(),drink.getId());
+		if(numUpdated == 1){
+			return drink;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean deleteMeal(Meal meal) {
+		// TODO Auto-generated method stub
+		mealRepository.delete(meal.getId());
+		return mealRepository.exists(meal.getId());
+	}
+
+	@Override
+	public boolean deleteDrink(Drink drink) {
+		// TODO Auto-generated method stub
+		drinkRepository.delete(drink.getId());
+		return drinkRepository.exists(drink.getId());
+	}
+
 }
+
