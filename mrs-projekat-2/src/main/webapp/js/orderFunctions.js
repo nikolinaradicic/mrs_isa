@@ -372,7 +372,7 @@ function getMyOrder(){
 												)
 												.append($("<input type='button' value='Delete'  style='margin-right: 5px' class='btn btn-red btn-xs'>").click(function(){
 														console.log("brisem");
-														deleteMeal(mm,item.id);
+														deleteItemMeal(mm,item.id);
 														
 													})
 												)
@@ -399,7 +399,7 @@ function getMyOrder(){
 													})
 												)
 												.append($("<input type='button' value='Delete' style='margin-right: 5px'  class='btn btn-red btn-xs'>").click(function(){
-														deleteDrink(dd,item.id);
+														deleteItemDrink(dd,item.id);
 													})
 												)
 											)
@@ -631,7 +631,7 @@ function preparedDrink(drink){
 	}
 }
 
-function deleteMeal(meal,id){
+function deleteItemMeal(meal,id){
 	console.log(id);
 	console.log("usao u brisanje");
 	var item={idItemMeal:meal.id,idWaiterOrd:id}
@@ -653,7 +653,7 @@ function deleteMeal(meal,id){
 	});
 }
 
-function deleteDrink(drink,id){
+function deleteItemDrink(drink,id){
 	var item={idItemDrink:drink.id,idWaiterOrd:id};
 	$.ajax({
 		url: "/deleteItemDrink",

@@ -18,4 +18,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 	@Query("update Restaurant r set r.name = ?1, r.description = ?2 where r.id = ?3")
 	@Transactional
 	int updateRestaurant(String name, String description, Long id);
+
+	@Modifying
+	@Query("update Restaurant r set r.longitude = ?2, r.latitude = ?3 where r.id = ?1")
+	@Transactional
+	int updateLocation(Long id, String longitude, String latitude);
 }

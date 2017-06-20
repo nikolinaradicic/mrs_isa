@@ -23,4 +23,14 @@ public interface RestaurantService {
 	List<Restaurant> findAllSort();
 	
 	Restaurant findOne(Long id);
+
+	Restaurant updateLocation(Restaurant restaurant);
+
+	Meal updateMeal(Meal meal);
+
+	Drink updateDrink(Drink drink);
+
+	boolean deleteMeal(Meal meal);
+
+	boolean deleteDrink(Drink drink);
 }
