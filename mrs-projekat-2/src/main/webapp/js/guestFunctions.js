@@ -120,7 +120,7 @@ function acceptFriend(id,p){
 	});
 }
 
-function checkRequests(callback){
+function checkRequests(){
 	$.ajax({
 		url: "/api/getUserRepresentation",
 		type:"GET",
@@ -151,7 +151,6 @@ function checkRequests(callback){
 													)
 										);
 			});
-			callback();
 		}
 	
 	});
@@ -230,7 +229,7 @@ function sortFriendsLastName(){
 	});
 }
 
-function displayFriendsLastName(friends){3
+function displayFriendsLastName(friends){
 	$("#friendTableBody").empty();
 	$.each(friends, function(i, item){
 		$("#friendTableBody").append($("<tr>")
@@ -253,6 +252,23 @@ function displayFriendsLastName(friends){3
 									)
 								));
 	});
-	
-	
+}
+
+function getAllVisits(){
+	$.ajax({
+			url: "/getMyVisits",
+			type:"GET",
+			contentType:"application/json",
+			dataType:"json",
+			headers: createAuthorizationTokenHeader(),
+			complete: function(data) {
+				if (data.responseJSON){ 
+					$.each(data.responseJSON,function(i,visit){
+						$("#app-div").append($("<label >").text(visit.id)).append($("<br>"));
+					});
+					
+				}
+			}
+		});
+
 }

@@ -8,6 +8,7 @@ import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Chef;
+import mrs.app.domain.Guest;
 import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
@@ -18,6 +19,7 @@ import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.Visit;
 import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.security.JwtTokenUtil;
 import mrs.app.service.OrderService;
@@ -66,7 +68,7 @@ public class OrderController {
 	@PreAuthorize("hasRole('WAITER')")
 	public ResponseEntity<WaiterOrd> setOrder(HttpServletRequest request,
 			@RequestBody WaiterOrd order){
-		logger.info("> set order");
+		logger.info("> set order and visit");
 		
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
@@ -75,12 +77,10 @@ public class OrderController {
         	Waiter waiter= (Waiter)user;
             Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId());
             WaiterOrd defineOrder=orderService.setOrderMeal(order,restaurant,waiter);
-            logger.info("< set order");
+            logger.info("< set order and visit");
     		return new ResponseEntity<WaiterOrd>(defineOrder,HttpStatus.OK);
         }
         return new ResponseEntity<WaiterOrd>(HttpStatus.NOT_FOUND);
-		
-
 	}
 	
 	
@@ -340,18 +340,37 @@ public class OrderController {
 	
 	
 	@RequestMapping(
-			value="/defineCheck",
+			value="/defineVisit",
 			method = RequestMethod.POST,
 			consumes= MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('WAITER')")
-	public ResponseEntity<Integer> deleteItemMeal(HttpServletRequest request,
+	public ResponseEntity<Integer> defineVisit(HttpServletRequest request,
 			@RequestBody Bill bill){
-		logger.info("> define check ");		
-        orderService.createCheck(bill);
-        logger.info("< define check");
+		logger.info("> define visit ");	
+        Visit createdVisit=orderService.createVisit(bill);
+        logger.info("< define visit");
         return new ResponseEntity<Integer>(1,HttpStatus.OK);
 	}
 	
-	
+	@RequestMapping(
+			value="/getMyVisits",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<Collection<Visit>> getMyVisits(HttpServletRequest request){
+		logger.info("> get my visits");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Guest.class){
+        	Guest guest= (Guest)user;
+            System.err.println(guest.getId());
+           	Collection<Visit> foundVisits= orderService.findMyVisits(guest); 
+    		logger.info("< get my visits");
+    		return new ResponseEntity<Collection<Visit>>(foundVisits,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<Collection<Visit>>(HttpStatus.NOT_FOUND);
+	}
 	
 }

@@ -1,10 +1,13 @@
 package mrs.app.service.implementation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
+import mrs.app.domain.Guest;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.Bill;
@@ -13,8 +16,10 @@ import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Reservation;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.RestaurantTable;
+import mrs.app.domain.restaurant.Visit;
 import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.repository.BartenderDrinkRepository;
 import mrs.app.repository.CheckRepository;
@@ -24,9 +29,11 @@ import mrs.app.repository.ItemDrinkRepository;
 import mrs.app.repository.ItemMealRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
+import mrs.app.repository.ReservationRepository;
 import mrs.app.repository.RestaurantRepository;
 import mrs.app.repository.RestaurantTableRepository;
 import mrs.app.repository.UserRepository;
+import mrs.app.repository.VisitRepository;
 import mrs.app.service.OrderService;
 
 import org.slf4j.Logger;
@@ -72,6 +79,12 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private RestaurantTableRepository restTableRepository;
+	
+	@Autowired
+	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private VisitRepository visitRepository;
 	
 	@Override
 	public Collection<WaiterOrd> findAll() {
@@ -237,15 +250,67 @@ public class OrderServiceImpl implements OrderService{
 		orderRepository.save(order);
 	}
 
+//	@Override
+//	public Bill createCheck(Bill bill) {
+//		// TODO Auto-generated method stub
+//		WaiterOrd order=orderRepository.findOne(bill.getOrder().getId());
+//		Bill definedCheck=new Bill();
+//		definedCheck.setOrder(order);
+//		definedCheck.setFinal_price(bill.getFinal_price());
+//		definedCheck.setId(0L);
+//		return checkRepository.save(definedCheck);
+//	}
+
 	@Override
-	public void createCheck(Bill bill) {
+	public Visit createVisit(Bill bill) {
 		// TODO Auto-generated method stub
 		WaiterOrd order=orderRepository.findOne(bill.getOrder().getId());
 		Bill definedCheck=new Bill();
 		definedCheck.setOrder(order);
 		definedCheck.setFinal_price(bill.getFinal_price());
-		definedCheck.setId(0L);
 		checkRepository.save(definedCheck);
+		Visit createdVisit= new Visit();
+		createdVisit.setBill(definedCheck);
+		Date datum=new Date();
+		createdVisit.setDate(datum);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		String datumString= sdf.format(datum);
+		boolean foundReservation=false;
+		Collection<Reservation> reservations=reservationRepository.getReservByDate(datumString);
+		Reservation res=new Reservation();
+		if(reservations!=null){
+			for(Reservation r:reservations){
+				for(RestaurantTable table :r.getRestaurant_table()){
+					if(table.getId()==bill.getOrder().getTable().getId()){
+						res=r;
+						foundReservation=true;
+					}
+				}	
+			}
+		}
+		if(foundReservation){
+			createdVisit.setReservation(res);
+		}else{
+			createdVisit.setReservation(null);
+		}
+		return visitRepository.save(createdVisit);
+	}
+
+	@Override
+	public Collection<Visit> findMyVisits(Guest guest) {
+		// TODO Auto-generated method stub
+		Collection<Visit> visits=visitRepository.findAll();
+		ArrayList<Visit> foundedVisits=new ArrayList<Visit>();
+		if(!visits.isEmpty()){
+			for(Visit v:visits){
+				if(v.getReservation()==null)
+					continue;
+				if(v.getReservation().getGuest().getId()==guest.getId())
+					foundedVisits.add(v);
+			}
+			return foundedVisits;
+		}
+		return null;
 	}
 
 

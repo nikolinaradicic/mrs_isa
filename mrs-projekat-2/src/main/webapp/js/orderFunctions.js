@@ -413,7 +413,7 @@ function getMyOrder(){
 								.append($("<td>"))
 								.append($("<td>"))
 								.append($("<td>")
-									.append($("<input type='button' value='Edit' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
+									.append($("<input type='button' value='Create Check' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
 														getCheck(item);
 													})
 									
@@ -751,11 +751,11 @@ function getCheck(order){
 		$.each(order.drinks,function(i,drinkk){
 			price+=drinkk.quantity*drinkk.drink.price;
 		});
-	
+	console.log(order);
 	
 	var item={order:order,final_price:price};
 	$.ajax({
-		url: "/defineCheck",
+		url: "/defineVisit",
 		type:"POST",
 		data :JSON.stringify(item),
 		contentType:"application/json",
@@ -763,6 +763,7 @@ function getCheck(order){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
+				console.log("USAOO");
 				window.location.reload(true/false);
 			}
 			else{

@@ -20,7 +20,8 @@ function getUser(){
 							$("#chart").hide();
 							$("#order").hide();
 							if(window.location.hash==''){
-								checkRequests(getRestaurants1); // home page, show the default view
+								checkRequests();
+								getAllVisits(); // home page, show the default view
 							}else{
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 							}
@@ -36,6 +37,7 @@ function getUser(){
 							$("#chart").hide();
 							$("#order").hide();
 							$("#bids-menu").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								getRestaurants(); // home page, show the default view
 							}else{
@@ -53,6 +55,7 @@ function getUser(){
 							$("#chart").hide();
 							$("#order").hide();
 							$("#bids-menu").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								displayRestaurant(data.restaurant); // home page, show the default view
 							}else{
@@ -69,6 +72,7 @@ function getUser(){
 							$("#calendar").hide();
 							$("#chart").hide();
 							$("#order").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								 // home page, show the default view
 								displayBids();
@@ -86,6 +90,7 @@ function getUser(){
 							$("#chart").hide();
 							$("#order").hide();
 							$("#bids-menu").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 								console.log("pozivam ucitavanje")
@@ -103,6 +108,7 @@ function getUser(){
 							$("#chart").hide();
 							$("#order").hide();
 							$("#bids-menu").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 								getMealsChef();
@@ -117,6 +123,7 @@ function getUser(){
 							$("#poruke").remove();
 							$("#manage").hide();
 							$("#bids-menu").hide();
+							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 							}else{

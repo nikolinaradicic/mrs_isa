@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
+import mrs.app.domain.Guest;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.Bill;
@@ -11,6 +12,7 @@ import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.Visit;
 import mrs.app.domain.restaurant.WaiterOrd;
 
 public interface OrderService {
@@ -41,6 +43,10 @@ public interface OrderService {
 
 	void deleteItemMeal(ItemMealDTO orderDTO);
 
-	void createCheck(Bill check);
+	//Bill createCheck(Bill check);
+
+	Visit createVisit(Bill bill);
+
+	Collection<Visit> findMyVisits(Guest guest);
 	
 }

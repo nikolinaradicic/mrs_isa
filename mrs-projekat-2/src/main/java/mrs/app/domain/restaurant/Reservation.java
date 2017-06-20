@@ -27,7 +27,8 @@ public class Reservation implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
+	@ManyToOne
 	private Guest guest;
 	
 	@Column(nullable=false)
@@ -46,7 +47,6 @@ public class Reservation implements Serializable{
 	@OneToMany
 	private Set<Invitation> invited;
 
-	
 	@ManyToMany
 	private Set<RestaurantTable> restaurantTable;
 	
