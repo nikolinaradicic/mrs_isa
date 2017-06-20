@@ -262,13 +262,99 @@ function getAllVisits(){
 			dataType:"json",
 			headers: createAuthorizationTokenHeader(),
 			complete: function(data) {
-				if (data.responseJSON){ 
+				if (data.responseJSON){
+				
+		$("#modals-div").load("ModalRank.html #modals-div",function(){
+		$("#app-div").append($("<section class='wrapper'>")
+								.append($("<div class='login-form'>")
+									.append($("<div class='wrapper'>")
+										.append($("<div class='row mt'>")
+											.append($("<div class='col-md-12'>")
+												.append($("<form class='content-panel'>")
+													.append($("<table class='table table-striped table-advance table-hover'>")
+														.append($("<h4>")
+															.append($("<i class='fa fa-tripadvisor'>").text("  Visits"))
+														)
+														.append($("<tbody id='visits-body'>")
+															.append($("<tr>")
+																.append($("<th>").text("Restaurant Name"))
+																.append($("<th>").text("Visit Date"))
+																.append($("<th>").text("Rank"))
+															)
+														
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+								
+							);
 					$.each(data.responseJSON,function(i,visit){
-						$("#app-div").append($("<label >").text(visit.id)).append($("<br>"));
+					console.log(visit);
+						$("#visits-body").append($("<tr>")
+											.append($("<th>").text(visit.reservation.restaurant.name))
+											.append($("<th>").text(moment(visit.date).format('DD/MM/YYYY')))
+											.append($("<th>")
+												.append(function(){
+													if(!visit.marked){
+													return $("<input type='button' value='Rank' style='margin-right: 5px' class='btn btn-success btn-xs'>").click(function(){
+														rank(visit);
+													});
+													}else{
+													return $("<label>").text("Ranked");
+													}
+												}
+											)
+										));
 					});
-					
+		}		
+		); 
 				}
 			}
 		});
 
+}
+
+function rank(visit){
+	$("#modalRank").modal('toggle');
+	$("#restaurant-mark").attr('value',visit.id);
+}
+
+function addMark(){
+	$("#modalRank").modal('toggle');
+	var data=$("#restaurant-mark").val();
+	var mealm=$("#mealsm");
+	var ocenaJela=mealm[0].valueAsNumber;
+	var r=$("#restaurantm");
+	var ocenaRestorana=r[0].valueAsNumber;
+	var s=$("#servicem");
+	var ocenaUsluge=s[0].valueAsNumber;
+	console.log(ocenaJela);
+	console.log(ocenaRestorana);
+	console.log(ocenaUsluge);
+
+	var item = {meal_rank:ocenaJela,
+				restaurant_mark:ocenaRestorana,
+				service_mark:ocenaUsluge,
+				visit_id:data
+	};
+	console.log(item);
+	$.ajax({
+		url: "/rank",
+		type:"POST",
+		contentType:"application/json",
+		data: JSON.stringify(item),
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			console.log(data.responseJSON);
+			if (data.responseJSON){
+				window.alert(data.responseJSON.id);		
+			}
+		}
+	});
+	
+	
 }

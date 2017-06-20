@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
+import mrs.app.DTOs.MarkDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Chef;
 import mrs.app.domain.Guest;
@@ -17,6 +18,7 @@ import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
+import mrs.app.domain.restaurant.Mark;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Visit;
@@ -371,6 +373,27 @@ public class OrderController {
         }
   
         return new ResponseEntity<Collection<Visit>>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
+			value="/rank",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('GUEST')")
+	public ResponseEntity<Mark> rank(HttpServletRequest request,
+			@RequestBody MarkDTO markDTO){
+		logger.info("> rank");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Guest.class){
+        	Mark mark=orderService.mark(markDTO);
+    		logger.info("< rank");
+    		return new ResponseEntity<Mark>(mark,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<Mark>(HttpStatus.NOT_FOUND);
 	}
 	
 }

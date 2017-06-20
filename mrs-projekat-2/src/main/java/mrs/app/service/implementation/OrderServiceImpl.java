@@ -7,6 +7,7 @@ import java.util.Date;
 
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
+import mrs.app.DTOs.MarkDTO;
 import mrs.app.domain.Guest;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
@@ -15,6 +16,7 @@ import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
+import mrs.app.domain.restaurant.Mark;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Reservation;
 import mrs.app.domain.restaurant.Restaurant;
@@ -27,6 +29,7 @@ import mrs.app.repository.ChefMealRepository;
 import mrs.app.repository.DrinkRepository;
 import mrs.app.repository.ItemDrinkRepository;
 import mrs.app.repository.ItemMealRepository;
+import mrs.app.repository.MarkRepository;
 import mrs.app.repository.MealRepository;
 import mrs.app.repository.OrderRepository;
 import mrs.app.repository.ReservationRepository;
@@ -85,6 +88,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private VisitRepository visitRepository;
+	
+	@Autowired
+	private MarkRepository markRepository;
 	
 	@Override
 	public Collection<WaiterOrd> findAll() {
@@ -311,6 +317,22 @@ public class OrderServiceImpl implements OrderService{
 			return foundedVisits;
 		}
 		return null;
+	}
+
+	@Override
+	public Mark mark(MarkDTO markDTO) {
+		// TODO Auto-generated method stub
+		
+		Visit visitToUpdate=visitRepository.findOne(markDTO.getVisit_id());
+		visitRepository.updateVisit(true, visitToUpdate.getId());
+		Mark m=new Mark();
+		System.err.println(markDTO.getRestaurant_mark());
+		System.err.println(markDTO.getService_mark());
+		m.setMarkMeals(markDTO.getMeal_rank());
+		m.setMarkRestaurant(markDTO.getRestaurant_mark());
+		m.setMarkService(markDTO.getService_mark());
+		m.setVisit(visitToUpdate);
+		return markRepository.save(m);
 	}
 
 
