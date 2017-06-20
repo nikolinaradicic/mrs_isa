@@ -3,6 +3,8 @@ function startApp() {
 	$("body").delegate("a", "click", function(){
 		var href = $(this).attr("href"); // modify the selector here to change the scope of intercpetion
 		 // Push this URL "state" onto the history hash.
+		if(typeof href === 'undefined')
+			return;
 		if(href.indexOf("collapse") !== -1){
 			return true;
 		}
@@ -17,103 +19,32 @@ function startApp() {
 	
 	$("#logoutButton").click(doLogout);
 
-	
-	$(window).bind( "hashchange", function(e) {
-		var url = $.param.fragment();
-		// url action mapping
-		if(url == ""){
-			if (getJwtToken()) {
-				getUser();
-		    }else{
-		    	$("body").load("login.html #login-div");
-		    }
-			
-		}
-		else if(url == "supplies"){
-			showSupplies();
-		}
-		else if(url == "bidding"){
-			displayDemands();
-		}
-		else if(url == "addRestaurant"){
-			//showUserList();
-			showAddRestaurant();
-		}
-		else if(url == "changePersData"){
-			showChangePersData();
-		}
-		else if(url == "changePass"){
-			showChangePass();
-		}
-		else if(url == "addSysMan"){
-			showAddSysMan();
-		}
-		else if(url == "addBidder"){
-			showAddBidder();
-		}
-		else if(url == "addEmployee"){
-			showAddEmployee();
-		}
-		else if(url == "seatingChart"){
-			showSeatingChart();
-		}
-		else if(url == "calendarView"){
-			setupCalendar();
-		}
-		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
-			showAddManager();
-		}
-		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
-			showSelectedSupply();
-		}
-		else if(url=="ConfirmEmail"){
-			showConfirmEmail();
-		}
-		else if(url=="friends"){
-			showFriends();			
-		}
-		else if(url =="addFriend"){
-			showaddFriend();
-		}
-		else if(url == "seatingChartWaiter"){
- 			showSeatingChartWaiter();
- 		}
- 		else if(url == "calendar"){
- 			showCalendar();
- 		}
- 		else if(url == "personalData"){
- 			showPersonalData();
- 		}
- 		else if(url == "restaurantSelect"){
- 			showRestaurants();
- 		}
- 		else if(url == "shifts"){
- 			showShifts();
- 		}
- 		else if(url=="getMyOrders"){
- 			showMyOrders();
- 		}
- 		else if(url=="defineOrder"){
- 			showDefineOrder();
- 		}
-		// add more routes
-	});
-	
-	//getUser();
 }
 
 function showMyOrders(){
-	$("#app-div").html("");
+	$("#app-div").html("");	
+	
 	$("#app-div").load("showOrders.html #showOrder", function(){
 		getMyOrder();
+		$("#modals-div").load("showOrders.html #modals-div", function(){
+			$("#changeInfo").click(function(){
+				setInfo();
+			});
+			$("#changeInfoMeal").click(function(){
+				setInfoMeal();
+			});
 		});
+	});
+	
+
 }
 
 function showDefineOrder(){
-console.log("usao");
 	$("#app-div").html("");
 	$("#app-div").load("defineOrder.html #defineOrder", function(){
 		setMeals();
+		$("#modals-div").load("defineOrder.html #modals-div");
+		
 	});
 
 }
@@ -231,7 +162,6 @@ function doLogin() {
 		$("#login-error").text("Please enter your email and password").css("color","red");
 		return;
 	}
-	
 	var s = JSON.stringify(data);
     $.ajax({
         url: "/auth",
@@ -242,7 +172,6 @@ function doLogin() {
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
     		getUser();
-    		//setupWebsockets();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -256,7 +185,9 @@ function doLogin() {
 
 function doLogout() {
     removeJwtToken();
+	stompClient.disconnect();
     location.href="#";
+    num_notifications = 0;
     $("body").load("login.html #login-div");
 }
 
@@ -269,10 +200,98 @@ function createAuthorizationTokenHeader() {
     }
 }
 
+function showSeatingChartWaiter(){
+		$("#app-div").html("");
+ 		$("#app-div").load("seatingChartWaiter.html #chart", function(){
+ 			setupChartWaiter();
+ 		});
+	
+}
+
 $(document).ready(function(){
+
+$(window).bind( "hashchange", function(e) {
+		var url = $.param.fragment();
+		// url action mapping
+		if(url == ""){
+			if (getJwtToken()) {
+				getUser();
+		    }else{
+		    	$("body").load("login.html #login-div");
+		    }
+			
+		}
+		else if(url == "supplies"){
+			showSupplies();
+		}
+		else if(url == "bidding"){
+			displayDemands();
+		}
+		else if(url == "addRestaurant"){
+			//showUserList();
+			showAddRestaurant();
+		}
+		else if(url == "changePersData"){
+			showChangePersData();
+		}
+		else if(url == "changePass"){
+			showChangePass();
+		}
+		else if(url == "addSysMan"){
+			showAddSysMan();
+		}
+		else if(url == "addBidder"){
+			showAddBidder();
+		}
+		else if(url == "addEmployee"){
+			showAddEmployee();
+		}
+		else if(url == "seatingChart"){
+			showSeatingChart();
+		}
+		else if(url == "calendarView"){
+			setupCalendar();
+		}
+		else if(/^addManager\?id\=[0-9]{1,}$/.test(url)){
+			showAddManager();
+		}
+		else if(/^showSupply\?supplyId\=[0-9]{1,}$/.test(url)){
+			showSelectedSupply();
+		}
+		else if(url=="ConfirmEmail"){
+			showConfirmEmail();
+		}
+		else if(url=="friends"){
+			showFriends();			
+		}
+		else if(url =="addFriend"){
+			showaddFriend();
+		}
+		else if(url == "seatingChartWaiter"){
+ 			showSeatingChartWaiter();
+ 		}
+ 		else if(url == "calendar"){
+ 			showCalendar();
+ 		}
+ 		else if(url == "personalData"){
+ 			showPersonalData();
+ 		}
+ 		else if(url == "restaurantSelect"){
+ 			showRestaurants();
+ 		}
+ 		else if(url == "shifts"){
+ 			showShifts();
+ 		}
+ 		else if(url=="getMyOrders"){
+ 			showMyOrders();
+ 		}
+ 		else if(url=="defineOrder"){
+ 			showDefineOrder();
+ 		}
+		// add more routes
+	});
 	getUser();
 });
-
 
 function setupWebSockets(user){
 	var socketClient = new SockJS("/sendNotification");
@@ -280,10 +299,10 @@ function setupWebSockets(user){
 	stompClient.connect({}, function(frame){
 		stompClient.subscribe("/notify/" + user.email + "/receive", function(retVal){
 			if (retVal != null && retVal.body != null && retVal.body != ""){
-				//var notifikacija = JSON.parse(retVal.body);
-				//console.log(notifikacija);
-				window.alert(retVal.body);
-				//dodajNotifikaciju(notifikacija);
+				
+				var notification = JSON.parse(retVal.body);
+				addNotification(notification);
+				$("#brojZahteva").text(num_notifications);
 			}
 		});
 	});

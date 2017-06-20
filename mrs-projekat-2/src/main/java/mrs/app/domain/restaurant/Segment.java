@@ -18,10 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Segment implements Serializable{
 	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

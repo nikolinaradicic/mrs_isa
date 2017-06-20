@@ -4,14 +4,18 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import mrs.app.DTOs.ItemDrinkDTO;
+import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Chef;
-import mrs.app.domain.Employee;
 import mrs.app.domain.User;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
+import mrs.app.domain.restaurant.Bill;
 import mrs.app.domain.restaurant.ChefMeal;
 import mrs.app.domain.restaurant.Drink;
+import mrs.app.domain.restaurant.ItemDrink;
+import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.WaiterOrd;
@@ -74,8 +78,6 @@ public class OrderController {
             logger.info("< set order");
     		return new ResponseEntity<WaiterOrd>(defineOrder,HttpStatus.OK);
         }
-
-//        Order order=orderService.setOrder(meal_list, drink_list, r);
         return new ResponseEntity<WaiterOrd>(HttpStatus.NOT_FOUND);
 		
 
@@ -115,6 +117,9 @@ public class OrderController {
         	Waiter waiter= (Waiter)user;
             Restaurant restaurant= restaurantService.findOne(waiter.getRestaurant().getId()); 
             logger.info("< get meal list1");
+            for(Meal m: restaurant.getMenu()){
+            	System.out.println(m.getName());
+            }
     		return new ResponseEntity<Collection<Meal>>(restaurant.getMenu(), HttpStatus.OK);
         }
         return new ResponseEntity<Collection<Meal>>(HttpStatus.NO_CONTENT);
@@ -130,9 +135,6 @@ public class OrderController {
 	public ResponseEntity<ChefMeal> saveChefMeals(HttpServletRequest request,
 			@RequestBody ChefMeal order){
 		logger.info("> set order chef");
-		for(Meal m: order.meals){
-			System.out.println(",,,,,,"+m.getQuantity());
-		}
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
@@ -149,39 +151,13 @@ public class OrderController {
 
 	}
 	
-	@RequestMapping(
-			value="/getChefMeals",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('CHEF')")
-	public ResponseEntity<Collection<Meal>> getChefMeals(HttpServletRequest request
-			){
-		logger.info("> get all meals chef");
-		
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        User user= userService.findByUsername(username);
-        if(user.getClass()==Chef.class){
-        	Employee chef= (Employee)user;
-            Restaurant restaurant= restaurantService.findOne(chef.getRestaurant().getId());
-            Collection<Meal> defineOrder=orderService.getAllMeals(restaurant);
-            System.out.println("da li je praznooo++++++++++++++-----");
-            System.out.println(defineOrder.isEmpty());
-    		logger.info("< get all meals chef");
-    		return new ResponseEntity<Collection<Meal>>(defineOrder,HttpStatus.OK);
 
-        }
-        return new ResponseEntity<Collection<Meal>>(HttpStatus.NOT_FOUND);
-
-	}
-	
-	
 	@RequestMapping(
 			value="/getBartenderDrinks",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('BARTENDER')")
-	public ResponseEntity<Collection<Drink>> getBartenderDrinks(HttpServletRequest request
+	@PreAuthorize("hasRole('BARTENDER') or hasRole('CHEF')")
+	public ResponseEntity<Collection<WaiterOrd>> getBartenderDrinks(HttpServletRequest request
 			){
 		logger.info("> get all drinks bartender");
 		
@@ -191,11 +167,17 @@ public class OrderController {
         if(user.getClass()==Bartender.class){
         	Bartender bartender= (Bartender)user;
             Restaurant restaurant= restaurantService.findOne(bartender.getRestaurant().getId()); 
-            Collection<Drink> defineOrder=orderService.getAllDrinks(restaurant);
+            Collection<WaiterOrd> defineOrder=orderService.getAllDrinks(restaurant);
     		logger.info("< get all drinks bartender");
-    		return new ResponseEntity<Collection<Drink>>(defineOrder,HttpStatus.OK);
+    		return new ResponseEntity<Collection<WaiterOrd>>(defineOrder,HttpStatus.OK);
+        }else if(user.getClass()==Chef.class){
+        	Chef chef= (Chef)user;
+            Restaurant restaurant= restaurantService.findOne(chef.getRestaurant().getId()); 
+            Collection<WaiterOrd> defineOrder=orderService.getAllDrinks(restaurant);
+    		logger.info("< get all drinks bartender");
+    		return new ResponseEntity<Collection<WaiterOrd>>(defineOrder,HttpStatus.OK);
         }
-        return new ResponseEntity<Collection<Drink>>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Collection<WaiterOrd>>(HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(
@@ -244,5 +226,132 @@ public class OrderController {
   
         return new ResponseEntity<Collection<WaiterOrd>>(HttpStatus.NOT_FOUND);
 	}
+	
+	@RequestMapping(
+			value="/updateItemDrink",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<ItemDrink> updateItemDrink(HttpServletRequest request,
+			@RequestBody ItemDrink itemDr){
+		logger.info("> update Item Drink");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+            ItemDrink item=orderService.updateItemDrink(itemDr);
+    		logger.info("< update Item Drink");
+    		return new ResponseEntity<ItemDrink>(item,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<ItemDrink>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
+			value="/updateItemMeal",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<ItemMeal> updateItemMeal(HttpServletRequest request,
+			@RequestBody ItemMeal itemMe){
+		logger.info("> update Item Drink");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+            ItemMeal item=orderService.updateItemMeal(itemMe);
+    		logger.info("< update Item Drink");
+    		return new ResponseEntity<ItemMeal>(item,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<ItemMeal>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
+			value="/updateItemMealStatus",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('CHEF')")
+	public ResponseEntity<ItemMeal> updateItemMealStatus(HttpServletRequest request,
+			@RequestBody ItemMeal itemMe){
+		logger.info("> update Item Meal Status");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Chef.class){
+            ItemMeal item=orderService.updateItemMealStatus(itemMe);
+    		logger.info("< update Item Meal Status");
+    		return new ResponseEntity<ItemMeal>(item,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<ItemMeal>(HttpStatus.NOT_FOUND);
+	}
+	
+	
+	@RequestMapping(
+			value="/updateItemDrinkStatus",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('BARTENDER')")
+	public ResponseEntity<ItemDrink> updateItemDrinkStatus(HttpServletRequest request,
+			@RequestBody ItemDrink itemDr){
+		logger.info("> update Item Drink Status");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Bartender.class){
+            ItemDrink item=orderService.updateItemDrinkStatus(itemDr);
+    		logger.info("< update Item Drink Status");
+    		return new ResponseEntity<ItemDrink>(item,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<ItemDrink>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
+			value="/deleteItemDrink",
+			method = RequestMethod.POST,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Integer> deleteItemDrink(HttpServletRequest request,
+			@RequestBody ItemDrinkDTO orderDTO){
+		logger.info("> delete Item Drink ");		
+        orderService.deleteItemDrink(orderDTO);
+        logger.info("< delete Item Drink");
+        return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value="/deleteItemMeal",
+			method = RequestMethod.POST,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Integer> deleteItemMeal(HttpServletRequest request,
+			@RequestBody ItemMealDTO orderDTO){
+		logger.info("> delete Item Meal ");		
+        orderService.deleteItemMeal(orderDTO);
+        logger.info("< delete Item Meal");
+        return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(
+			value="/defineCheck",
+			method = RequestMethod.POST,
+			consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Integer> deleteItemMeal(HttpServletRequest request,
+			@RequestBody Bill bill){
+		logger.info("> define check ");		
+        orderService.createCheck(bill);
+        logger.info("< define check");
+        return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	
+	
 	
 }

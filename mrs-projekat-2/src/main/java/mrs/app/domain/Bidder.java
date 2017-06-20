@@ -25,6 +25,12 @@ public class Bidder extends User{
 		this.firstTime="notvisited";
 	}
 	
+	public Bidder(String password, String name, String lastname, String email) {
+		super(password, name, lastname, email);
+		this.role = UserType.ROLE_BIDDER;
+		this.firstTime="notvisited";
+	}
+
 	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY,mappedBy="bidder")
 	private Set<Offer> offers;
 

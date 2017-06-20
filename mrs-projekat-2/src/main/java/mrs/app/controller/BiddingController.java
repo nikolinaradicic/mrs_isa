@@ -3,17 +3,20 @@ package mrs.app.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import mrs.app.DTOs.GroceryListDTO;
 import mrs.app.DTOs.OfferDTO;
 import mrs.app.domain.Bidder;
+import mrs.app.domain.Notification;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.restaurant.GroceryList;
 import mrs.app.domain.restaurant.Offer;
 import mrs.app.security.JwtTokenUtil;
 import mrs.app.service.GroceryListService;
+import mrs.app.service.NotificationService;
 import mrs.app.service.OfferService;
 import mrs.app.service.UserService;
 
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +54,13 @@ public class BiddingController {
 	
 	@Autowired
 	private OfferService offerService;
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+
+	@Autowired
+	SimpMessagingTemplate simp;
 	
 	@RequestMapping(
 			value = "/addList",
@@ -133,18 +144,40 @@ public class BiddingController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<GroceryList> acceptOffer( @RequestBody Offer offer, HttpServletRequest request) throws Exception {
+	public ResponseEntity<GroceryList> acceptOffer( @RequestBody OfferDTO offer, HttpServletRequest request) throws Exception {
 		logger.info("> accept offer");
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
-		Offer saved = offerService.acceptOffer(offer);
-		GroceryList gl = saved.getGroceryList();
-		gl.setAcceptedOffer(saved);
+        GroceryList gl = groceryListService.findOne(offer.getGroceryListId());
+        if(!user.getRestaurant().equals(gl.getRestaurant())){
+        	return new ResponseEntity<GroceryList>(HttpStatus.FORBIDDEN);
+        }
+        Offer saved = offerService.findOne(offer.getId());
+		groceryListService.acceptOffer(gl, saved);
+		notifySuppliers(gl.getOffers());
 		logger.info("< accept offer");
 		return new ResponseEntity<GroceryList>(gl, HttpStatus.OK);
 	}
 	
+	private void notifySuppliers(Set<Offer> offers) throws Exception {
+		// TODO Auto-generated method stub
+
+		String text = "vasa ponuda je prihvacena.";	
+		String text2 = "vasa ponuda nije prihvacena";
+		for (Offer o : offers){
+			Notification notif = new Notification(o.getBidder(),false);
+			if(o.isAccepted()){
+				notif.setText(text);
+			}else{
+				notif.setText(text2);
+			}
+			
+			notificationService.create(notif);
+			simp.convertAndSend("/notify/" + o.getBidder().getEmail() + "/receive", notif);
+		}
+	}
+
 	@RequestMapping(
 			value = "/getBids",
 			method = RequestMethod.GET,
@@ -159,6 +192,16 @@ public class BiddingController {
 		ArrayList<OfferDTO> retVal = new ArrayList<OfferDTO>();
 		for (Offer o : saved){
 			OfferDTO od = new OfferDTO(o.getGroceryList().getId(),o.getPrice(),o.getMessage());
+			if(o.isAccepted()){
+				od.setStatus("ACCEPTED");
+			}
+			else if(o.getGroceryList().getAcceptedOffer() == null){
+				od.setStatus("WAITING");
+			}
+			else{
+				od.setStatus("REJECTED");
+			}
+			
 			od.setRestaurant(o.getGroceryList().getRestaurant().getName());
 			retVal.add(od);
 		}
@@ -197,9 +240,22 @@ public class BiddingController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Bidder user = (Bidder) userService.findByUsername(username);
         GroceryList gl = groceryListService.findOne(offer.getGroceryListId());
-		Offer saved = new Offer(user,gl,offer.getPrice(),offer.getMessage(), false);
-		offerService.create(saved);
-		OfferDTO retVal = new OfferDTO(saved.getGroceryList().getId(), saved.getPrice(), saved.getMessage());
+        
+        Offer exists = offerService.findByListAndBidder(gl, user);
+        if(exists == null){
+
+    		Offer toSave = new Offer(user,gl,offer.getPrice(),offer.getMessage(), false);
+        	groceryListService.createOffer(toSave, gl);
+
+    		OfferDTO retVal = new OfferDTO(toSave.getGroceryList().getId(), toSave.getPrice(), toSave.getMessage());
+    		logger.info("< add bid");
+    		return new ResponseEntity<OfferDTO>(retVal, HttpStatus.CREATED);
+        }
+        
+        offer.setId(exists.getId());
+        Offer toSave = groceryListService.updateOffer(offer, gl);
+
+		OfferDTO retVal = new OfferDTO(toSave.getGroceryList().getId(), toSave.getPrice(), toSave.getMessage());
 		logger.info("< add bid");
 		return new ResponseEntity<OfferDTO>(retVal, HttpStatus.CREATED);
 		
