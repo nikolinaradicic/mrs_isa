@@ -18,7 +18,6 @@ insert into bartender(id) value(8)
 insert into guest(id) value(2)
 insert into guest(id) value(3)
 insert into guest(id) value(4)
-
 insert into meal(id, description, name, price, restaurant_id) value (1,"Testenine","Spagete",380,1)
 insert into meal(id, description, name, price, restaurant_id) value (2,"Supe i corbe","Teleca Corba",260,1)
 insert into meal(id, description, name, price, restaurant_id) value (3,"Supe i corbe","Kokosja Supa",160,1)
@@ -31,3 +30,4 @@ insert into drink(id, description, name, price, restaurant_id) value (3,"Gaziran
 insert into drink(id, description, name, price, restaurant_id) value (4,"Gazirani sokovi","Sprite",150,1)
 insert into drink(id, description, name, price, restaurant_id) value (5,"Kafa","Espresso",110,1)
 insert into drink(id, description, name, price, restaurant_id) value (6,"Kafa","Cappuccino",150,1)
+insert into reservation(id,broj_stolica,date,end_time,start_time,guest_id,restaurant_id) value (5,3,CURRENT_TIMESTAMP,"12:00","16:00",2,1)

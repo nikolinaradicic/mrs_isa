@@ -24,6 +24,28 @@ public class Visit {
 	
 	@Column
 	private Date date;
+	
+	@Column
+	private boolean marked;
+	
+	public Visit() {
+		// TODO Auto-generated constructor stub
+		this.marked=false;
+	}	
+	
+	
+
+	public boolean isMarked() {
+		return marked;
+	}
+
+
+
+	public void setMarked(boolean marked) {
+		this.marked = marked;
+	}
+
+
 
 	public Long getId() {
 		return id;
