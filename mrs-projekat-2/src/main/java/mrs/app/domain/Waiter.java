@@ -12,6 +12,5 @@ public class Waiter extends Employee{
 	public Waiter() {
 		// TODO Auto-generated constructor stub
 		this.role = UserType.ROLE_WAITER;
-		this.firstTime="notvisited";
 	}
 }

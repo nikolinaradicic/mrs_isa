@@ -21,6 +21,8 @@ public class Employee extends User {
 	protected int uniformSize;
 	protected int shoeSize;
 	
+	protected boolean enabled;
+	
 	@OneToMany(mappedBy = "employee")
 	protected Set<WorkingShift> shifts;
 	
@@ -51,5 +53,13 @@ public class Employee extends User {
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	
 
 }

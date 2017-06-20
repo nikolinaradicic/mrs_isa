@@ -6,7 +6,14 @@ function getUser(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-				console.log("uspjeh");
+				if(data.role =="ROLE_BIDDER" || data.role =="ROLE_BARTENDER" || data.role == "ROLE_WAITER" || data.role == "ROLE_CHEF")
+				{
+					if(!data.enabled){
+						$("body").load("changePass1.html #changePassword");
+						return;
+					}
+				}
+			
 				$("body").load("indexSysMan.html #container", function(){
 					$.getScript("js/common-scripts.js", function(){
 						startApp();
@@ -290,7 +297,6 @@ function changeData() {
 
 function changePass() {
 	var $form = $("#changePass");
-	console.log($form);
 	var data = getFormData($form);
 	if(!validateForm(data)){
 		$("#password-error").text("Fill all the fields").css("color","red");
@@ -309,6 +315,36 @@ function changePass() {
 		complete: function(data) {
 			if (data.responseJSON){
 				location.href = "#";
+			}
+			else{
+				console.log(data);
+				$("#password-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+
+function changePass1() {
+	var $form = $("#changePass");
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#password-error").text("Fill all the fields").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/changePass",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				$(window).trigger("hashchange");
 			}
 			else{
 				console.log(data);
