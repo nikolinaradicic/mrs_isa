@@ -255,6 +255,8 @@ function displayFriendsLastName(friends){
 }
 
 function getAllVisits(){
+
+				console.log("cao");
 	$.ajax({
 			url: "/getMyVisits",
 			type:"GET",
@@ -263,9 +265,9 @@ function getAllVisits(){
 			headers: createAuthorizationTokenHeader(),
 			complete: function(data) {
 				if (data.responseJSON){
-				
+				console.log("cao");
 		$("#modals-div").load("ModalRank.html #modals-div",function(){
-		$("#app-div").append($("<section class='wrapper'>")
+		$("#app-div").append($("<section class='wrapper' id='visit-section'>")
 								.append($("<div class='login-form'>")
 									.append($("<div class='wrapper'>")
 										.append($("<div class='row mt'>")

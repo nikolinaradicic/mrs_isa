@@ -534,6 +534,7 @@ function changeInformation(){
 }	
 
 function getRestaurants1(){
+	$("#visit-section").hide();
 		$.ajax({
 			url: "/restaurants",
 			type:"GET",

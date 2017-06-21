@@ -1,3 +1,12 @@
+function rastegni(){
+document.getElementById('toggleProfile').addEventListener('click', function () {
+  [].map.call(document.querySelectorAll('.profile'), function(el) {
+    el.classList.toggle('profile--open');
+  });
+});
+}
+	
+
 function getUser(){
 	$.ajax({
 		url: "api/getUser",

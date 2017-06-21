@@ -78,7 +78,7 @@ function setMeals(){
 	console.log(drinks);
 	$("#meal-form").append($("<tr>")
 								.append($("<h4>")
-									.append($("<input id='bbb' type='button' class='button btn' value='Submit' onclick='showModal()'>"))
+									.append($("<input id='bbb' type='button' class='btn btn-default' value='Create' onclick='showModal()'>"))
 								)
 							);
 	
@@ -366,11 +366,11 @@ function getMyOrder(){
 												.append($("<label>").text("  "+mm.quantity))
 											)
 											.append($("<td>")
-												.append($("<input type='button' value='Edit'  style='margin-right: 5px' class='btn btn-blue btn-xs'>").click(function(){
+												.append($("<input type='button' value='Edit'  style='margin-right: 5px' class='btn btn-success btn-xs'>").click(function(){
 														editMeal(mm);
 													})
 												)
-												.append($("<input type='button' value='Delete'  style='margin-right: 5px' class='btn btn-red btn-xs'>").click(function(){
+												.append($("<input type='button' value='Delete'  style='margin-right: 5px' class='btn btn-danger btn-xs'>").click(function(){
 														console.log("brisem");
 														deleteItemMeal(mm,item.id);
 														
@@ -413,7 +413,7 @@ function getMyOrder(){
 								.append($("<td>"))
 								.append($("<td>"))
 								.append($("<td>")
-									.append($("<input type='button' value='Create Check' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
+									.append($("<input type='button' value='Create Check' style='margin-right: 5px'  class='btn btn-default btn-xs'>").click(function(){
 														getCheck(item);
 													})
 									
@@ -690,6 +690,7 @@ function showModal(){
 		segment=data.responseJSON.segment;
 				
 				canvas = new fabric.CanvasEx("canvas");
+				
 		if (segment.chart != ""  && segment.chart != null){
 			var json = JSON.parse(segment.chart);
 			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));

@@ -1,14 +1,21 @@
-body{
-	margin:0;
-	color:#6a6f8c;
-	font:600 16px/18px 'Open Sans',sans-serif;
- 	-webkit-background-size: cover;
-  	-moz-background-size: cover;
-  	-o-background-size: cover;
-  	background-size: cover;
+/* body{ */
+/* 	margin:0; */
+/* 	color:#6a6f8c; */
+/* 	font:600 16px/18px 'Open Sans',sans-serif; */
+/*  	-webkit-background-size: cover; */
+/*   	-moz-background-size: cover; */
+/*   	-o-background-size: cover; */
+/*   	background-size: cover; */
+/* } */
+
+body {
+  position: relative;
+  margin: 0;
+  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  background: linear-gradient(to bottom, #68EACC 0%, #497BE8 100%);
+  color: #777;
 }
-
-
 scrollbar{
   height: 100px;
   overflow: auto; 
@@ -115,11 +122,12 @@ a{color:inherit;text-decoration:none}
 	-webkit-text-security:circle;
 }
 .login-form .group .label{
-	color:#fff;
+	color:grey;
 	font-size:12px;
 }
 .login-form .group .button{
-	background:#802000;
+	background:black;
+	color:#fff;
 }
 .login-form .group label .icon{
 	width:15px;
@@ -187,7 +195,7 @@ a{color:inherit;text-decoration:none}
 
 .modal-header {
     padding: 2px 16px;
-    background-color: #6a6f8c;
+    background-color: #000000;
     color: white;
 }
 
@@ -197,7 +205,7 @@ a{color:inherit;text-decoration:none}
 /* Modal Footer */
 .modal-footer {
     padding: 2px 16px;
-    background-color: #5cb85c;
+    background-color: #fff;
     color: white;
 }
 

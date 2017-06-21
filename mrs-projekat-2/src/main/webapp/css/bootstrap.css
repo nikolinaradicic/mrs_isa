@@ -2774,18 +2774,18 @@ fieldset[disabled] .btn {
   opacity: .65;
 }
 .btn-default {
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
+  color: #fff;
+  background-color: #666600;
+  border-color: #666600;
 }
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,
 .btn-default.active,
 .open > .dropdown-toggle.btn-default {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
+  color: black;
+  background-color: #fff;
+  border-color: #384d00;
 }
 .btn-default:active,
 .btn-default.active,
@@ -2816,17 +2816,17 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #fff;
-  background-color: #428bca;
-  border-color: #357ebd;
+  background-color: #666600;
+  border-color: #666600;
 }
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active,
 .btn-primary.active,
 .open > .dropdown-toggle.btn-primary {
-  color: #fff;
-  background-color: #3071a9;
-  border-color: #285e8e;
+  color: #384d00;
+  background-color: #fff;
+  border-color: #384d00;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -5357,14 +5357,14 @@ a.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #000;
+  color: #fff;
   text-shadow: 0 1px 0 #fff;
   filter: alpha(opacity=20);
-  opacity: .2;
+  opacity: 1;
 }
 .close:hover,
 .close:focus {
-  color: #000;
+  color: #fff;
   text-decoration: none;
   cursor: pointer;
   filter: alpha(opacity=50);
@@ -5383,15 +5383,29 @@ button.close {
 .modal {
   position: fixed;
   top: 0;
-  right: 0;
+  right: 200px;
   bottom: 0;
-  left: 0;
+  left: 200px;
   z-index: 1050;
   display: none;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   outline: 0;
 }
+
+.modal-moj {
+  position: fixed;
+  top: 0;
+  right: 0px;
+  bottom: 0;
+  left: 0px;
+  z-index: 1050;
+  display: none;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+}
+
 .modal.fade .modal-dialog {
   -webkit-transition: -webkit-transform .3s ease-out;
        -o-transition:      -o-transform .3s ease-out;

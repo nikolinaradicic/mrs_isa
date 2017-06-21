@@ -208,6 +208,8 @@ function showSeatingChartWaiter(){
 	
 }
 
+
+
 $(document).ready(function(){
 
 $(window).bind( "hashchange", function(e) {
