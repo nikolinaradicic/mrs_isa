@@ -12,9 +12,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
 
-import mrs.app.domain.restaurant.Restaurant;
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable{
@@ -44,8 +41,6 @@ public class User implements Serializable{
 	@Column(nullable=false)
 	@Enumerated(EnumType.STRING)
 	protected UserType role;
-	@Column(nullable=false)
-	protected String firstTime="notvisited";
 	public User(){
 		
 	}
@@ -104,13 +99,6 @@ public class User implements Serializable{
 		this.role = role;
 	}
 
-	public String getFirstTime() {
-		return firstTime;
-	}
-
-	public void setFirstTime(String firstTime) {
-		this.firstTime = firstTime;
-	}
 	
 	@Override
 	public boolean equals(Object obj){

@@ -12,7 +12,6 @@ function setupCalendarView(){
 				  
 					    			var events = [];
 					   		 		$.each(data, function(idx, e) {
-					    				console.log(e);
 					      				events.push({
 					        			start: e.date,
 					        			title: "  "+e.employee.name
@@ -30,11 +29,19 @@ function setupCalendar(){
 	$("#modals-div").load("calendarView.html #modals", function(){
 		fillShiftBox();
 		$("#step1-btn").click(function () {
+		    if($('#shift-select option').size() == 0){
+				$("#error1").text("A shift must be selected").css("color", "red");
+				return;
+			}
 		    $("#step1").hide();
 		    $("#step2").show();
 		    fillEmployeeBox();
 		});
 		$("#step2-btn").click(function () {
+			 if($('#employee-select option').size() == 0){
+					$("#error2").text("An employee must be selected").css("color", "red");
+					return;
+				}
 			var co = $('#employee-select').find(":selected").attr("class");
 			if(co == "ROLE_WAITER"){
 				$("#step2").hide();
@@ -122,8 +129,6 @@ function addEvent(){
 	var data = getFormData($form);
 	var check = moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD');
 	var send_data = {date : check, employee : {email: data['employee-name']}, shift : {name: data['shift-name']}};
-	console.log("salje seeee:");
-	console.log(send_data);
 	var co = $('#employee-select').find(":selected").attr("class");
 	if(co == "ROLE_WAITER"){
 		if($('#segment-select option').size() != 0) 
@@ -206,6 +211,9 @@ function displayCalendar(){
 		    else{
 		    	start_date = start;
 		    	end_date = end;
+
+		    	$("#error1").text("");
+		    	$("#error2").text("");
 		    	$("#error").text("");
 		    	$("#step2").hide();
 		    	$("#step3").hide();

@@ -15,7 +15,14 @@ function getUser(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-				console.log("uspjeh");
+				if(data.role =="ROLE_BIDDER" || data.role =="ROLE_BARTENDER" || data.role == "ROLE_WAITER" || data.role == "ROLE_CHEF")
+				{
+					if(!data.enabled){
+						$("body").load("changePass1.html #changePassword");
+						return;
+					}
+				}
+			
 				$("body").load("indexSysMan.html #container", function(){
 					$.getScript("js/common-scripts.js", function(){
 						startApp();
@@ -102,7 +109,6 @@ function getUser(){
 							$("#guestsRestaurants").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
-								console.log("pozivam ucitavanje")
 								getDrinksBartender();
 							}else{
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
@@ -260,7 +266,6 @@ function displayData(){
 							
 			}
 			else{
-				console.log(data);
 			}
 		}
 	});
@@ -268,7 +273,6 @@ function displayData(){
 
 function changeData() {
 	var $form = $("#changeData");
-	console.log($form);
 	var data = getFormData($form);
 	if(!validateForm(data)){
 		$("#data-error").text("Fill all the fields").css("color","red");
@@ -286,11 +290,9 @@ function changeData() {
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data);
 				location.href = "#";
 			}
 			else{
-				console.log(data);
 				$("#data-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -299,7 +301,6 @@ function changeData() {
 
 function changePass() {
 	var $form = $("#changePass");
-	console.log($form);
 	var data = getFormData($form);
 	if(!validateForm(data)){
 		$("#password-error").text("Fill all the fields").css("color","red");
@@ -320,7 +321,35 @@ function changePass() {
 				location.href = "#";
 			}
 			else{
-				console.log(data);
+				$("#password-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+
+function changePass1() {
+	var $form = $("#changePass");
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#password-error").text("Fill all the fields").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/changePass",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				$(window).trigger("hashchange");
+			}
+			else{
 				$("#password-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -355,7 +384,6 @@ function registerManager(){
 	var id = url.split("=")[1];
 	data.restaurant = {id : id};
 	var s = JSON.stringify(data);
-	console.log(s);
 	$.ajax({
 		url: "/api/restManagerRegistration",
 		type:"POST",
@@ -365,11 +393,9 @@ function registerManager(){
 		data: s,
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data);
 				location.href = "#";
 			}
 			else{
-				console.log(data);
 				$("#addManager-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -394,26 +420,17 @@ function addSysMan() {
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function (data, textStatus, jqXHR) {
-            console.log("uspjesno");
+
+			location.href = "#";
         },
         error: function (jqXHR, textStatus, errorThrown) {
             showResponse(jqXHR.status, errorThrown);
-        },
-		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "#";
-			}
-			else{
-				console.log(data);
-				$("#addSysMan-error").text("Invalid form").css("color","red");
-			}
-		}
+        }
 	});
 }
 
 function addBidder() {
 	var $form = $("#add-bidder-form");
-	console.log($form);
 	var data = getFormData($form);
 	if(!validateForm(data)){
 		$("#addBidder-error").text("Fields must be filled in").css("color","red");
@@ -434,7 +451,6 @@ function addBidder() {
 				location.href = "#";
 			}
 			else{
-				console.log(data);
 				$("#addBidder-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -450,7 +466,6 @@ function addEmployee(){
 		return;
 	}
 	var s = JSON.stringify(data);
-	console.log(data);
 	var val = "";
 	if (data.role == 0){
 		val = "Waiter";
@@ -473,7 +488,6 @@ function addEmployee(){
 				location.href = "#";
 			}
 			else{
-				console.log(data);
 				$("#addEmployee-error").text("Invalid form").css("color","red");
 			}
 		}

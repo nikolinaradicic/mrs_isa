@@ -10,14 +10,19 @@ import mrs.app.domain.restaurant.Restaurant;
 
 public interface RestaurantService {
 	
+	//tested
 	Collection<Restaurant> findAll();
 
+	//tested
 	Restaurant create(Restaurant restaurant) throws Exception;
 
+	//tested
 	Drink addDrink(Drink drink) throws Exception;
 
+	//tested
 	Meal addMeal(Meal meal) throws Exception;
 
+	//tested
 	int changeInformation(Restaurant restaurant);
 	
 	List<Restaurant> findAllSort();

@@ -41,7 +41,6 @@ public class Guest extends User{
 	public Guest() {
 		// TODO Auto-generated constructor stub
 		this.role=UserType.ROLE_GUEST;
-		this.firstTime="notvisited";
 	}
 	@JsonIgnore
 	public List<Guest> getFriends() {

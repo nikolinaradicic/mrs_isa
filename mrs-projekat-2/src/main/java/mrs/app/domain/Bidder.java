@@ -18,17 +18,17 @@ public class Bidder extends User{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private boolean enabled;
 
 	public Bidder() {
 		// TODO Auto-generated constructor stub
 		this.role = UserType.ROLE_BIDDER;
-		this.firstTime="notvisited";
 	}
 	
 	public Bidder(String password, String name, String lastname, String email) {
 		super(password, name, lastname, email);
 		this.role = UserType.ROLE_BIDDER;
-		this.firstTime="notvisited";
 	}
 
 	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY,mappedBy="bidder")
@@ -41,6 +41,14 @@ public class Bidder extends User{
 
 	public void setOffers(Set<Offer> offers) {
 		this.offers = offers;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 	
 	

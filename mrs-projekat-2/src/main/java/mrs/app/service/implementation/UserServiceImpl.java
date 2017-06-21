@@ -3,6 +3,7 @@ package mrs.app.service.implementation;
 import java.util.Collection;
 
 import mrs.app.DTOs.GuestDTO;
+import mrs.app.domain.Bidder;
 import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.User;
@@ -69,7 +70,16 @@ public class UserServiceImpl implements UserService{
 	public User change(User user) {
 		User savedUser = userRepository.findOne(user.getId());
 		savedUser.setPassword(user.getPassword());
-		savedUser.setFirstTime("visited");		
+		if(savedUser instanceof Employee){
+			Employee save = (Employee) user;
+			save.setEnabled(true);
+			return userRepository.save(save);
+		}
+		if(savedUser instanceof Bidder){
+			Bidder save = (Bidder) user;
+			save.setEnabled(true);
+			return userRepository.save(save);
+		}
 		return userRepository.save(savedUser);
 	}
 	

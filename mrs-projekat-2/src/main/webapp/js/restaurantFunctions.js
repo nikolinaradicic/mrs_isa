@@ -7,7 +7,6 @@ function setupChartWaiter(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log(data.responseJSON);
 				var canvas = new fabric.CanvasEx("canvas");
 				document.getElementById('canvas').fabric = canvas;
 				canvas.setHeight(450);
@@ -200,7 +199,6 @@ function displayRestaurant(restaurant){
 									$("#modalDrink").modal('toggle');
 									});
 				$("#location-btn").click(function(){
-					console.log("usaooo");
 					$('#us3').locationpicker({
 	                     location: {
 	                         latitude: restaurant.latitude,
@@ -242,7 +240,6 @@ function openUpdateDrink(drink)
 	var name = $('#drinks-table-body #drink'+drink.id).children('td:eq(0)').text();
 	var description = $('#drinks-table-body #drink'+drink.id).children('td:eq(1)').text();
 	var price = $('#drinks-table-body #drink'+drink.id).children('td:eq(2)').text();
-	console.log(name);
 	$("#update-drink-form input[name=id]").val(drink.id);
 	$("#update-drink-form input[name=name]").val(name);
 	$("#update-drink-form textarea[name=description]").val(description);
@@ -436,7 +433,6 @@ function updateMeal(){
 		return;
 	}
 	var s = JSON.stringify(data);
-	console.log("tujiiiiii");
 	$.ajax({
 		url: "/updateMeal",
 		type:"POST",
@@ -495,7 +491,6 @@ function deleteDrink(drink){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			console.log(drink.id);
 			$('#drinks-table-body tr#drink'+drink.id).remove();
 			},
 		error: function (jqXHR, textStatus, errorThrown) {
