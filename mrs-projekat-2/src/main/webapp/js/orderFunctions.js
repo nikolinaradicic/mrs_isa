@@ -338,6 +338,9 @@ function getMyOrder(){
 			$("#orders-body").empty();
 			$.each(data.responseJSON, function(i, item){
 			console.log(item);
+			if(item.drinks==0  && item.meals==0){
+				return;
+			}else{
 				$("#orders-body").append($("<tr>")
 											.append($("<td id='forChange'>")
 												.append($("<label class='fa fa-info-circle'>")
@@ -394,11 +397,11 @@ function getMyOrder(){
 												.append($("<label>").text("  "+dd.quantity))
 											)
 											.append($("<td>")
-												.append($("<input type='button' value='Edit' style='margin-right: 5px'  class='btn btn-blue btn-xs'>").click(function(){
+												.append($("<input type='button' value='Edit' style='margin-right: 5px'  class='btn btn-success btn-xs'>").click(function(){
 														editDrink(dd);
 													})
 												)
-												.append($("<input type='button' value='Delete' style='margin-right: 5px'  class='btn btn-red btn-xs'>").click(function(){
+												.append($("<input type='button' value='Delete' style='margin-right: 5px'  class='btn btn-danger btn-xs'>").click(function(){
 														deleteItemDrink(dd,item.id);
 													})
 												)
@@ -407,7 +410,7 @@ function getMyOrder(){
 												.append($("<span class='label label-success'>").text(dd.status))
 											)
 										);
-				});				
+				});			
 				$("#orders-body").append($("<tr>")
 								.append($("<td>"))
 								.append($("<td>"))
@@ -420,7 +423,8 @@ function getMyOrder(){
 								)
 
 								
-							));					
+							));
+							}					
 			});
 		}
 	});
@@ -469,7 +473,8 @@ function setInfo(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -496,7 +501,8 @@ function setInfoMeal(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -506,7 +512,7 @@ function setInfoMeal(){
 }
 
 function acceptMeal(meal){
-	if(meal.status!="notaccepted"){
+	if(meal.status!="Not Accepted"){
 		window.alert("Vec ste prihvatili jelo!");
 		return;
 	}else{
@@ -523,7 +529,8 @@ function acceptMeal(meal){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -538,7 +545,7 @@ function preparedMeal(meal){
 		if(meal.status=="Prepared"){
 			window.alert("Jelo je vec spremno!");
 			return;
-		}else if(meal.status=="notaccepted"){
+		}else if(meal.status=="Not Accepted"){
 			window.alert("Jelo prvo morate prihvatiti!");
 			return;
 		}
@@ -557,7 +564,8 @@ function preparedMeal(meal){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -569,15 +577,10 @@ function preparedMeal(meal){
 
 
 function acceptDrink(drink){
-	if(drink.status!="notaccepted"){
+	if(drink.status!="Not Accepted"){
 		window.alert("Vec ste prihvatili pice!");
 		return;
 	}else{
-	//$("#acceptDrinkButton").onclick=function(){
-		//	console.log("prosao");
-		//$("#acceptDrinkButton").value="Accepted";
-
-	//};
 	drink.status="Accepted";
 	var itemDrink=drink;
 		$.ajax({
@@ -589,7 +592,8 @@ function acceptDrink(drink){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -604,7 +608,7 @@ function preparedDrink(drink){
 		if(drink.status=="Prepared"){
 			window.alert("Pice je vec spremno!");
 			return;
-		}else if(drink.status=="notaccepted"){
+		}else if(drink.status=="Not Accepted"){
 			window.alert("Pice prvo morate prihvatiti!");
 			return;
 		}
@@ -621,7 +625,8 @@ function preparedDrink(drink){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -644,7 +649,8 @@ function deleteItemMeal(meal,id){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -664,7 +670,8 @@ function deleteItemDrink(drink,id){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");
@@ -745,14 +752,28 @@ table=canvas.getActiveObject();
 function getCheck(order){
 	//pravim racun, trebam izracunati vrednost i ubaciti order
 	var price=0;
-	
+	var nisu=false;
 		$.each(order.meals,function(i,meall){
-			price+=meall.quantity*meall.meal.price;
+		console.log(meall);
+			if(meall.status=="Prepared" && !meall.bill){
+				price+=meall.quantity*meall.meal.price;
+			}else{
+				nisu=true;
+				return;
+			}
 		});
 		$.each(order.drinks,function(i,drinkk){
-			price+=drinkk.quantity*drinkk.drink.price;
+			if(drinkk.status=="Prepared" && !drinkk.bill){
+				price+=drinkk.quantity*drinkk.drink.price;
+			}else{
+				nisu=true;
+				return;
+			}
 		});
-	console.log(order);
+		if(nisu){
+			window.alert("Nemoguce kreirati racun.");
+			return;
+		}
 	
 	var item={order:order,final_price:price};
 	$.ajax({
@@ -764,8 +785,9 @@ function getCheck(order){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				console.log("USAOO");
-				window.location.reload(true/false);
+				//window.location.reload(true/false);
+				window.alert("Racun uspesno kreiran.");
+				$(window).trigger(" hashchange ");
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");

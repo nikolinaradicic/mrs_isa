@@ -52,6 +52,19 @@ public class User implements Serializable{
 		this.lastname = lastname;
 		this.email = email;
 	}
+	
+	
+
+	public User(String password, String name, String lastname, String email,
+			UserType role) {
+		super();
+		this.password = password;
+		this.name = name;
+		this.lastname = lastname;
+		this.email = email;
+		this.role = role;
+		this.firstTime="notvisited";
+	}
 
 	public String getPassword() {
 		return password;

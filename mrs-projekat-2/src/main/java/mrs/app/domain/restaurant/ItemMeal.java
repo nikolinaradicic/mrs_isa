@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class ItemMeal {
@@ -24,11 +26,49 @@ public class ItemMeal {
 	@Column
 	private String status;
 	
+	@ManyToOne
+	private WaiterOrd waiterOrd;
+	
+	@Column
+	private boolean bill;
+	
+	@JsonIgnore
+	public WaiterOrd getWaiterOrd() {
+		return waiterOrd;
+	}
+
+	public void setWaiterOrd(WaiterOrd waiterOrd) {
+		this.waiterOrd = waiterOrd;
+	}
+
 	public ItemMeal() {
 		// TODO Auto-generated constructor stub
-		this.status="notaccepted";
+		this.status="Not Accepted";
+		this.bill=false;
 	}
 	
+	public ItemMeal(Meal meal, int quantity, String status) {
+		super();
+		this.meal = meal;
+		this.quantity = quantity;
+		this.status = "Not Accepted";
+	}
+	
+	public ItemMeal(Meal meal, int quantity) {
+		super();
+		this.meal = meal;
+		this.quantity = quantity;
+		this.status = "Not Accepted";
+	}
+
+	public boolean isBill() {
+		return bill;
+	}
+
+	public void setBill(boolean bill) {
+		this.bill = bill;
+	}
+
 	public int getQuantity() {
 		return quantity;
 	}

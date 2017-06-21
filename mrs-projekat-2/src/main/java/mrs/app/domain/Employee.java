@@ -35,6 +35,30 @@ public class Employee extends User {
 	@ManyToOne
 	protected Restaurant restaurant;
 	
+	public Employee() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Employee(Date birthday, int uniformSize, int shoeSize, Restaurant restaurant) {
+		super();
+		this.birthday = birthday;
+		this.uniformSize = uniformSize;
+		this.shoeSize = shoeSize;
+		this.restaurant = restaurant;
+	}
+	
+	
+	
+	public Employee(String password, String name, String lastname,
+			String email, UserType role,Date birthday, int uniformSize, int shoeSize, Restaurant restaurant) {
+		super(password, name, lastname, email, role);
+		// TODO Auto-generated constructor stub
+		this.birthday = birthday;
+		this.uniformSize = uniformSize;
+		this.shoeSize = shoeSize;
+		this.restaurant = restaurant;
+	}
+
 	public Date getBirthday() {
 		return birthday;
 	}

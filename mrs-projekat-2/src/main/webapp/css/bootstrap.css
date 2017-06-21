@@ -113,7 +113,7 @@ input,
 optgroup,
 select,
 textarea {
-  margin: 0;
+  margin:0;
   font: inherit;
   color: inherit;
 }
@@ -4449,7 +4449,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 75%;
   font-weight: bold;
   line-height: 1;
-  color: #fff;
+  color: gray;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;

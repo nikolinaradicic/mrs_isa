@@ -1,6 +1,7 @@
 package mrs.app.repository;
 
 import mrs.app.domain.restaurant.ItemMeal;
+import mrs.app.domain.restaurant.WaiterOrd;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,6 +19,16 @@ public interface ItemMealRepository extends JpaRepository<ItemMeal, Long> {
 	@Query("update ItemMeal r set r.status=?1 where r.id=?2")
 	@Transactional
 	int updateItemMealStatus(String status,Long id);
+	
+	@Modifying
+	@Query("update ItemMeal r set r.bill=?1 where r.id=?2")
+	@Transactional
+	int updateItemMealBill(boolean b,Long id);
+	
+	@Modifying
+	@Query("update ItemMeal r set r.waiterOrd=?1 where r.id=?2")
+	@Transactional
+	int updateOrder(WaiterOrd order,Long id);
 	
 	
 }

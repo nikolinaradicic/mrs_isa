@@ -116,6 +116,7 @@ public class OrderServiceImpl implements OrderService{
 			drink.setDrink(dr);
 			drink.setQuantity(d.getQuantity());
 			ord.getDrinks().add(drink);
+			itemDr.add(drink);
 		}
 		for(ItemMeal m:order.getMeals()){
 			ItemMeal im=new ItemMeal();
@@ -125,11 +126,20 @@ public class OrderServiceImpl implements OrderService{
 
 			System.out.println("jelo koje?  "+im.getMeal().getName());
 			ord.getMeals().add(im);
+			itemMe.add(im);
 		}
 		RestaurantTable table=restTableRepository.findOne(order.getTable().getId());
 		ord.setTable(table);
 		ord.setWaiter(w);
-		return orderRepository.save(ord);
+		WaiterOrd saved=orderRepository.save(ord);
+		for(ItemMeal im:itemMe){
+			itemMealRepository.updateOrder(saved,im.getId());
+		}
+		for(ItemDrink id:itemDr){
+			itemDrinkRepository.updateOrder(saved,id.getId());
+		}
+
+		return saved;
 	}
 
 	@Override
@@ -256,17 +266,6 @@ public class OrderServiceImpl implements OrderService{
 		orderRepository.save(order);
 	}
 
-//	@Override
-//	public Bill createCheck(Bill bill) {
-//		// TODO Auto-generated method stub
-//		WaiterOrd order=orderRepository.findOne(bill.getOrder().getId());
-//		Bill definedCheck=new Bill();
-//		definedCheck.setOrder(order);
-//		definedCheck.setFinal_price(bill.getFinal_price());
-//		definedCheck.setId(0L);
-//		return checkRepository.save(definedCheck);
-//	}
-
 	@Override
 	public Visit createVisit(Bill bill) {
 		// TODO Auto-generated method stub
@@ -298,6 +297,12 @@ public class OrderServiceImpl implements OrderService{
 			createdVisit.setReservation(res);
 		}else{
 			createdVisit.setReservation(null);
+		}
+		for(ItemMeal im:order.getMeals()){
+			itemMealRepository.updateItemMealBill(true, im.getId());
+		}
+		for(ItemDrink id:order.getDrinks()){
+			itemDrinkRepository.updateItemDrinkBill(true, id.getId());
 		}
 		return visitRepository.save(createdVisit);
 	}
