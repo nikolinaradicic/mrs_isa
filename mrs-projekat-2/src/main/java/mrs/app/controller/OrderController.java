@@ -1,6 +1,7 @@
 package mrs.app.controller;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,8 +10,11 @@ import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.DTOs.MarkDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Chef;
+import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
+import mrs.app.domain.Notification;
 import mrs.app.domain.User;
+import mrs.app.domain.UserType;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
 import mrs.app.domain.restaurant.Bill;
@@ -20,10 +24,12 @@ import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Mark;
 import mrs.app.domain.restaurant.Meal;
+import mrs.app.domain.restaurant.Offer;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Visit;
 import mrs.app.domain.restaurant.WaiterOrd;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.NotificationService;
 import mrs.app.service.OrderService;
 import mrs.app.service.RestaurantService;
 import mrs.app.service.UserService;
@@ -35,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +65,11 @@ public class OrderController {
 	@Autowired
 	private RestaurantService restaurantService;
 	
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	SimpMessagingTemplate simp;
 	
 	@Value("${jwt.header}")
     private String tokenHeader;
@@ -243,6 +255,12 @@ public class OrderController {
         User user= userService.findByUsername(username);
         if(user.getClass()==Waiter.class){
             ItemDrink item=orderService.updateItemDrink(itemDr);
+            try {
+				notifyBartender(item.getWaiterOrd());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		logger.info("< update Item Drink");
     		return new ResponseEntity<ItemDrink>(item,HttpStatus.OK);
         }
@@ -264,6 +282,12 @@ public class OrderController {
         User user= userService.findByUsername(username);
         if(user.getClass()==Waiter.class){
             ItemMeal item=orderService.updateItemMeal(itemMe);
+            try {
+				notifyChef(item.getWaiterOrd());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		logger.info("< update Item Drink");
     		return new ResponseEntity<ItemMeal>(item,HttpStatus.OK);
         }
@@ -285,6 +309,13 @@ public class OrderController {
         User user= userService.findByUsername(username);
         if(user.getClass()==Chef.class){
             ItemMeal item=orderService.updateItemMealStatus(itemMe);
+            try {
+            	System.err.println("promenio sam status jela");
+				notifyWaiterMeal(item.getWaiterOrd());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		logger.info("< update Item Meal Status");
     		return new ResponseEntity<ItemMeal>(item,HttpStatus.OK);
         }
@@ -307,12 +338,83 @@ public class OrderController {
         User user= userService.findByUsername(username);
         if(user.getClass()==Bartender.class){
             ItemDrink item=orderService.updateItemDrinkStatus(itemDr);
+            try {
+            	System.out.println("promenio sam status pica");
+				notifyWaiter(item.getWaiterOrd());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		logger.info("< update Item Drink Status");
     		return new ResponseEntity<ItemDrink>(item,HttpStatus.OK);
         }
   
         return new ResponseEntity<ItemDrink>(HttpStatus.NOT_FOUND);
 	}
+	
+	private void notifyWaiter(WaiterOrd order) throws Exception {
+		// TODO Auto-generated method stub
+		String text = "Status pica iz porudzbine\n "+order.getId()+" je promenjen.";
+				Notification notif = new Notification(order.getWaiter(),false);
+				notif.setText(text);
+				notificationService.create(notif);
+				simp.convertAndSend("/notify/" + order.getWaiter().getEmail() + "/receive", notif);
+
+	}
+	
+	//obavestavam kuvara o kolicini
+	private void notifyChef(WaiterOrd order) throws Exception {
+		// TODO Auto-generated method stub
+		String text = "Kolicina jela iz porudzbine "+order.getId()+" je promenjena.";
+		Collection<User> users=userService.findAll();
+		for(User u:users){
+			if(u.getRole()==UserType.ROLE_CHEF){
+				Chef chef=(Chef) u;
+				if(chef.getRestaurant().getId()==order.getRestaurant().getId()){
+
+					Notification notif = new Notification(chef,false);
+					notif.setText(text);
+					notificationService.create(notif);
+					simp.convertAndSend("/notify/" + chef.getEmail() + "/receive", notif);
+				}
+			}
+		}
+		
+	}
+	
+	//obavestavam sankera o kolicini
+	private void notifyBartender(WaiterOrd order) throws Exception {
+		// TODO Auto-generated method stub
+		String text = "Kolicina pica iz porudzbine "+order.getId()+" je promenjena.";
+		Collection<User> users=userService.findAll();
+		for(User u:users){
+			if(u.getRole()==UserType.ROLE_BARTENDER){
+				Bartender bartender=(Bartender) u;
+				if(bartender.getRestaurant().getId()==order.getRestaurant().getId()){
+
+					Notification notif = new Notification(bartender,false);
+					notif.setText(text);
+					notificationService.create(notif);
+					simp.convertAndSend("/notify/" + bartender.getEmail() + "/receive", notif);
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	private void notifyWaiterMeal(WaiterOrd order) throws Exception {
+		// TODO Auto-generated method stub
+		
+		String text = "Status pica iz porudzbine "+order.getId()+" je promenjen.";
+				Notification notif = new Notification(order.getWaiter(),false);
+				notif.setText(text);
+				notificationService.create(notif);
+				simp.convertAndSend("/notify/" + order.getWaiter().getEmail() + "/receive", notif);
+	}
+
+	
 	
 	@RequestMapping(
 			value="/deleteItemDrink",
@@ -321,10 +423,41 @@ public class OrderController {
 	@PreAuthorize("hasRole('WAITER')")
 	public ResponseEntity<Integer> deleteItemDrink(HttpServletRequest request,
 			@RequestBody ItemDrinkDTO orderDTO){
-		logger.info("> delete Item Drink ");		
+		logger.info("> delete Item Drink ");
+		Long idOrder=orderDTO.getIdWaiterOrd();
         orderService.deleteItemDrink(orderDTO);
+        notifyDeleteBartender(idOrder);
         logger.info("< delete Item Drink");
         return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	public void notifyDeleteBartender(Long idOrder){
+		String text = "Status pica iz porudzbine\n "+idOrder+" je promenjen.";
+		Collection<WaiterOrd> orders=orderService.findAll();
+		WaiterOrd order=new WaiterOrd();
+		for(WaiterOrd wo:orders){
+			if(wo.getId()==idOrder){
+				order=wo;
+			}
+		}
+		Collection<User> users=userService.findAll();
+		for(User u:users){
+			if(u.getRole()==UserType.ROLE_BARTENDER){
+				Bartender bartender=(Bartender) u;
+				if(bartender.getRestaurant().getId()==order.getRestaurant().getId()){
+
+					Notification notif = new Notification(bartender,false);
+					notif.setText(text);
+					try {
+						notificationService.create(notif);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					simp.convertAndSend("/notify/" + bartender.getEmail() + "/receive", notif);
+				}
+			}
+		}
+		
 	}
 	
 	@RequestMapping(
@@ -334,10 +467,42 @@ public class OrderController {
 	@PreAuthorize("hasRole('WAITER')")
 	public ResponseEntity<Integer> deleteItemMeal(HttpServletRequest request,
 			@RequestBody ItemMealDTO orderDTO){
+		Long idOrder=orderDTO.getIdWaiterOrd();
 		logger.info("> delete Item Meal ");		
         orderService.deleteItemMeal(orderDTO);
+        notifyDeleteChef(idOrder);
         logger.info("< delete Item Meal");
         return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
+	
+	public void notifyDeleteChef(Long idOrder){
+		String text = "Status jela iz\n porudzbine "+idOrder+" je promenjen.";
+		Collection<WaiterOrd> orders=orderService.findAll();
+		WaiterOrd order=new WaiterOrd();
+		for(WaiterOrd wo:orders){
+			if(wo.getId()==idOrder){
+				order=wo;
+			}
+		}
+		Collection<User> users=userService.findAll();
+		for(User u:users){
+			if(u.getRole()==UserType.ROLE_CHEF){
+				Chef chef=(Chef) u;
+				if(chef.getRestaurant().getId()==order.getRestaurant().getId()){
+
+					Notification notif = new Notification(chef,false);
+					notif.setText(text);
+					try {
+						notificationService.create(notif);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					simp.convertAndSend("/notify/" + chef.getEmail() + "/receive", notif);
+				}
+			}
+		}
+		
 	}
 	
 	

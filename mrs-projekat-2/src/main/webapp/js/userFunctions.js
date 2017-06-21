@@ -94,7 +94,6 @@ function getUser(){
 							$("#restaurant-manage").hide();
 							$("#employee-manage").hide();
 							$("#friend-manage").hide();
-							$("#poruke").remove();
 							$("#manage").hide();
 							$("#chart").hide();
 							$("#order").hide();
@@ -112,7 +111,6 @@ function getUser(){
 							$("#restaurant-manage").hide();
 							$("#employee-manage").hide();
 							$("#friend-manage").hide();
-							$("#poruke").remove();
 							$("#manage").hide();
 							$("#chart").hide();
 							$("#order").hide();
@@ -129,7 +127,6 @@ function getUser(){
 							$("#restaurant-manage").hide();
 							$("#employee-manage").hide();
 							$("#friend-manage").hide();
-							$("#poruke").remove();
 							$("#manage").hide();
 							$("#bids-menu").hide();
 							$("#guestsRestaurants").hide();
@@ -177,6 +174,7 @@ function addNotification(notification){
 									.css('color','#fff')
 									.css('border-radius','3px')
 									.click( function() {
+											$(window).trigger("hashchange");
 											notifSeen(notification.id);
 											})
 									)

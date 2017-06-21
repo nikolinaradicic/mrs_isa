@@ -22,5 +22,15 @@ public interface ItemDrinkRepository extends JpaRepository<ItemDrink,Long>{
 	@Query("update ItemDrink r set r.status=?1 where r.id=?2")
 	@Transactional
 	int updateItemDrinkStatus(String status,Long id);
+	
+	@Modifying
+	@Query("update ItemDrink r set r.bill=?1 where r.id=?2")
+	@Transactional
+	int updateItemDrinkBill(boolean b,Long id);
+
+	@Modifying
+	@Query("update ItemDrink r set r.waiterOrd=?1 where r.id=?2")
+	@Transactional
+	int updateOrder(WaiterOrd saved, Long id);
 
 }

@@ -22,7 +22,7 @@ img {
 }
 button {
   cursor: pointer;
-  border: 0;
+  border: 1;
   padding: 0;
   background-color: transparent;
 }

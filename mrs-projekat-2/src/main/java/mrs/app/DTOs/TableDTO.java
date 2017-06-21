@@ -10,6 +10,12 @@ public class TableDTO {
 	
 	public TableDTO(){}
 
+	public TableDTO(int chairNum, String name) {
+		super();
+		this.chairNum = chairNum;
+		this.name = name;
+	}
+
 	public int getChairNum() {
 		return chairNum;
 	}

@@ -289,7 +289,7 @@ $(window).bind( "hashchange", function(e) {
  		}
  		else if(url=="defineOrder"){
  			showDefineOrder();
- 		}else if(url="seeAllRestaurants"){
+ 		}else if(url=="seeAllRestaurants"){
  			getRestaurants1();
  		}
 		// add more routes
