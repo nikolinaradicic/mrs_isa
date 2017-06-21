@@ -113,7 +113,11 @@ function showAddBidder(){
 
 function showAddEmployee(){
 	$("#app-div").html("");
-	$('#app-div').load('addEmployee.html #addEmployee');
+	$('#app-div').load('addEmployee.html #addEmployee', function(){
+		$('#birthday').datepicker({
+            format: "yyyy-mm-dd"
+        });
+	});
 }
 
 function showAddManager(){

@@ -27,8 +27,7 @@ public class RestaurantRepositoryTest {
 	
 	@Test
 	public void updateRestaurantTest()
-	{
-		
+	{	
 		restaurantRepository.updateRestaurant("novo ime", "novi opis", restaurant.getId());
 		
 		Restaurant updated = restaurantRepository.findOne(restaurant.getId());

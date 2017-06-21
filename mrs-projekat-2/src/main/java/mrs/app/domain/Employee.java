@@ -1,11 +1,14 @@
 package mrs.app.domain;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.WorkingShift;
@@ -13,12 +16,15 @@ import mrs.app.domain.restaurant.WorkingShift;
 @Entity
 public class Employee extends User {
 	
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
+	
+	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
 	protected Date birthday;
+	@Column(nullable = false)
 	protected int uniformSize;
+	@Column(nullable = false)
 	protected int shoeSize;
 	
 	protected boolean enabled;
