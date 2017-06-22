@@ -1,6 +1,9 @@
 package mrs.app.repository;
 
+import java.util.Collection;
+
 import mrs.app.domain.restaurant.ItemMeal;
+import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.WaiterOrd;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +32,10 @@ public interface ItemMealRepository extends JpaRepository<ItemMeal, Long> {
 	@Query("update ItemMeal r set r.waiterOrd=?1 where r.id=?2")
 	@Transactional
 	int updateOrder(WaiterOrd order,Long id);
+
+
+	@Query("select w from ItemMeal w where w.waiterOrd.restaurant = ?1")
+	Collection<ItemMeal> findByRestaurant(Restaurant restaurant);
 	
 	
 }

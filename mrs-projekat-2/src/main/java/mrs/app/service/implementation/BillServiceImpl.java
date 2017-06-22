@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 
 import mrs.app.DTOs.ChartDTO;
 import mrs.app.DTOs.QueryChartDTO;
+import mrs.app.DTOs.RatingDTO;
 import mrs.app.domain.Waiter;
+import mrs.app.domain.restaurant.ItemMeal;
+import mrs.app.domain.restaurant.Mark;
+import mrs.app.domain.restaurant.Meal;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Visit;
 import mrs.app.repository.EmployeeRepository;
+import mrs.app.repository.MarkRepository;
 import mrs.app.repository.VisitRepository;
 import mrs.app.service.BillService;
 
@@ -25,6 +30,9 @@ public class BillServiceImpl implements BillService{
 	
 	@Autowired
 	VisitRepository visitRepository;
+	
+	@Autowired
+	MarkRepository markRepository;
 
 	@Override
 	public ChartDTO incomeChart(Restaurant restaurant, QueryChartDTO query) {
@@ -137,6 +145,52 @@ public class BillServiceImpl implements BillService{
 		}
 		
 		return result;
+	}
+
+
+	@Override
+	public RatingDTO getRatings(Restaurant restaurant) {
+		// TODO Auto-generated method stub
+		RatingDTO retVal = new RatingDTO();
+		try{
+			double restMark = markRepository.sumForRestaurant(restaurant);
+			retVal.setRating(restMark);
+		}catch(Exception e){
+			retVal.setRating(0);
+		}
+		Collection<Waiter> waiters = employeeRepository.findWaiters(restaurant);
+		for(Waiter w : waiters){
+			try{
+
+				double rating = markRepository.sumForWaiter(w);
+				retVal.getWaiters().put(w.getName() + " " + w.getLastname(), rating);
+			}catch(Exception e){
+				retVal.getWaiters().put(w.getName()+" "+w.getLastname(), 0.0);
+			}
+		}
+		
+		Collection<Meal> meals = restaurant.getMenu();
+		Collection<Mark> totalMark = markRepository.findByRestaurant(restaurant);
+		for(Meal m : meals){
+			double total = 0.0;
+			int divide = 0;
+			for(Mark mark : totalMark){
+				for(ItemMeal im : mark.getVisit().getBill().getOrder().getMeals()){
+					if(im.getMeal().equals(m)){
+						total += mark.getMarkMeals();
+						divide += 1;
+						break;
+					}
+				}
+				
+			}
+			double end = 0.0;
+			if(divide != 0){
+				end = total/divide;
+			}
+			retVal.getMeals().put(m.getName(), end);
+		}
+		return retVal;
 	}
 
 }

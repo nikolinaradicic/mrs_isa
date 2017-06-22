@@ -1,13 +1,16 @@
 <section class="wrapper" id="reportSection">
 	<div class="row">
 		<div class="col-sm-3">
-			<button id="visit-btn" class="btn btn-link active"><h3>Visiting graph</h3></button>
+			<button id="visit-btn" class="btn btn-link active"><h4>Visiting graph</h4></button>
 		</div>
 		<div class="col-sm-3">
-			<button id="income-btn" class="btn btn-link"><h3>Income graph</h3></button>
+			<button id="income-btn" class="btn btn-link"><h4>Income graph</h4></button>
 		</div>
 		<div class="col-sm-3">
-			<button id="waiters-btn" class="btn btn-link"><h3>Waiters graph</h3></button>
+			<button id="waiters-btn" class="btn btn-link"><h4>Waiters graph</h4></button>
+		</div>
+		<div class="col-sm-3">
+			<button id="ratings-btn" class="btn btn-link"><h4>Ratings</h4></button>
 		</div>
 	</div>
 	
@@ -69,5 +72,48 @@
 					</div>
 		</div>
 			
+	</div>
+	<div id="ratings-div" class="hide-me">
+	<div class="row">
+		<div class="col-md-4">
+			<h5>Average restaurant rating:</h5> 
+		</div>
+		<div class="col-md-1">
+			<h5 id="rating"></h5> 
+		</div>
+	</div>
+	<div class="row">
+		<div class=col-md-6>
+			<div class="scrollit">
+				<table class="table">
+					<thead>
+			        	<tr>
+			            	<th>Meal</th>
+			                <th>Rating</th>
+			         	</tr>
+					</thead>
+			        <tbody id="meal-rating">
+			        </tbody>
+				</table>
+			</div>
+						
+		</div>
+		
+		<div class=col-md-6>
+			<div class="scrollit">
+				<table class="table">
+					<thead>
+			        	<tr>
+			            	<th>Waiter</th>
+			                <th>Rating</th>
+			         	</tr>
+					</thead>
+			        <tbody id="waiter-rating">
+			        </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 	</div>			
+			
 </section>
