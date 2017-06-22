@@ -186,20 +186,30 @@ public class RestaurantController {
 		return new ResponseEntity<Meal>(savedMeal, HttpStatus.OK);
 	}
 	
-	
+	//samo promenim status jela i to je to
 	@RequestMapping(
 			value = "/deleteMeal",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<Boolean> deleteMeal(@RequestBody Meal meal) throws Exception {
+	public ResponseEntity<Boolean> deleteMeal(HttpServletRequest request, @RequestBody Meal meal) throws Exception {
 		logger.info("> update meal");
-		boolean exists = restaurantService.deleteMeal(meal);
-		logger.info("< update meal");
-		if(!exists)
-			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-		else
-			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==RestaurantManager.class){
+        	RestaurantManager manager= (RestaurantManager)user;
+            Restaurant restaurant= restaurantService.findOne(manager.getRestaurant().getId());
+            boolean exists = restaurantService.deleteMeal(meal,restaurant);
+            logger.info("< update meal");
+    		if(exists)
+    			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    		else
+    			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }else 
+        	return new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
+		
 	}
 	
 	
@@ -208,14 +218,22 @@ public class RestaurantController {
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-	public ResponseEntity<Boolean> deleteDrink(@RequestBody Drink drink) throws Exception {
-		logger.info("> delete drink");
-		boolean exists = restaurantService.deleteDrink(drink);
-		logger.info("< delete drink");
-		if(!exists)
-			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-		else
-			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<Boolean> deleteDrink(HttpServletRequest request, @RequestBody Drink drink) throws Exception {
+		logger.info("> update drink");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==RestaurantManager.class){
+        	RestaurantManager manager= (RestaurantManager)user;
+            Restaurant restaurant= restaurantService.findOne(manager.getRestaurant().getId());
+            boolean exists = restaurantService.deleteDrink(drink,restaurant);
+            logger.info("< update drink");
+    		if(exists)
+    			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    		else
+    			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }else 
+        	return new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
 	}
 	
 	@RequestMapping(

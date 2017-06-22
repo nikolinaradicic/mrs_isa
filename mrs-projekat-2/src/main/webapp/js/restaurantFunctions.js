@@ -99,6 +99,9 @@ function getDrinks(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+				return;
+			}else{
 				$("#drinks-table-body").append($("<tr>").attr("id", "drink"+item.id)
 						.append($("<td>")
 								.text(item.name)
@@ -124,6 +127,7 @@ function getDrinks(restaurant){
 								)
 							)
 						);
+				}
 			});	
 		}
 	});
@@ -139,6 +143,9 @@ function getMeals(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+				return;
+			}else{
 				$("#meals-table-body").append($("<tr>").attr("id", "meal"+item.id)
 						.append($("<td>")
 								.text(item.name)
@@ -164,6 +171,7 @@ function getMeals(restaurant){
 								)
 							)
 						);
+				}
 		
 			});	
 		}
@@ -468,7 +476,8 @@ function deleteMeal(meal){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			$('#meals-table-body tr#meal'+meal.id).remove();
+			$(window).trigger('hashchange');
+			//$('#meals-table-body tr#meal'+meal.id).remove();
 			},
 		error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -491,7 +500,8 @@ function deleteDrink(drink){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			$('#drinks-table-body tr#drink'+drink.id).remove();
+			$(window).trigger('hashchange');
+			//$('#drinks-table-body tr#drink'+drink.id).remove();
 			},
 		error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {

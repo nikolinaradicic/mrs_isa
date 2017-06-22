@@ -136,17 +136,17 @@ public class RestaurantServiceImpl implements RestaurantService{
 	}
 
 	@Override
-	public boolean deleteMeal(Meal meal) {
+	public boolean deleteMeal(Meal meal,Restaurant r) {
 		// TODO Auto-generated method stub
-		mealRepository.delete(meal.getId());
-		return mealRepository.exists(meal.getId());
+		mealRepository.updateDeleteMeal(true, meal.getId(), r);
+		return true;
 	}
 
 	@Override
-	public boolean deleteDrink(Drink drink) {
+	public boolean deleteDrink(Drink drink, Restaurant r) {
 		// TODO Auto-generated method stub
-		drinkRepository.delete(drink.getId());
-		return drinkRepository.exists(drink.getId());
+		drinkRepository.updateDeleteDrink(true, drink.getId(), r);
+		return true;
 	}
 
 }

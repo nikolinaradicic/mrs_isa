@@ -22,10 +22,16 @@ function setMeals(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
-				counter_meals++;
+				if(!item.deleted)
+					counter_meals++;
 			});
+			console.log(counter_meals);
 			temp_meals=counter_meals;
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+			console.log("hiiii");
+				return;
+			}else{
 				$("#meal-body").append($("<tr>")
 									.append($("<td>")
 										.append($("<input type='checkbox'>").attr('name',"jelo").attr('value',item.name))
@@ -38,7 +44,7 @@ function setMeals(){
 								meals[temp_meals-counter_meals]=item;
 								counter_meals--;
 								
-
+			}
 			});
 			console.log(meals);
 			$("#meal-body").append($("<br>"));
@@ -56,10 +62,17 @@ function setMeals(){
 		complete: function(data) {
 		
 			$.each(data.responseJSON, function(i, item){
-				counter_drinks++;
+				if(!item.deleted){
+					counter_drinks++;
+				}
 			});
+			console.log(counter_drinks);
 			temp_drinks=counter_drinks;
 			$.each(data.responseJSON, function(i, item){
+			console.log(item);
+			if(item.deleted){
+				return;
+			}else{
 				$("#drink-body").append($("<tr>")
 									.append($("<td>")
 										.append($("<input type='checkbox'>").attr('name','pice').attr('value',item.name))
@@ -70,7 +83,8 @@ function setMeals(){
 									)
 								);
 								drinks[temp_drinks-counter_drinks]=item;
-								counter_drinks--;								
+								counter_drinks--;	
+				}							
 			});
 			$("#drink-body").append($("<br>"));
 		}
@@ -88,7 +102,8 @@ function confirmMeals(sto){
 	chef_meals=[];
 	bartender_drinks=[];
 	var data=$('#meal-form').serializeArray();
-	//console.log(data);
+	console.log("dataaa");
+	console.log(data);
 
 	var counter=0;
 	var temp_counter=0;
