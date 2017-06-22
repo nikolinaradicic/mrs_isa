@@ -92,7 +92,23 @@ public class BiddingController {
         RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
 		Collection<GroceryList> saved = groceryListService.findByRestaurant(user.getRestaurant(), new Date());
 		logger.info("< get grocery lists");
-		return new ResponseEntity<Collection<GroceryList>>(saved, HttpStatus.CREATED);
+		return new ResponseEntity<Collection<GroceryList>>(saved, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(
+			value = "/getPastLists",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<Collection<GroceryList>> getPastGroceryLists(HttpServletRequest request) throws Exception {
+		logger.info("> get past grocery lists");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager user = (RestaurantManager) userService.findByUsername(username);
+		Collection<GroceryList> saved = groceryListService.findByRestaurantPast(user.getRestaurant(), new Date());
+		logger.info("< get grocery lists");
+		return new ResponseEntity<Collection<GroceryList>>(saved, HttpStatus.OK);
 		
 	}
 	
@@ -240,6 +256,9 @@ public class BiddingController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Bidder user = (Bidder) userService.findByUsername(username);
         GroceryList gl = groceryListService.findOne(offer.getGroceryListId());
+        if(gl.getAcceptedOffer() != null){
+        	return new ResponseEntity<OfferDTO>(HttpStatus.NOT_FOUND);
+        }
         
         Offer exists = offerService.findByListAndBidder(gl, user);
         if(exists == null){

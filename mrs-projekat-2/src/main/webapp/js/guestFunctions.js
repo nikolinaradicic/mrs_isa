@@ -131,9 +131,6 @@ function checkRequests(){
 			console.log(data.responseJSON);
 			$("#brojZahteva").text(data.responseJSON.requests.length);
 			$("#brojZahtevaPoruka").text("You have "+data.responseJSON.requests.length+" requests.");
-
-
-			
 			$.each(data.responseJSON.requests,function(i,item){
 				
 				$("#dodatiZahteve").append($("<li>").append($("<a href='#menu'>")

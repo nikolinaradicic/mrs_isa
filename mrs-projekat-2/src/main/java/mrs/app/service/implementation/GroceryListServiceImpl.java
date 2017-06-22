@@ -49,6 +49,13 @@ public class GroceryListServiceImpl implements GroceryListService {
 		// TODO Auto-generated method stub
 		return groceryListRepository.findActive(r, date);
 	}
+	
+	@Override
+	public Collection<GroceryList> findByRestaurantPast(Restaurant restaurant,
+			Date date) {
+		// TODO Auto-generated method stub
+		return groceryListRepository.findPast(restaurant, date);
+	}
 
 	@Override
 	public GroceryList findOne(Long id) {

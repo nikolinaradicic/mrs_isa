@@ -1,13 +1,4 @@
-function rastegni(){
-document.getElementById('toggleProfile').addEventListener('click', function () {
-  [].map.call(document.querySelectorAll('.profile'), function(el) {
-    el.classList.toggle('profile--open');
-  });
-});
-}
-	
-
-function getUser(){
+function getUser(callback){
 	$.ajax({
 		url: "api/getUser",
 		type:"GET",
@@ -145,8 +136,8 @@ function getUser(){
 								$(window).trigger( "hashchange" ); // user refreshed the browser, fire the appropriate function
 							}
 						}
-						if(typeof stompClient === 'undefined' || !stompClient){
-							setupWebSockets(data);
+						if(typeof callback != 'undefined'){
+							callback(data);
 						}
 						getNotifications();
 					});
@@ -166,7 +157,7 @@ var num_notifications = 0;
 function addNotification(notification){
 	num_notifications++;
 	$("#dodatiZahteve").append($("<li>").attr("id", "notif" + notification.id)
-						 .append($("<a href='#menu'>")
+						 .append($("<a>")
 							.append($("<span class='photo'>")
 								.append($("<img alt='avatar'>").attr('src','img/fr-11.jpg'))
 								)
@@ -209,6 +200,7 @@ function notifSeen(id){
 }
 
 function getNotifications(){
+	num_notifications = 0;
 	$.ajax({
 		url: "api/getNotifications",
 		type:"GET",
