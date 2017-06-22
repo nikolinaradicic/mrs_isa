@@ -529,7 +529,6 @@ function changeInformation(){
 }	
 
 function getRestaurants1(){
-	$("#visit-section").hide();
 		$.ajax({
 			url: "/restaurants",
 			type:"GET",
@@ -538,7 +537,8 @@ function getRestaurants1(){
 			headers: createAuthorizationTokenHeader(),
 			complete: function(data) {
 				if (data.responseJSON){
-					$("#app-div").append($("<section class='wrapper'>" ).append($("<div class='col-md-4'>").append($("<button class='button' onclick='sortRestaurants()'>Sort</button>"))));
+					$("#app-div").html("");
+					$("#app-div").append($("<section class='wrapper'>" ).append($("<div class='col-md-4'>").append($("<button class='btn btn-default btn-m' onclick='sortRestaurants()'>Sort</button>"))));
 					$("#app-div").append($("<section class='wrapper' id='restWrapper'>"));
 					displayRestaurants(data.responseJSON);
 				}

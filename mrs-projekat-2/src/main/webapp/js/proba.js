@@ -203,7 +203,7 @@ function doLogin() {
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
             setJwtToken(data.token);
-    		getUser();
+    		getUser(setupWebSockets);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -247,6 +247,7 @@ $(document).ready(function(){
 $(window).bind( "hashchange", function(e) {
 	console.log("radiiii");
 		var url = $.param.fragment();
+		console.log(url);
 		// url action mapping
 		if(url == ""){
 			if (getJwtToken()) {
@@ -325,9 +326,13 @@ $(window).bind( "hashchange", function(e) {
  		}else if(url=="seeAllRestaurants"){
  			getRestaurants1();
  		}
+ 		else if(url =="reports"){
+ 			console.log("tuuuuuuuu");
+ 			showReports();
+ 		}
 		// add more routes
 	});
-	getUser();
+	getUser(setupWebSockets);
 });
 
 function setupWebSockets(user){

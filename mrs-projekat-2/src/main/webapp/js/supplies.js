@@ -18,6 +18,7 @@ function showSupplies(){
 	});
 }
 
+
 function displayBids(){
 	$.ajax({
 		url: "/getBids",
@@ -289,7 +290,6 @@ function showActiveSupplies(supplies){
 		    format: 'yyyy-mm-dd'
 		});
 		
-
 		$('#datepicker2').datepicker({ 
 		    startDate: date,
 		    format: 'yyyy-mm-dd'
@@ -301,7 +301,19 @@ function showActiveSupplies(supplies){
     		$("#supply-text").val("");
 			$("#modalSupplies").modal("toggle");
 		});
-		$("#supply-table-body").empty();
+		$("#active-btn").click(function(){
+			$("#past-btn").removeClass("active");
+			$("#active-btn").addClass("active");
+			$("#past-div").addClass("hide-me");
+			$("#active-div").removeClass("hide-me");
+		});
+		$("#past-btn").click(function(){
+			$("#active-btn").removeClass("active");
+			$("#past-btn").addClass("active");
+			$("#past-div").removeClass("hide-me");
+			$("#active-div").addClass("hide-me");
+		});
+		getPastSupplies();
 		$.each(supplies, function(i,item){
 			displaySupply(item);
 		});
@@ -311,8 +323,45 @@ function showActiveSupplies(supplies){
 
 }
 
+function showPastSupplies(data){
+	$.each(data, function(i,item){
+		$("#supply-table-body-past").prepend($("<tr>")
+				.append($("<td>")
+					.append($("<a href =" + "showSupply?supplyId="+
+			        			item.id+">"+item.text.substring(0,30)+"... </a>"))
+				)
+				.append($("<td>")
+					.text(moment(item.startDate).format('YYYY-MM-DD'))
+				)
+				.append($("<td>")
+					.text(moment(item.endDate).format('YYYY-MM-DD'))
+				)
+			);
+	});
+}
+
+function getPastSupplies(){
+	$.ajax({
+		url: "/getPastLists",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		success: function (data, textStatus, jqXHR) {
+	            showPastSupplies(data);
+	        },
+	    error: function (jqXHR, textStatus, errorThrown) {
+	            if (jqXHR.status === 401) {
+	            	
+	            } else {
+	                window.alert("an unexpected error occured: " + errorThrown);
+	            }
+	        }
+	});
+}
+
 function displaySupply(item){
-	$("#supply-table-body").prepend($("<tr>")
+	$("#supply-table-body-active").prepend($("<tr>")
 			.append($("<td>")
 				.append($("<a href =" + "showSupply?supplyId="+
 		        			item.id+">"+item.text.substring(0,30)+"... </a>"))

@@ -19,7 +19,7 @@ public class Bill {
 	private  WaiterOrd order;
 	
 	@Column
-	private int final_price;
+	private double final_price;
 	
 	public Bill() {
 		// TODO Auto-generated constructor stub
@@ -41,11 +41,11 @@ public class Bill {
 		this.order = order;
 	}
 
-	public int getFinal_price() {
+	public double getFinal_price() {
 		return final_price;
 	}
 
-	public void setFinal_price(int final_price) {
+	public void setFinal_price(double final_price) {
 		this.final_price = final_price;
 	}
 	

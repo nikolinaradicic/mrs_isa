@@ -1,0 +1,73 @@
+<section class="wrapper" id="reportSection">
+	<div class="row">
+		<div class="col-sm-3">
+			<button id="visit-btn" class="btn btn-link active"><h3>Visiting graph</h3></button>
+		</div>
+		<div class="col-sm-3">
+			<button id="income-btn" class="btn btn-link"><h3>Income graph</h3></button>
+		</div>
+		<div class="col-sm-3">
+			<button id="waiters-btn" class="btn btn-link"><h3>Waiters graph</h3></button>
+		</div>
+	</div>
+	
+	<div id="visit-div">
+		<div class="col-md-11">
+					<div id="canvas_div">
+						<canvas id="canvas" height="300" style="background:white;"></canvas>
+					</div>
+					<br>
+					<div class="row">
+						<div>
+							Start date: <input type="text" id="start-date"> &nbsp;
+							Start date: <input type="text" id="end-date">
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<button id="show1" type="button" class="btn btn-success">Show&nbsp; <span class="glyphicon glyphicon-retweet"></span></button>
+					</div>
+				</div>			
+	</div>
+	<div id="income-div" class="hide-me">
+		<div class="col-md-11">
+			<div id="canvas2_div">
+				<canvas id="canvas2" height="300" style="background:white;"></canvas>
+			</div>
+			<br>
+			<div class="row">
+					Start date: <input type="text" id="start-date2"> &nbsp;
+					End date: <input type="text" id="end-date2">
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-2">
+					<button id="show2" type="button" class="btn btn-success">Show
+					&nbsp; <span class="glyphicon glyphicon-retweet"></span></button>
+				</div>
+				<div class="col-md-offset-1 col-md-4">
+					Total income: <input type="text" id="total" disabled />
+				</div>
+			</div>
+			</div>			
+	</div>
+	<div id="waiters-div" class="hide-me">
+		<div class="col-md-11">
+					<div id="canvas3_div">
+						<canvas id="canvas3" height="300" style="background:white;"></canvas>
+					</div>
+					<br>
+					<div class="row">
+						Start date: <input type="text" id="start-date3"> &nbsp;
+						End date: <input type="text" id="end-date3">
+					</div>
+					<br>
+					<div class="row">
+						<button class="btn btn-success" id="show3">
+						Show&nbsp; <span class="glyphicon glyphicon-retweet"></span></button>
+						&nbsp;
+					</div>
+		</div>
+			
+	</div>			
+</section>

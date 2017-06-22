@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import mrs.app.DTOs.ChartDTO;
+import mrs.app.DTOs.QueryChartDTO;
 import mrs.app.DTOs.TableDTO;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.User;
@@ -16,6 +18,7 @@ import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.Segment;
 import mrs.app.security.JwtTokenUtil;
+import mrs.app.service.BillService;
 import mrs.app.service.OrderService;
 import mrs.app.service.RestaurantService;
 import mrs.app.service.SegmentService;
@@ -60,6 +63,9 @@ public class RestaurantController {
 	
 	@Autowired
     private UserService userService;
+	
+	@Autowired
+	private BillService billService;
 
 	@RequestMapping(
 			value = "/restaurants",
@@ -393,4 +399,47 @@ public class RestaurantController {
 			
 	}
 	
+	@RequestMapping(
+			value="/incomeChart",
+			method=RequestMethod.POST,
+			consumes=MediaType.APPLICATION_JSON_VALUE,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<ChartDTO> incomeChart(@RequestBody QueryChartDTO query, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+        ChartDTO retVal = billService.incomeChart(saved.getRestaurant(), query);
+		return new ResponseEntity<ChartDTO>(retVal, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(
+			value="/waitersChart",
+			method=RequestMethod.POST,
+			consumes=MediaType.APPLICATION_JSON_VALUE,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<ChartDTO> waitersChart(@RequestBody QueryChartDTO query, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+        ChartDTO retVal = billService.waitersChart(saved.getRestaurant(), query);
+		return new ResponseEntity<ChartDTO>(retVal, HttpStatus.OK);
+	}
+
+	
+	@RequestMapping(
+			value="/visitChart",
+			method=RequestMethod.POST,
+			consumes=MediaType.APPLICATION_JSON_VALUE,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<ChartDTO> visitChart(@RequestBody QueryChartDTO query, HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+        ChartDTO retVal = billService.visitChart(saved.getRestaurant(), query);
+		return new ResponseEntity<ChartDTO>(retVal, HttpStatus.OK);
+	}
 }

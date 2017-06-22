@@ -16,5 +16,7 @@ public interface GroceryListService {
 	Offer createOffer(Offer o, GroceryList gl);
 	GroceryList acceptOffer(GroceryList gl, Offer offer);
 	Offer updateOffer(OfferDTO o, GroceryList gl);
+	public Collection<GroceryList> findByRestaurantPast(Restaurant restaurant,
+			Date date);
 	
 }
