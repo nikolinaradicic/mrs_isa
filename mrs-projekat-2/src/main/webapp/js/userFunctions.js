@@ -240,30 +240,62 @@ function displayData(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			if (data.responseJSON){
-				$("#persData")
-								.append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
-									.append($("<div class='content-panel pn'>")
-										.append($("<div id='spotify'>")
-											.append($("<div class='col-xs-4 col-xs-offset-8'>"))
-													.append($("<div class='sp-title'>")	
-													)
-											).append($("<br>"))
-											.append($("<br>"))
-											.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
-															.css('padding-left','20px')
+			
+				if (data.responseJSON.role=="ROLE_WAITER" || data.responseJSON.role=="ROLE_BARTENDER"
+				|| data.responseJSON.role=="ROLE_CHEF"){
+					$("#persData")
+									.append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+										.append($("<div class='content-panel pn'>")
+											.append($("<div id='spotify'>").css("background","img/"+data.responseJSON["gmail"]+".png")
+												.append($("<div class='col-xs-4 col-xs-offset-8'>"))
+														.append($("<div class='sp-title'>")	
 														)
-														.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
-															.css('padding-left','20px')
+												).append($("<br>"))
+												.append($("<br>"))
+												.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
+																.css('padding-left','20px')
+															)
+												.append($("<h4>").text("  Birthday: "+data.responseJSON["birthday"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  Shoe Size: "+data.responseJSON["shoeSize"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  Uniform Size: "+data.responseJSON["uniformSize"])
+																.css('padding-left','20px')
+															)
+														
+										)
+									);
+				}else{
+					$("#persData")
+									.append($("<div class='col-lg-4 col-md-4 col-sm-4 mb'>")
+										.append($("<div class='content-panel pn'>")
+											.append($("<div id='spotify'>")
+												.append($("<div class='col-xs-4 col-xs-offset-8'>"))
+														.append($("<div class='sp-title'>")	
 														)
-														.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
-															.css('padding-left','20px')
-														)
-													
-									)
-								);
-							
-			}
-			else{
+												).append($("<br>"))
+												.append($("<br>"))
+												.append($("<h4>").text("  E-mail: "+data.responseJSON["email"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  First Name: "+data.responseJSON["name"])
+																.css('padding-left','20px')
+															)
+															.append($("<h4>").text("  Last Name: "+data.responseJSON["lastname"])
+																.css('padding-left','20px')
+															)
+														
+										)
+									);
+				}
 			}
 		}
 	});
@@ -297,6 +329,35 @@ function changeData() {
 	});
 }
 
+function changeDataEmployee() {
+	var $form = $("#changeDataEmployee");
+	var data = getFormData($form);
+	if(!validateForm(data)){
+		$("#data-error").text("Fill all the fields").css("color","red");
+		return;
+	}
+	
+	var s = JSON.stringify(data);
+	
+	$.ajax({
+		url: "api/changePersonalDataEmployee",
+		type:"POST",
+		data: s,
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if (data.responseJSON){
+				location.href = "#";
+			}
+			else{
+				$("#data-error").text("Invalid form").css("color","red");
+			}
+		}
+	});
+}
+
+
 function changePass() {
 	var $form = $("#changePass");
 	var data = getFormData($form);
@@ -324,6 +385,8 @@ function changePass() {
 		}
 	});
 }
+
+
 
 
 function changePass1() {
@@ -366,6 +429,25 @@ function changePersData(){
 				$("#name-field").attr("value", data.responseJSON.name);
 				$("#lastname-field").attr("value", data.responseJSON.lastname);
 				$("#email-field").attr("value", data.responseJSON.email);
+			}
+		}
+	});
+}
+function changePersDataEmployee(){
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {	
+			if (data.responseJSON){
+				$("#name-field").attr("value", data.responseJSON.name);
+				$("#lastname-field").attr("value", data.responseJSON.lastname);
+				$("#email-field").attr("value", data.responseJSON.email);
+				$("#birthday-field").attr("value", data.responseJSON.birthday);
+				$("#shoe-field").attr("value", data.responseJSON.shoeSize);
+				$("#uniform-field").attr("value", data.responseJSON.uniformSize);
 			}
 		}
 	});
@@ -521,3 +603,35 @@ function register()
 		}
 	});
 }
+
+function upload(){
+console.log("usao");
+var data={};
+	var reader = new FileReader();
+    reader.onload = function (e) {
+        var image = e.target.result.replace(/data:image\/jpeg;base64,/g, '');
+        data["imagePath"] = image;
+        var s = JSON.stringify(data);
+    	$.ajax({
+    		url: "/upload",
+    		type:"POST",
+    		data: s,
+    		contentType:"application/json",
+			headers: createAuthorizationTokenHeader(),
+    		success: function(data) {
+   					window.location.reload(true/false);
+    			
+    		}
+    		,error: function (jqXHR, textStatus, errorThrown) {
+	            if (jqXHR.status === 401) {
+	            	
+	            } else {
+	                window.alert("an unexpected error occured: " + errorThrown);
+	            }
+	        }
+    	});
+    };
+   reader.readAsDataURL($('#file')[0].files[0]);
+	
+}
+

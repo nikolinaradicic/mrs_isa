@@ -1,11 +1,16 @@
 package mrs.app.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import mrs.app.DTOs.GuestDTO;
@@ -187,6 +192,28 @@ public class UserController {
 		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
 		
 	}
+	
+	@RequestMapping(
+			value = "/api/changePersonalDataEmployee",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER') or hasRole('BARTENDER') or hasRole('CHEF')")
+	public ResponseEntity<User> changePersonalDataEmployee(
+			@RequestBody User user, HttpServletRequest request) throws Exception {
+		logger.info("> change personal data employee");
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User saved = userService.findByUsername(username);
+		user.setId(saved.getId());
+		user.setPassword(saved.getPassword());
+		User changedUser = (User) userService.changeData(user);
+		logger.info("< change personal data employee");
+		return new ResponseEntity<User>(changedUser,HttpStatus.CREATED);
+		
+	}
+	
+	
 	
 	@RequestMapping(
 			value = "/api/getUser",
@@ -546,6 +573,37 @@ public class UserController {
 		return new ResponseEntity<Notification>(retVal,HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(
+			value = "/upload",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateImage(
+			@RequestBody User user, HttpServletRequest request) throws Exception {
+		logger.info("> upload slike");
+		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User found =userService.findByUsername(username);
+        
+        String base64Image = user.getImagePath();
+        
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+		
+		String relativePath = "img\\"+ found.getEmail() + ".png";	
+		String fullPath = request.getServletContext().getRealPath("")+"\\"+relativePath;		
+		System.out.println(fullPath);		
+		File outputfile = new File(fullPath);				
+		try {
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+			ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("< upload slike");
+		return new ResponseEntity<String>("kreirao",HttpStatus.CREATED);
+	}
 	
 	
 }

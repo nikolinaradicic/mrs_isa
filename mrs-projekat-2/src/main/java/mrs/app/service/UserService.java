@@ -38,4 +38,6 @@ public interface UserService {
 	User findByUsername(String username);
 	
 	Collection<Guest> getGuests(UserType type, String name);
+
+	User changeDataEmployee(Employee user);
 }

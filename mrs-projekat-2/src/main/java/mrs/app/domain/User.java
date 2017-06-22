@@ -28,6 +28,17 @@ public class User implements Serializable{
 	@Transient
 	protected String repeatedPassword;
 	
+	private String imagePath;
+	
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+
 	@Id
 	@GeneratedValue
 	protected Long id;
@@ -63,7 +74,6 @@ public class User implements Serializable{
 		this.lastname = lastname;
 		this.email = email;
 		this.role = role;
-		this.firstTime="notvisited";
 	}
 
 	public String getPassword() {

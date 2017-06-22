@@ -294,7 +294,9 @@ function getAllVisits(){
 								
 							);
 					$.each(data.responseJSON,function(i,visit){
-					console.log(visit);
+					if(visit.marked){
+						return;
+					}else{
 						$("#visits-body").append($("<tr>")
 											.append($("<th>").text(visit.reservation.restaurant.name))
 											.append($("<th>").text(moment(visit.date).format('DD/MM/YYYY')))
@@ -310,6 +312,7 @@ function getAllVisits(){
 												}
 											)
 										));
+					}
 					});
 		}		
 		); 

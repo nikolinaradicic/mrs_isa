@@ -92,6 +92,19 @@ public class UserServiceImpl implements UserService{
 		return userRepository.save(savedUser);
 	}
 	
+	
+	@Override
+	public User changeDataEmployee(Employee user) {
+		Employee savedUser = employeeRepository.findOne(user.getId());
+		savedUser.setEmail(user.getEmail());
+		savedUser.setName(user.getName());
+		savedUser.setLastname(user.getLastname());
+		savedUser.setBirthday(user.getBirthday());
+		savedUser.setShoeSize(user.getShoeSize());
+		savedUser.setUniformSize(user.getUniformSize());
+		return userRepository.save(savedUser);
+	}
+	
 	@Override
 	public boolean addFriend(Guest user, GuestDTO friend) {
 		// TODO Auto-generated method stub

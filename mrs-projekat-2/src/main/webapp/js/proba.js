@@ -132,8 +132,36 @@ function showChangePass(){
 
 function showChangePersData(){
 	$("#app-div").html("");
-	$('#app-div').load('changePersData.html #changePers', function(){
-		changePersData();
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {	
+		console.log(data.responseJSON.role);
+			if (data.responseJSON.role=="ROLE_WAITER" || data.responseJSON.role=="ROLE_BARTENDER"
+			|| data.responseJSON.role=="ROLE_CHEF"){
+					$('#app-div').load('changePersDataEmployee.html #changePersEmployee', function(){
+					$('#birthday-field').datepicker({
+            			format: "yyyy-mm-dd"
+       				});
+						changePersDataEmployee();
+					});
+			}else{
+				$('#app-div').load('changePersData.html #changePers', function(){
+						changePersData();
+					});
+			}
+		}
+	});
+
+}
+
+function showChangePersDataEmployee(){
+	$("#app-div").html("");
+	$('#app-div').load('changePersDataEmployee.html #changePersEmployee', function(){
+		changePersDataEmployee();
 	});
 }
 
@@ -217,6 +245,7 @@ function showSeatingChartWaiter(){
 $(document).ready(function(){
 
 $(window).bind( "hashchange", function(e) {
+	console.log("radiiii");
 		var url = $.param.fragment();
 		// url action mapping
 		if(url == ""){
