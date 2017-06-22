@@ -65,7 +65,12 @@ public class WorkingShiftServiceImpl implements WorkingShiftService{
 	public WorkingShift findShiftForWaiter(Waiter current,String trenutnoVreme,
 			Shift smena) {
 		// TODO Auto-generated method stub
-		return wsRepository.findShiftForWaiter(current, trenutnoVreme, smena);
+		WorkingShift shift=wsRepository.findShiftForWaiter(current, trenutnoVreme, smena);
+		System.err.println(shift);
+		if(shift==null){
+			return null;
+		}
+		return shift;
 	}
 
 }

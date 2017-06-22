@@ -6,6 +6,10 @@ function setupChartWaiter(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
+		if(data.responseJSON==undefined){
+			window.alert("Trenutno nemate dodeljen segment!");
+			return;
+		}
 			if (data.responseJSON){
 				var canvas = new fabric.CanvasEx("canvas");
 				document.getElementById('canvas').fabric = canvas;
@@ -16,6 +20,7 @@ function setupChartWaiter(){
 				window.alert("Vasa smena je "+data.responseJSON.shift.name);
 			}
 			else{
+			
 				$("#add-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -293,6 +298,12 @@ function addDrink(){
 		$("#form-error").text("All fields are required").css("color","red");
 		return;
 	}
+	
+	if(data.price<1){
+		window.alert("Ne mozete za cenu uneti negativan broj ili 0.");
+		return;
+	}
+	
 	var id = data.restaurant;
 	data.restaurant = {id: id};
 	var s = JSON.stringify(data);
@@ -380,6 +391,10 @@ function addMeal(){
 	var data = getFormData($form);
 	if (!validateForm(data)){
 		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+	if(data.price<1){
+		window.alert("Ne mozete za cenu uneti negativan broj ili 0.");
 		return;
 	}
 	var id = data.restaurant;
