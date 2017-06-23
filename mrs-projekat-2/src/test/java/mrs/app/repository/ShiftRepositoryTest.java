@@ -33,6 +33,8 @@ public class ShiftRepositoryTest {
 		
 		Collection<Shift> found = shiftRepository.findByRestaurant(restaurant);
 		assertThat(found.size()).isEqualTo(1);
+		Shift found1=shiftRepository.findByNameAndRestaurant(shift.getName(), restaurant);
+		assertThat(found1).isNotNull();
 	}
 
 }

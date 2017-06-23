@@ -303,6 +303,54 @@ public class ShiftController {
 	
 	
 	@RequestMapping(
+			value = "/getWorkingShiftWaiterOld",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<WorkingShift> getWorkingShiftWaiterOld(HttpServletRequest request,@RequestBody
+			String username) throws ParseException{
+        Waiter current = (Waiter) userService.findByUsername(username);
+        Calendar now = Calendar.getInstance();
+        logger.info(">started here");
+        System.out.println(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
+        
+        Restaurant restaurant= restaurantService.findOne(current.getRestaurant().getId());
+        Collection<Shift> shifts=shiftSetvice.findShifts(restaurant);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf1=new SimpleDateFormat("HH:MM");
+        SimpleDateFormat sdf2=new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date trenutnoVreme=new Date();
+        Shift smena=new Shift();
+        boolean found=false;
+        for(Shift sh:shifts){
+            String trenutniDatum1=sdf.format(trenutnoVreme);
+            String trenutniDatum2=sdf.format(trenutnoVreme);
+        	trenutniDatum1+=" "+sh.getStartTime();
+        	trenutniDatum2+=" "+sh.getEndTime();
+        	Date datumSmenePocetak=sdf2.parse(trenutniDatum1);
+        	Date datumSmeneKraj=sdf2.parse(trenutniDatum2);
+        	if(trenutnoVreme.before(datumSmeneKraj) && trenutnoVreme.after(datumSmenePocetak)){
+        		System.err.println("dobro je");
+        		smena=sh;
+        		found=true;
+        		break;
+        	}
+        }
+        if(!found){
+        	return new ResponseEntity<WorkingShift>(HttpStatus.NOT_FOUND);
+        }else{
+
+
+        String trenutni=sdf.format(trenutnoVreme);
+		WorkingShift saved = workingShiftService.findShiftForWaiter(current,trenutni,smena);
+		System.err.println(saved);
+		return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+        }
+	}
+	
+	
+	
+	@RequestMapping(
 			value = "/getWorkingShiftBartender",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)

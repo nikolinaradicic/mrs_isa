@@ -54,5 +54,8 @@ public interface OrderService {
 	Mark mark(MarkDTO markDTO);
 
 	ItemDrink updateItemDrinkStatus(ItemDrink itemDr, Bartender b);
+
+	Collection<WaiterOrd> findNotMine(Collection<WaiterOrd> defineOrder,
+			Waiter waiter);
 	
 }

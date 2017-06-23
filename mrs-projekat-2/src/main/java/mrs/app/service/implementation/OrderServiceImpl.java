@@ -350,6 +350,14 @@ public class OrderServiceImpl implements OrderService{
 		return markRepository.save(m);
 	}
 
+	@Override
+	public Collection<WaiterOrd> findNotMine(Collection<WaiterOrd> defineOrder,
+			Waiter waiter) {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+
 
 
 	

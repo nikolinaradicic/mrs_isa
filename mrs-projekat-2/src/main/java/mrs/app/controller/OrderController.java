@@ -239,6 +239,27 @@ public class OrderController {
 	}
 	
 	@RequestMapping(
+			value="/getAllOrders",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('WAITER')")
+	public ResponseEntity<Collection<WaiterOrd>> getAllOrders(HttpServletRequest request){
+		logger.info("> get my orders");		
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user= userService.findByUsername(username);
+        if(user.getClass()==Waiter.class){
+        	Waiter waiter= (Waiter)user;
+            Collection<WaiterOrd> defineOrder=orderService.findAll();
+            Collection<WaiterOrd> tudjiOrdovi=orderService.findNotMine(defineOrder, waiter);
+    		logger.info("< get my orders");
+    		return new ResponseEntity<Collection<WaiterOrd>>(defineOrder,HttpStatus.OK);
+        }
+  
+        return new ResponseEntity<Collection<WaiterOrd>>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
 			value="/updateItemDrink",
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
