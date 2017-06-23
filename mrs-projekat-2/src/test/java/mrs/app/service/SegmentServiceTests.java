@@ -15,10 +15,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles(value = "test")
 public class SegmentServiceTests {
 	
 	@Autowired
@@ -41,8 +43,7 @@ public class SegmentServiceTests {
 	
 	@After
 	public void tearDown(){
-		restaurantRepository.deleteAll();
-		segmentRepository.deleteAll();
+		restaurantRepository.delete(restaurant.getId());
 	}
 	
 	@Test
@@ -84,5 +85,14 @@ public class SegmentServiceTests {
 		Segment foundSegment = segmentService.findSegment(segment.getName(), restaurant);
 		assertThat(foundSegment).isEqualTo(segment);
 	}
+	
+	@Test
+	public void findForRestaurantTest()
+	{
+		Collection<Segment> found = segmentService.findForRestaurant(restaurant);
+		assertThat(found.size()).isGreaterThan(0);
+	}
+	
+	
 
 }

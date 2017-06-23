@@ -1,21 +1,26 @@
 package mrs.app.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collection;
+
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Shift;
 import mrs.app.repository.RestaurantRepository;
 import mrs.app.repository.ShiftRepository;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles(value = "test")
 public class ShiftServiceTests {
 	
 	@Autowired
@@ -34,13 +39,12 @@ public class ShiftServiceTests {
 	@Before
 	public void setUp(){
 		restaurant = restaurantRepository.save(new Restaurant("naziv", "opis"));
-		shift = shiftRepository.save(new Shift(restaurant, "prva", "08:00", "15:00"));
+		shift = shiftRepository.save(new Shift(restaurant, "bla", "07:00", "15:00"));
 	}
 	
 	@After
 	public void tearDown(){
-		restaurantRepository.deleteAll();
-		shiftRepository.deleteAll();
+		restaurantRepository.delete(restaurant.getId());
 	}
 
 	
@@ -50,7 +54,7 @@ public class ShiftServiceTests {
 		boolean thrown = false;
 		try {
 			Shift s = shiftService.create(new Shift(restaurant, "neka", "01:03", "12:01"));
-			assertThat(s.getName()).isEqualTo("neka"); 
+			assertThat(s.getName()).isEqualTo("neka");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,5 +83,11 @@ public class ShiftServiceTests {
 	public void findShiftsTest(){
 		Collection<Shift> shifts = shiftService.findShifts(restaurant);
 		assertThat(shifts.size()).isEqualTo(1);
+	}
+	
+	@Test
+	public void findByNameAndRestaurantTest(){
+		Shift found = shiftService.findByNameAndRestaurant("bla", restaurant);
+		assertThat(found).isEqualTo(shift);
 	}
 }

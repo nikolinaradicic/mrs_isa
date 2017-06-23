@@ -31,7 +31,7 @@ public class Bidder extends User{
 		this.role = UserType.ROLE_BIDDER;
 	}
 
-	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY,mappedBy="bidder")
+	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
 	private Set<Offer> offers;
 
 	@JsonIgnore
