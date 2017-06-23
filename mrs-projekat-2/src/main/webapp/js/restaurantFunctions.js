@@ -548,6 +548,7 @@ function changeInformation(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 				$("#modalInformation").modal('toggle');
+				$(window).trigger("hashchange");
 				location.href = "#";	
 		}
 	});

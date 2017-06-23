@@ -26,6 +26,7 @@ function getUser(callback){
 							$("#calendar").hide();
 							$("#chart").hide();
 							$("#order").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								checkRequests();
 								getAllVisits(); // home page, show the default view
@@ -45,6 +46,7 @@ function getUser(callback){
 							$("#order").hide();
 							$("#bids-menu").hide();
 							$("#guestsRestaurants").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								getRestaurants(); // home page, show the default view
 							}else{
@@ -80,6 +82,7 @@ function getUser(callback){
 							$("#chart").hide();
 							$("#order").hide();
 							$("#guestsRestaurants").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								 // home page, show the default view
 								displayBids();
@@ -97,6 +100,7 @@ function getUser(callback){
 							$("#order").hide();
 							$("#bids-menu").hide();
 							$("#guestsRestaurants").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 								getDrinksBartender();
@@ -113,6 +117,7 @@ function getUser(callback){
 							$("#order").hide();
 							$("#bids-menu").hide();
 							$("#guestsRestaurants").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 								getMealsChef();
@@ -127,6 +132,7 @@ function getUser(callback){
 							$("#manage").hide();
 							$("#bids-menu").hide();
 							$("#guestsRestaurants").hide();
+							$("#restaurant-manager").hide();
 							if(window.location.hash==''){
 								// home page, show the default view
 							}else{
