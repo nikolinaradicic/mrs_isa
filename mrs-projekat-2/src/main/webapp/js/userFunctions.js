@@ -171,7 +171,6 @@ function addNotification(notification){
 									.css('color','#fff')
 									.css('border-radius','3px')
 									.click( function() {
-											$(window).trigger("hashchange");
 											notifSeen(notification.id);
 											})
 									)
@@ -190,6 +189,7 @@ function notifSeen(id){
 			$("#notif"+id).remove();
 			num_notifications--;
 			$("#brojZahteva").text(num_notifications);
+			$(window).trigger("hashchange");
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 
@@ -463,14 +463,17 @@ function registerManager(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		data: s,
-		complete: function(data) {
-			if (data.responseJSON){
+		success: function (data, textStatus, jqXHR) {
 				location.href = "#";
-			}
-			else{
-				$("#addManager-error").text("Invalid form").css("color","red");
-			}
-		}
+	    },
+		error: function (jqXHR, textStatus, errorThrown) {
+		        if (jqXHR.status === 401) {
+		        	
+		        } else {
+					$("#addManager-error").text("Email exists").css("color","red");
+		        }
+		    }
+
 	});
 }
 
@@ -496,7 +499,11 @@ function addSysMan() {
 			location.href = "#";
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            showResponse(jqXHR.status, errorThrown);
+        	if (jqXHR.status === 401) {
+	        	
+	        } else {
+				$("#addSysMan-error").text("Email exists").css("color","red");
+	        }
         }
 	});
 }
@@ -518,14 +525,17 @@ function addBidder() {
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "#";
-			}
-			else{
-				$("#addBidder-error").text("Invalid form").css("color","red");
-			}
-		}
+		success: function (data, textStatus, jqXHR) {
+	
+			location.href = "#";
+	    },
+	    error: function (jqXHR, textStatus, errorThrown) {
+	    	if (jqXHR.status === 401) {
+	        	
+	        } else {
+				$("#addBidder-error").text("Email exists").css("color","red");
+	        }
+	    }
 	});
 }
 
@@ -555,14 +565,17 @@ function addEmployee(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				location.href = "#";
-			}
-			else{
-				$("#addEmployee-error").text("Invalid form").css("color","red");
-			}
-		}
+		success: function (data, textStatus, jqXHR) {
+
+			location.href = "#";
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        	if (jqXHR.status === 401) {
+	        	
+	        } else {
+				$("#addEmployee-error").text("Email exists").css("color","red");
+	        }
+        }
 	});
 }
 
@@ -597,7 +610,6 @@ function register()
 }
 
 function upload(){
-console.log("usao");
 var data={};
 	var reader = new FileReader();
     reader.onload = function (e) {

@@ -170,6 +170,9 @@ public class BiddingController {
         	return new ResponseEntity<GroceryList>(HttpStatus.FORBIDDEN);
         }
         Offer saved = offerService.findOne(offer.getId());
+        if(saved.getPrice() != offer.getPrice()){
+        	return new ResponseEntity<GroceryList>(gl, HttpStatus.OK);
+        }
 		groceryListService.acceptOffer(gl, saved);
 		notifySuppliers(gl.getOffers());
 		logger.info("< accept offer");
@@ -272,8 +275,9 @@ public class BiddingController {
         }
         
         offer.setId(exists.getId());
-        Offer toSave = groceryListService.updateOffer(offer, gl);
+        groceryListService.updateOffer(offer, gl);
 
+        Offer toSave = offerService.findByListAndBidder(gl, user);
 		OfferDTO retVal = new OfferDTO(toSave.getGroceryList().getId(), toSave.getPrice(), toSave.getMessage());
 		logger.info("< add bid");
 		return new ResponseEntity<OfferDTO>(retVal, HttpStatus.CREATED);

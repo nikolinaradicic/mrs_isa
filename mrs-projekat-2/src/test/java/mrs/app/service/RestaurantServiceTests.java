@@ -44,15 +44,13 @@ public class RestaurantServiceTests {
 	@Before
 	public void setUp(){
 		restaurant = repository.save(new Restaurant("naziv", "opis"));
-		//oneDrink = drinkRepository.save(new Drink("d1","d1",200,restaurant));
-		//oneMeal = mealRepository.save(new Meal("m1","m1",400,restaurant));
+		oneDrink = drinkRepository.save(new Drink("d1","d1",200,restaurant));
+		oneMeal = mealRepository.save(new Meal("m1","m1",400,restaurant));
 	}
 	
 	@After
 	public void tearDown(){
-		//drinkRepository.delete(oneDrink);
-		//mealRepository.delete(oneMeal);
-		repository.delete(restaurant);;
+		repository.delete(restaurant.getId());
 	}
 	
 	@Test
@@ -63,6 +61,7 @@ public class RestaurantServiceTests {
 			Restaurant created = restaurantService.create(new Restaurant("ime", "opis restorana"));
 			assertThat(created.getDescription()).isEqualTo("opis restorana");
 			assertThat(created.getName()).isEqualTo("ime");
+			repository.delete(created.getId());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,19 +113,19 @@ public class RestaurantServiceTests {
 		}
 	}
 	
-//	@Test
-//	public void updateDrinkTest(){
-//		Drink drink = new Drink();
-//		drink.setDescription("opis");
-//		drink.setId(oneDrink.getId());
-//		drink.setName("ime");
-//		drink.setPrice(200);
-//		restaurantService.updateDrink(drink);
-//		Drink saved = drinkRepository.findOne(oneDrink.getId());
-//		assertThat(saved.getDescription()).isEqualTo("opis");
-//		assertThat(saved.getName()).isEqualTo("ime");
-//		assertThat(saved.getPrice()).isEqualTo(200);
-//	}
+	@Test
+	public void updateDrinkTest(){
+		Drink drink = new Drink();
+		drink.setDescription("opis");
+		drink.setId(oneDrink.getId());
+		drink.setName("ime");
+		drink.setPrice(200);
+		restaurantService.updateDrink(drink);
+		Drink saved = drinkRepository.findOne(oneDrink.getId());
+		assertThat(saved.getDescription()).isEqualTo("opis");
+		assertThat(saved.getName()).isEqualTo("ime");
+		assertThat(saved.getPrice()).isEqualTo(200);
+	}
 	
 	@Test
 	public void addDrinkExceptionTest(){
@@ -156,19 +155,19 @@ public class RestaurantServiceTests {
 		}
 	}
 	
-//	@Test
-//	public void updateMealTest(){
-//		Meal meal = new Meal();
-//		meal.setDescription("opis");
-//		meal.setId(oneMeal.getId());
-//		meal.setName("ime");
-//		meal.setPrice(200);
-//		restaurantService.updateMeal(meal);
-//		Meal saved = mealRepository.findOne(oneMeal.getId());
-//		assertThat(saved.getDescription()).isEqualTo("opis");
-//		assertThat(saved.getName()).isEqualTo("ime");
-//		assertThat(saved.getPrice()).isEqualTo(200);
-//	}
+	@Test
+	public void updateMealTest(){
+		Meal meal = new Meal();
+		meal.setDescription("opis");
+		meal.setId(oneMeal.getId());
+		meal.setName("ime");
+		meal.setPrice(200);
+		restaurantService.updateMeal(meal);
+		Meal saved = mealRepository.findOne(oneMeal.getId());
+		assertThat(saved.getDescription()).isEqualTo("opis");
+		assertThat(saved.getName()).isEqualTo("ime");
+		assertThat(saved.getPrice()).isEqualTo(200);
+	}
 	
 	@Test
 	public void addMealExceptionTest(){
