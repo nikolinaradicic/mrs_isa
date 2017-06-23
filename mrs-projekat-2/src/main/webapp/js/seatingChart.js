@@ -7,6 +7,10 @@ function addTableToCanvas(){
 		$("#add-table-error").text("Please enter chair number").css("color","red");
 		return;
 	}
+	if(data.chairNum<1){
+		window.alert("Sto ne moze imati manje od 1 stolice!");
+		return;
+	}
 	$("#add-table-modal").modal('toggle');
 	
 	var canvas = document.getElementById('canvas').fabric;
@@ -103,6 +107,10 @@ function displaySegment(){
 function changeTable(){
 	var $form = $("#change-table-form");
 	var data = getFormData($form);
+	if(data.chairNum<1){
+		window.alert("Sto ne moze imati manje od 1 stolice!");
+		return;
+	}
 	if (!validateForm(data)){
 		$("#change-table-error").text("Please enter chair number").css("color","red");
 		return;
@@ -158,11 +166,11 @@ function showCanvas(segment){
 			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
 			setTimeout(function(){
 				canvas.forEachObject(function(o) {
-					console.log("usao");
-  					o.selectable = false;
-  					o.lockMovementX=true;
-  					o.lockMovementY=true;
-  					o.hasControls = false;
+					console.log("UROSS   usao");
+  					o.selectable = true;
+  					o.lockMovementX=false;
+  					o.lockMovementY=false;
+  					o.hasControls = true;
 				});
 			},1000);
 		}

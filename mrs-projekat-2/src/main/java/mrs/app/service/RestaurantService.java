@@ -35,7 +35,7 @@ public interface RestaurantService {
 
 	Drink updateDrink(Drink drink);
 
-	boolean deleteMeal(Meal meal);
+	boolean deleteMeal(Meal meal, Restaurant restaurant);
 
-	boolean deleteDrink(Drink drink);
+	boolean deleteDrink(Drink drink, Restaurant r);
 }

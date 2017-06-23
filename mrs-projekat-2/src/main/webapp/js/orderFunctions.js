@@ -22,10 +22,17 @@ function setMeals(){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
-				counter_meals++;
+				if(!item.deleted){
+					counter_meals++;
+				}
 			});
+			console.log(counter_meals);
 			temp_meals=counter_meals;
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+			console.log("hiiii");
+				return;
+			}else{
 				$("#meal-body").append($("<tr>")
 									.append($("<td>")
 										.append($("<input type='checkbox'>").attr('name',"jelo").attr('value',item.name))
@@ -38,7 +45,7 @@ function setMeals(){
 								meals[temp_meals-counter_meals]=item;
 								counter_meals--;
 								
-
+			}
 			});
 			console.log(meals);
 			$("#meal-body").append($("<br>"));
@@ -56,10 +63,17 @@ function setMeals(){
 		complete: function(data) {
 		
 			$.each(data.responseJSON, function(i, item){
-				counter_drinks++;
+				if(!item.deleted){
+					counter_drinks++;
+				}
 			});
+			console.log(counter_drinks);
 			temp_drinks=counter_drinks;
 			$.each(data.responseJSON, function(i, item){
+			console.log(item);
+			if(item.deleted){
+				return;
+			}else{
 				$("#drink-body").append($("<tr>")
 									.append($("<td>")
 										.append($("<input type='checkbox'>").attr('name','pice').attr('value',item.name))
@@ -70,7 +84,8 @@ function setMeals(){
 									)
 								);
 								drinks[temp_drinks-counter_drinks]=item;
-								counter_drinks--;								
+								counter_drinks--;	
+				}							
 			});
 			$("#drink-body").append($("<br>"));
 		}
@@ -88,7 +103,8 @@ function confirmMeals(sto){
 	chef_meals=[];
 	bartender_drinks=[];
 	var data=$('#meal-form').serializeArray();
-	//console.log(data);
+	console.log(data);
+	var found=false;
 
 	var counter=0;
 	var temp_counter=0;
@@ -130,6 +146,21 @@ function confirmMeals(sto){
 	console.log(data_number_dr);
 	console.log(data_number_ml);
 	
+	for(var i in data_number_ml){
+		if(i<0){
+			found=true;
+		}
+	}
+	for(var i in data_number_dr){
+		if(i<0){
+			found=true;
+		}
+	}
+	
+	if(found==true){
+		window.alert("Kolicine ne mogu biti manje od 1!");
+	}
+	
 	var pomocni_broj=0;
 	counter=0;
 	temp_counter=counter;
@@ -143,6 +174,10 @@ function confirmMeals(sto){
 				bartender_drinks[num_drink]=drinks[i];
 				num_drink++;
 				pomocni_broj++;
+				if(drinks[i].quantity==null){
+					window.alert("Morate uneti kolicinu pica "+drinks[i].name+"!");
+					return;
+				}
 			}
 		}
 	}
@@ -158,6 +193,10 @@ function confirmMeals(sto){
 				chef_meals[num_meal]=meals[i];
 				num_meal++;
 				pomocni_broj++;
+				if(drinks[i].quantity==null){
+					window.alert("Morate uneti kolicinu jela "+meals[i].name+"!");
+					return;
+				}
 			}
 		}
 	}
@@ -327,6 +366,23 @@ function getDrinksBartender(){
 }
 
 function getMyOrder(){
+
+	$.ajax({
+		url: "/getWorkingShiftWaiter",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+		if(data.responseJSON==undefined){
+					window.alert("Vasa smena je zavrsena!");
+					location.href="#";
+					return;
+				}
+		}
+	});
+
+
 	var num=0;
 	$.ajax({
 		url: "/getMyOrders",
@@ -461,7 +517,12 @@ function setInfo(){
 	console.log(data[0].value);
 	var id=data[0].value;
 	var quantity=$("#r-quantity");
+	
 	var vrednost=quantity[0].valueAsNumber;
+	if(vrednost<1){
+		window.alert("Vrednost pica ne moze biti nula ili manja od nule!");
+		return;
+	}
 	$("#modalInformation").modal('toggle');
 	var itemDrink={id:id, quantity:vrednost};
 	$.ajax({
@@ -471,15 +532,18 @@ function setInfo(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
-			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
-			}
-		}
+		success: function(data) {
+			$("#app-div").load("showOrders.html #showOrder",function(){
+				getMyOrder();
+			});
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
 
@@ -490,6 +554,10 @@ function setInfoMeal(){
 	var id=data[0].value;
 	var quantity=$("#r-quantity-meal");
 	var vrednost=quantity[0].valueAsNumber;
+	if(vrednost<1){
+		window.alert("Vrednost jela ne moze biti nula ili manja od nule!");
+		return;
+	}
 	$("#modalInformationMeal").modal('toggle');
 	var itemMeal={id:id, quantity:vrednost};
 	$.ajax({
@@ -499,15 +567,16 @@ function setInfoMeal(){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
-			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
-			}
-		}
+		success: function(data) {
+			window.location.reload(true/false);
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
 
@@ -646,16 +715,17 @@ function deleteItemMeal(meal,id){
 		data :JSON.stringify(item),
 		contentType:"application/json",
 		dataType:"json",
-		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
-			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
-			}
-		}
+		headers: createAuthorizationTokenHeader(),		
+		success: function(data) {
+			$(window).trigger("hashchange");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
 
@@ -668,23 +738,22 @@ function deleteItemDrink(drink,id){
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
-			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
-			}
-		}
+		success: function(data) {
+			$(window).trigger("hashchange");
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 401) {
+            	
+            } else {
+                window.alert("an unexpected error occured: " + errorThrown);
+            }
+        }
 	});
 }
 var table;
 var canvas;
 var segment;
 function showModal(){
-	console.log("usao");
-	
 	$.ajax({
 		url: "/getWorkingShiftWaiter",
 		type:"GET",
@@ -692,10 +761,19 @@ function showModal(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
+			if(data.responseJSON==undefined){
+				window.alert("Vasa smena je zavrsena!");
+				location.href="#";
+				return;
+			}
 			if (data.responseJSON){
 				console.log(data.responseJSON);
+				if(data.responseJSON.segment==null){
+					window.alert("Vasa smena je zavrsena!");
+					location.href="#";
+					return;
+				}
 		segment=data.responseJSON.segment;
-				
 				canvas = new fabric.CanvasEx("canvas");
 				
 		if (segment.chart != ""  && segment.chart != null){
@@ -703,19 +781,15 @@ function showModal(){
 			canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
 			setTimeout(function(){
 				canvas.forEachObject(function(o) {
-					console.log("usao");
+					console.log("kreiram Kanvas!!!");
   					o.selectable = true;
   					o.lockMovementX=true;
   					o.lockMovementY=true;
-  					o.hasControls = false;
+  					o.hasControls = true;
 				});
 			},1000);
-		}
-				
-				
-				console.log(table);
-				
-				
+		}	
+				console.log(table);		
 			}
 			else{
 				$("#add-error").text("Invalid form").css("color","red");

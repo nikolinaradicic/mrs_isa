@@ -21,6 +21,8 @@ public class Meal implements Serializable{
 	private String description;
 	@Column(nullable = false)
 	private double price;
+	@Column
+	private Boolean deleted;
 	
 	public Meal(String name, String description, double price,
 			Restaurant restaurant) {
@@ -29,6 +31,7 @@ public class Meal implements Serializable{
 		this.description = description;
 		this.price = price;
 		this.restaurant = restaurant;
+		this.deleted=false;
 	}
 
 	@ManyToOne
@@ -38,7 +41,19 @@ public class Meal implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	public Meal(){}
+	
+	
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Meal(){
+		this.deleted=false;
+	}
 	
 	public String getName() {
 		return name;

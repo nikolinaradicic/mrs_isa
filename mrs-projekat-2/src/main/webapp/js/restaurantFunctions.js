@@ -6,6 +6,10 @@ function setupChartWaiter(){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
+		if(data.responseJSON==undefined){
+			window.alert("Trenutno nemate dodeljen segment!");
+			return;
+		}
 			if (data.responseJSON){
 				var canvas = new fabric.CanvasEx("canvas");
 				document.getElementById('canvas').fabric = canvas;
@@ -16,6 +20,7 @@ function setupChartWaiter(){
 				window.alert("Vasa smena je "+data.responseJSON.shift.name);
 			}
 			else{
+			
 				$("#add-error").text("Invalid form").css("color","red");
 			}
 		}
@@ -99,6 +104,9 @@ function getDrinks(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+				return;
+			}else{
 				$("#drinks-table-body").append($("<tr>").attr("id", "drink"+item.id)
 						.append($("<td>")
 								.text(item.name)
@@ -124,6 +132,7 @@ function getDrinks(restaurant){
 								)
 							)
 						);
+				}
 			});	
 		}
 	});
@@ -139,6 +148,9 @@ function getMeals(restaurant){
 		headers: createAuthorizationTokenHeader(),
 		complete: function(data) {
 			$.each(data.responseJSON, function(i, item){
+			if(item.deleted){
+				return;
+			}else{
 				$("#meals-table-body").append($("<tr>").attr("id", "meal"+item.id)
 						.append($("<td>")
 								.text(item.name)
@@ -164,6 +176,7 @@ function getMeals(restaurant){
 								)
 							)
 						);
+				}
 		
 			});	
 		}
@@ -285,6 +298,12 @@ function addDrink(){
 		$("#form-error").text("All fields are required").css("color","red");
 		return;
 	}
+	
+	if(data.price<1){
+		window.alert("Ne mozete za cenu uneti negativan broj ili 0.");
+		return;
+	}
+	
 	var id = data.restaurant;
 	data.restaurant = {id: id};
 	var s = JSON.stringify(data);
@@ -372,6 +391,10 @@ function addMeal(){
 	var data = getFormData($form);
 	if (!validateForm(data)){
 		$("#form-error").text("All fields are required").css("color","red");
+		return;
+	}
+	if(data.price<1){
+		window.alert("Ne mozete za cenu uneti negativan broj ili 0.");
 		return;
 	}
 	var id = data.restaurant;
@@ -468,7 +491,8 @@ function deleteMeal(meal){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			$('#meals-table-body tr#meal'+meal.id).remove();
+			$(window).trigger('hashchange');
+			//$('#meals-table-body tr#meal'+meal.id).remove();
 			},
 		error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
@@ -491,7 +515,8 @@ function deleteDrink(drink){
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
 		success: function(data) {
-			$('#drinks-table-body tr#drink'+drink.id).remove();
+			$(window).trigger('hashchange');
+			//$('#drinks-table-body tr#drink'+drink.id).remove();
 			},
 		error: function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status === 401) {
