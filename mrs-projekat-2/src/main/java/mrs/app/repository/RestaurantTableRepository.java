@@ -15,5 +15,10 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 	@Transactional
 	int updateRestaurantTable(int chairNumber, String name, Segment segment);
 
-	RestaurantTable findByNameAndSegment(String name, Segment segment);
+	RestaurantTable findByNameAndSegment(String name, Segment segment);	
+//	
+//	@Modifying
+//	@Query("select s.segment from RestaurantTable where s.id=?1")
+//	@Transactional
+//	Long getSegmentByTable(RestaurantTable tables);
 }

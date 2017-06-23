@@ -1,8 +1,6 @@
 package mrs.app.repository;
 
-import java.util.Collection;
-
-import mrs.app.domain.Waiter;
+import mrs.app.domain.Bartender;
 import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.WaiterOrd;
 
@@ -19,9 +17,9 @@ public interface ItemDrinkRepository extends JpaRepository<ItemDrink,Long>{
 	int updateItemDrink(int quantity,Long id);
 
 	@Modifying
-	@Query("update ItemDrink r set r.status=?1 where r.id=?2")
+	@Query("update ItemDrink r set r.status=?1, r.bartender=?3 where r.id=?2")
 	@Transactional
-	int updateItemDrinkStatus(String status,Long id);
+	int updateItemDrinkStatus(String status,Long id, Bartender b);
 	
 	@Modifying
 	@Query("update ItemDrink r set r.bill=?1 where r.id=?2")

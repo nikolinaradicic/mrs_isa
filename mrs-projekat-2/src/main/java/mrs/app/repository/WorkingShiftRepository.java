@@ -3,6 +3,8 @@ package mrs.app.repository;
 import java.util.Collection;
 import java.util.Date;
 
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Shift;
@@ -31,4 +33,11 @@ public interface WorkingShiftRepository extends JpaRepository<WorkingShift, Long
 	
 	@Query("select w from WorkingShift w where w.employee=?1 and DATE_FORMAT(w.date,'%d.%m.%Y')=?2 and w.shift=?3")
 	WorkingShift findShiftForWaiter(Waiter w, String d,Shift s);
+
+	@Query("select w from WorkingShift w where w.employee=?1 and DATE_FORMAT(w.date,'%d.%m.%Y')=?2 and w.shift=?3")
+	WorkingShift findShiftForChef(Chef c, String d,Shift s);
+	
+	@Query("select w from WorkingShift w where w.employee=?1 and DATE_FORMAT(w.date,'%d.%m.%Y')=?2 and w.shift=?3")
+	WorkingShift findShiftForBartender(Bartender b, String d,Shift s);
 }
+

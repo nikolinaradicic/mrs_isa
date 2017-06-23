@@ -5,6 +5,8 @@ import java.util.Collection;
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.DTOs.MarkDTO;
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Guest;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
@@ -37,9 +39,7 @@ public interface OrderService {
 	
 	ItemMeal updateItemMeal(ItemMeal itemMe);
 	
-	ItemMeal updateItemMealStatus(ItemMeal itemMe);
-
-	ItemDrink updateItemDrinkStatus(ItemDrink itemDr);
+	ItemMeal updateItemMealStatus(ItemMeal itemMe, Chef chef);
 
 	void deleteItemDrink(ItemDrinkDTO orderDTO);
 
@@ -52,5 +52,7 @@ public interface OrderService {
 	Collection<Visit> findMyVisits(Guest guest);
 
 	Mark mark(MarkDTO markDTO);
+
+	ItemDrink updateItemDrinkStatus(ItemDrink itemDr, Bartender b);
 	
 }

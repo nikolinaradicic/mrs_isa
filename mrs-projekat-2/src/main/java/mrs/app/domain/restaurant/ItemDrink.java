@@ -5,13 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+
+import mrs.app.domain.Bartender;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ItemDrink {
+	
+	@Version
+	@Column(name="version")
+	private Long version;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +37,25 @@ public class ItemDrink {
 
 	@ManyToOne
 	private WaiterOrd waiterOrd;
+	
+	@ManyToOne
+	private Bartender bartender;
+
+	public Bartender getBartender() {
+		return bartender;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public void setBartender(Bartender bartender) {
+		this.bartender = bartender;
+	}
 
 	public ItemDrink() {
 		// TODO Auto-generated constructor stub
@@ -116,5 +141,7 @@ public class ItemDrink {
 			return true;
 		return false;
 	}
+	
+	
 
 }

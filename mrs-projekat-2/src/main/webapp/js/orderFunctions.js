@@ -193,7 +193,7 @@ function confirmMeals(sto){
 				chef_meals[num_meal]=meals[i];
 				num_meal++;
 				pomocni_broj++;
-				if(drinks[i].quantity==null){
+				if(meals[i].quantity==null){
 					window.alert("Morate uneti kolicinu jela "+meals[i].name+"!");
 					return;
 				}
@@ -223,7 +223,19 @@ function confirmMeals(sto){
 }
 
 function getMealsChef(){
-	var num=0;
+	$.ajax({
+		url: "/getWorkingShiftChef",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if(data.responseJSON==undefined){
+					window.alert("Vasa smena je zavrsena!");
+					location.href="#";
+					return;
+				}else{
+				var num=0;
 	$.ajax({
 		url: "/getBartenderDrinks",
 		type:"GET",
@@ -253,7 +265,7 @@ function getMealsChef(){
 				);
 				//$("#meals-body").empty();
 			$.each(data.responseJSON, function(i, item){
-			console.log(item.id);
+				if(item.meals!=0){
 							$("#meals-body").append($("<tr>")
 											.append($("<td>")
 												.append($("<label class='fa fa-info-circle'>")
@@ -267,6 +279,7 @@ function getMealsChef(){
             													.text("  Action")
             								))
 								)
+				}
 				$.each(item.meals,function(i,meal){
 						$("#meals-body").append($("<tr>")
 											.append($("<td>")
@@ -293,9 +306,30 @@ function getMealsChef(){
 			});
 		}
 	});
+				
+				
+				}
+		}
+	});
+
+	
 }
 function getDrinksBartender(){
-	var num=0;
+
+	$.ajax({
+		url: "/getWorkingShiftBartender",
+		type:"GET",
+		contentType:"application/json",
+		dataType:"json",
+		headers: createAuthorizationTokenHeader(),
+		complete: function(data) {
+			if(data.responseJSON==undefined){
+					window.alert("Vasa smena je zavrsena!");
+					location.href="#";
+					return;
+			}else{
+			
+			var num=0;
 	$.ajax({
 		url: "/getBartenderDrinks",
 		type:"GET",
@@ -362,6 +396,12 @@ function getDrinksBartender(){
 			});
 		}
 	});
+			
+			}
+		}
+	});
+
+	
 	
 }
 
@@ -581,131 +621,226 @@ function setInfoMeal(){
 }
 
 function acceptMeal(meal){
-	if(meal.status!="Not Accepted"){
-		window.alert("Vec ste prihvatili jelo!");
-		return;
-	}else{
-	console.log(meal);
-	meal.status="Accepted";
-	var itemMeal=meal;
-	console.log(itemMeal);
-		$.ajax({
-		url: "/updateItemMealStatus",
-		type:"POST",
-		data :JSON.stringify(itemMeal),
+	var nijeTaj=false;
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
+		success: function(data) {			
+			console.log(data);
+			if(meal.status=="Prepared"){
+				window.alert("Jelo je spremljeno!");
+					return;
 			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
+			if(meal.status=="Accepted"){
+				if(meal.chef.id!=data.id){
+					nijeTaj=true;
+					console.log("udjem");
+					window.alert("Drugi kuvar je odgovoran odabrano jelo!");
+					return;
+				}else{
+					console.log("udjem");
+					window.alert("Vec ste odabrali jelo!");
+					return;
+				}
+			}else if(meal.status=="Not Accepted"){
+			
+				meal.status="Accepted";
+				var itemMeal=meal;
+				$.ajax({
+				url: "/updateItemMealStatus",
+				type:"POST",
+				data :JSON.stringify(itemMeal),
+				contentType:"application/json",
+				dataType:"json",
+				headers: createAuthorizationTokenHeader(),
+				complete: function(data) {
+					if (data.responseJSON){
+						//window.location.reload(true/false);
+						$(window).trigger(" hashchange ");
+					}
+					else{
+						$("#add-error").text("Invalid form").css("color","red");
+					}
+				}
+			});
+			
 			}
-		}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+	        },
 	});
-	}
+
+
 }
 
 function preparedMeal(meal){
-	if(meal.status!="Accepted"){
-		if(meal.status=="Prepared"){
-			window.alert("Jelo je vec spremno!");
-			return;
-		}else if(meal.status=="Not Accepted"){
-			window.alert("Jelo prvo morate prihvatiti!");
-			return;
-		}
-		
-	}else{
-	console.log(meal);
-	meal.status="Prepared";
-	var itemMeal=meal;
-	console.log(itemMeal);
-		$.ajax({
-		url: "/updateItemMealStatus",
-		type:"POST",
-		data :JSON.stringify(itemMeal),
+var nijeTaj=false;
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
+		success: function(data) {			
+			console.log(data);
+			if(meal.status=="Prepared"){
+				window.alert("Jelo je vec spremljeno!");
+					return;
 			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
+			if(meal.status=="Accepted"){
+				if(meal.chef.id!=data.id){
+					nijeTaj=true;
+					window.alert("Drugi kuvar je odgovoran odabrano jelo!");
+					return;
+				}else{
+					meal.status="Prepared";
+				var itemMeal=meal;
+				$.ajax({
+				url: "/updateItemMealStatus",
+				type:"POST",
+				data :JSON.stringify(itemMeal),
+				contentType:"application/json",
+				dataType:"json",
+				headers: createAuthorizationTokenHeader(),
+				complete: function(data) {
+					if (data.responseJSON){
+						//window.location.reload(true/false);
+						$(window).trigger(" hashchange ");
+					}
+					else{
+						$("#add-error").text("Invalid form").css("color","red");
+					}
+				}
+			});
+				}
+			}else if(meal.status=="Not Accepted"){
+				window.alert("Jelo prvo morate prihvatiti!");
+			return;
 			}
-		}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+	        },
 	});
-	}
 }
 
 
 function acceptDrink(drink){
-	if(drink.status!="Not Accepted"){
-		window.alert("Vec ste prihvatili pice!");
-		return;
-	}else{
-	drink.status="Accepted";
-	var itemDrink=drink;
-		$.ajax({
-		url: "/updateItemDrinkStatus",
-		type:"POST",
-		data :JSON.stringify(itemDrink),
+	var nijeTaj=false;
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
+		success: function(data) {			
+			console.log(data);
+			if(drink.status=="Prepared"){
+				window.alert("Pice je spremljeno!");
+					return;
 			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
+			if(drink.status=="Accepted"){
+				if(drink.bartender.id!=data.id){
+					nijeTaj=true;
+					window.alert("Drugi sanker je odgovoran odabrano pice!");
+					return;
+				}else{
+					console.log("udjem");
+					window.alert("Vec ste odabrali pice!");
+					return;
+				}
+			}else if(drink.status=="Not Accepted"){
+			
+				drink.status="Accepted";
+				var itemDrink=drink;
+				$.ajax({
+				url: "/updateItemDrinkStatus",
+				type:"POST",
+				data :JSON.stringify(itemDrink),
+				contentType:"application/json",
+				dataType:"json",
+				headers: createAuthorizationTokenHeader(),
+				complete: function(data) {
+					if (data.responseJSON){
+						//window.location.reload(true/false);
+						$(window).trigger(" hashchange ");
+					}
+					else{
+						$("#add-error").text("Invalid form").css("color","red");
+					}
+				}
+			});
+			
 			}
-		}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+	        },
 	});
-	}
+
 }
 
 function preparedDrink(drink){
-	if(drink.status!="Accepted"){
-		if(drink.status=="Prepared"){
-			window.alert("Pice je vec spremno!");
-			return;
-		}else if(drink.status=="Not Accepted"){
-			window.alert("Pice prvo morate prihvatiti!");
-			return;
-		}
-		
-	}else{
-	drink.status="Prepared";
-	var itemDrink=drink;
-		$.ajax({
-		url: "/updateItemDrinkStatus",
-		type:"POST",
-		data :JSON.stringify(itemDrink),
+	var nijeTaj=false;
+	$.ajax({
+		url: "api/getUser",
+		type:"GET",
 		contentType:"application/json",
 		dataType:"json",
 		headers: createAuthorizationTokenHeader(),
-		complete: function(data) {
-			if (data.responseJSON){
-				//window.location.reload(true/false);
-				$(window).trigger(" hashchange ");
+		success: function(data) {			
+			console.log(data);
+			if(drink.status=="Prepared"){
+				window.alert("Pice je vec spremljeno!");
+					return;
 			}
-			else{
-				$("#add-error").text("Invalid form").css("color","red");
+			if(drink.status=="Accepted"){
+				if(drink.bartender.id!=data.id){
+					nijeTaj=true;
+					window.alert("Drugi sanker je odgovoran odabrano pice!");
+					return;
+				}else{
+					drink.status="Prepared";
+				var itemDrink=drink;
+				$.ajax({
+				url: "/updateItemDrinkStatus",
+				type:"POST",
+				data :JSON.stringify(itemDrink),
+				contentType:"application/json",
+				dataType:"json",
+				headers: createAuthorizationTokenHeader(),
+				complete: function(data) {
+					if (data.responseJSON){
+						//window.location.reload(true/false);
+						$(window).trigger(" hashchange ");
+					}
+					else{
+						$("#add-error").text("Invalid form").css("color","red");
+					}
+				}
+			});
+				}
+			}else if(drink.status=="Not Accepted"){
+				window.alert("Pice prvo morate prihvatiti!");
+			return;
 			}
-		}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+	        },
 	});
-	}
 }
 
 function deleteItemMeal(meal,id){
+
+	if(meal.status=="Accepted"){
+		window.alert("Nije moguce obrisati jelo koje je vec prihvaceno!");
+		return;
+	}
+	if(meal.status=="Prepared"){
+		window.alert("Nije moguce obrisati jelo koje je vec spremljeno!");
+		return;
+	}
 	console.log(id);
 	console.log("usao u brisanje");
 	var item={idItemMeal:meal.id,idWaiterOrd:id}
@@ -730,6 +865,15 @@ function deleteItemMeal(meal,id){
 }
 
 function deleteItemDrink(drink,id){
+	if(drink.status=="Accepted"){
+		window.alert("Nije moguce obrisati jelo koje je vec prihvaceno!");
+		return;
+	}
+	if(drink.status=="Prepared"){
+		window.alert("Nije moguce obrisati jelo koje je vec spremljeno!");
+		return;
+	}
+
 	var item={idItemDrink:drink.id,idWaiterOrd:id};
 	$.ajax({
 		url: "/deleteItemDrink",

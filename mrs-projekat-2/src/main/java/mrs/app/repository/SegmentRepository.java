@@ -3,6 +3,7 @@ package mrs.app.repository;
 import java.util.Collection;
 
 import mrs.app.domain.restaurant.Restaurant;
+import mrs.app.domain.restaurant.RestaurantTable;
 import mrs.app.domain.restaurant.Segment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +20,6 @@ public interface SegmentRepository extends JpaRepository<Segment, Long> {
 	@Transactional
 	int updateSegment(String chart, Long id);
 	
-	Collection<Segment> findByRestaurant(Restaurant r); 
+	Collection<Segment> findByRestaurant(Restaurant r); 	
 
 }

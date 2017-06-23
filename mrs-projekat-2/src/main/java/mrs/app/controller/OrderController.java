@@ -1,7 +1,6 @@
 package mrs.app.controller;
 
 import java.util.Collection;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +9,6 @@ import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.DTOs.MarkDTO;
 import mrs.app.domain.Bartender;
 import mrs.app.domain.Chef;
-import mrs.app.domain.Employee;
 import mrs.app.domain.Guest;
 import mrs.app.domain.Notification;
 import mrs.app.domain.User;
@@ -24,7 +22,6 @@ import mrs.app.domain.restaurant.ItemDrink;
 import mrs.app.domain.restaurant.ItemMeal;
 import mrs.app.domain.restaurant.Mark;
 import mrs.app.domain.restaurant.Meal;
-import mrs.app.domain.restaurant.Offer;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Visit;
 import mrs.app.domain.restaurant.WaiterOrd;
@@ -308,7 +305,8 @@ public class OrderController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
         if(user.getClass()==Chef.class){
-            ItemMeal item=orderService.updateItemMealStatus(itemMe);
+        	Chef chef=(Chef) user;
+            ItemMeal item=orderService.updateItemMealStatus(itemMe,chef);
             try {
             	System.err.println("promenio sam status jela");
 				notifyWaiterMeal(item.getWaiterOrd());
@@ -337,7 +335,8 @@ public class OrderController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user= userService.findByUsername(username);
         if(user.getClass()==Bartender.class){
-            ItemDrink item=orderService.updateItemDrinkStatus(itemDr);
+        	Bartender b=(Bartender) user;
+            ItemDrink item=orderService.updateItemDrinkStatus(itemDr,b);
             try {
             	System.out.println("promenio sam status pica");
 				notifyWaiter(item.getWaiterOrd());

@@ -1,5 +1,6 @@
 package mrs.app.domain;
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.persistence.Entity;
 
@@ -19,9 +20,14 @@ public class Waiter extends Employee{
 	}
 
 	public Waiter(Date birthday, int uniformSize, int shoeSize,
-			Restaurant restaurant) {
+			Restaurant restaurant, String username, String lastname, String gmail,String password) {
 		super(birthday, uniformSize, shoeSize, restaurant);
 		// TODO Auto-generated constructor stub
+		this.role = UserType.ROLE_WAITER;
+		super.setEmail(gmail);
+		super.setLastname(lastname);
+		super.setName(username);
+		super.setPassword(password);
 	}
 	
 	

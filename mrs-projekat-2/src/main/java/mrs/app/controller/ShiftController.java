@@ -9,6 +9,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import mrs.app.DTOs.WorkingShiftDTO;
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Employee;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.UserType;
@@ -206,6 +208,53 @@ public class ShiftController {
 
 	
 	@RequestMapping(
+			value = "/getWorkingShiftChef",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('CHEF')")
+	public ResponseEntity<WorkingShift> getWorkingShiftChef(HttpServletRequest request) throws ParseException{
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Chef current = (Chef) userService.findByUsername(username);
+        Calendar now = Calendar.getInstance();
+        logger.info(">started here");
+        System.out.println(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
+        
+        Restaurant restaurant= restaurantService.findOne(current.getRestaurant().getId());
+        Collection<Shift> shifts=shiftSetvice.findShifts(restaurant);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf1=new SimpleDateFormat("HH:MM");
+        SimpleDateFormat sdf2=new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date trenutnoVreme=new Date();
+        Shift smena=new Shift();
+        boolean found=false;
+        for(Shift sh:shifts){
+            String trenutniDatum1=sdf.format(trenutnoVreme);
+            String trenutniDatum2=sdf.format(trenutnoVreme);
+        	trenutniDatum1+=" "+sh.getStartTime();
+        	trenutniDatum2+=" "+sh.getEndTime();
+        	Date datumSmenePocetak=sdf2.parse(trenutniDatum1);
+        	Date datumSmeneKraj=sdf2.parse(trenutniDatum2);
+        	if(trenutnoVreme.before(datumSmeneKraj) && trenutnoVreme.after(datumSmenePocetak)){
+        		System.err.println("dobro je");
+        		smena=sh;
+        		found=true;
+        		break;
+        	}
+        }
+        if(!found){
+        	return new ResponseEntity<WorkingShift>(HttpStatus.NOT_FOUND);
+        }else{
+
+        String trenutni=sdf.format(trenutnoVreme);
+		WorkingShift saved = workingShiftService.findShiftForChef(current,trenutni,smena);
+		System.err.println(saved);
+		return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+        }
+	}
+	
+	
+	@RequestMapping(
 			value = "/getWorkingShiftWaiter",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -225,6 +274,7 @@ public class ShiftController {
         SimpleDateFormat sdf2=new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date trenutnoVreme=new Date();
         Shift smena=new Shift();
+        boolean found=false;
         for(Shift sh:shifts){
             String trenutniDatum1=sdf.format(trenutnoVreme);
             String trenutniDatum2=sdf.format(trenutnoVreme);
@@ -235,14 +285,69 @@ public class ShiftController {
         	if(trenutnoVreme.before(datumSmeneKraj) && trenutnoVreme.after(datumSmenePocetak)){
         		System.err.println("dobro je");
         		smena=sh;
+        		found=true;
         		break;
         	}
         }
+        if(!found){
+        	return new ResponseEntity<WorkingShift>(HttpStatus.NOT_FOUND);
+        }else{
+
 
         String trenutni=sdf.format(trenutnoVreme);
 		WorkingShift saved = workingShiftService.findShiftForWaiter(current,trenutni,smena);
 		System.err.println(saved);
 		return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+        }
 	}
+	
+	
+	@RequestMapping(
+			value = "/getWorkingShiftBartender",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('BARTENDER')")
+	public ResponseEntity<WorkingShift> getWorkingShiftBartender(HttpServletRequest request) throws ParseException{
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Bartender current = (Bartender) userService.findByUsername(username);
+        Calendar now = Calendar.getInstance();
+        logger.info(">started here");
+        System.out.println(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
+        
+        Restaurant restaurant= restaurantService.findOne(current.getRestaurant().getId());
+        Collection<Shift> shifts=shiftSetvice.findShifts(restaurant);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf1=new SimpleDateFormat("HH:MM");
+        SimpleDateFormat sdf2=new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date trenutnoVreme=new Date();
+        Shift smena=new Shift();
+        boolean found=false;
+        for(Shift sh:shifts){
+            String trenutniDatum1=sdf.format(trenutnoVreme);
+            String trenutniDatum2=sdf.format(trenutnoVreme);
+        	trenutniDatum1+=" "+sh.getStartTime();
+        	trenutniDatum2+=" "+sh.getEndTime();
+        	Date datumSmenePocetak=sdf2.parse(trenutniDatum1);
+        	Date datumSmeneKraj=sdf2.parse(trenutniDatum2);
+        	if(trenutnoVreme.before(datumSmeneKraj) && trenutnoVreme.after(datumSmenePocetak)){
+        		System.err.println("dobro je");
+        		smena=sh;
+        		found=true;
+        		break;
+        	}
+        }
+        if(!found){
+        	return new ResponseEntity<WorkingShift>(HttpStatus.NOT_FOUND);
+        }else{
+
+        String trenutni=sdf.format(trenutnoVreme);
+		WorkingShift saved = workingShiftService.findShiftForBartender(current,trenutni,smena);
+		System.err.println(saved);
+		return new ResponseEntity<WorkingShift>(saved, HttpStatus.OK);
+        }
+	}
+	
+	
 	
 }

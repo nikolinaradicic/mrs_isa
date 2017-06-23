@@ -3,6 +3,8 @@ package mrs.app.service;
 import java.util.Collection;
 import java.util.Date;
 
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Shift;
@@ -19,5 +21,9 @@ public interface WorkingShiftService {
 	public boolean delete(WorkingShift workingShift);
 	public WorkingShift findShiftForWaiter(Waiter current, String trenutnoVreme,
 			Shift smena);
+	public WorkingShift findShiftForChef(Chef current, String trenutni,
+			Shift smena);
+	public WorkingShift findShiftForBartender(Bartender current,
+			String trenutni, Shift smena);
 
 }

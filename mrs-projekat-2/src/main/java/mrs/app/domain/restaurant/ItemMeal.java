@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+
+import mrs.app.domain.Chef;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,6 +35,21 @@ public class ItemMeal {
 	@Column
 	private boolean bill;
 	
+	@ManyToOne
+	private Chef chef;
+	
+	@Version
+	@Column(name="version")
+	private Long version;
+	
+	public Chef getChef() {
+		return chef;
+	}
+
+	public void setChef(Chef chef) {
+		this.chef = chef;
+	}
+
 	@JsonIgnore
 	public WaiterOrd getWaiterOrd() {
 		return waiterOrd;
@@ -47,6 +65,14 @@ public class ItemMeal {
 		this.bill=false;
 	}
 	
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 	public ItemMeal(Meal meal, int quantity, String status) {
 		super();
 		this.meal = meal;
