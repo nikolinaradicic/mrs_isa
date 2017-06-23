@@ -49,9 +49,8 @@ public class Employee extends User {
 	
 	
 	
-	public Employee(String password, String name, String lastname,
-			String email, UserType role,Date birthday, int uniformSize, int shoeSize, Restaurant restaurant) {
-		super(password, name, lastname, email, role);
+	public Employee(User user,Date birthday, int uniformSize, int shoeSize, Restaurant restaurant) {
+		super(user.getPassword(), user.getName(), user.getLastname(), user.getEmail(), user.getRole());
 		// TODO Auto-generated constructor stub
 		this.birthday = birthday;
 		this.uniformSize = uniformSize;

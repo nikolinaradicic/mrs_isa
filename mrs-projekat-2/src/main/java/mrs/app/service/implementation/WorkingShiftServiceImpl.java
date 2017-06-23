@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.Restaurant;
 import mrs.app.domain.restaurant.Shift;
@@ -66,6 +68,30 @@ public class WorkingShiftServiceImpl implements WorkingShiftService{
 			Shift smena) {
 		// TODO Auto-generated method stub
 		WorkingShift shift=wsRepository.findShiftForWaiter(current, trenutnoVreme, smena);
+		System.err.println(shift);
+		if(shift==null){
+			return null;
+		}
+		return shift;
+	}
+
+	@Override
+	public WorkingShift findShiftForChef(Chef current, String trenutni,
+			Shift smena) {
+		// TODO Auto-generated method stub
+		WorkingShift shift=wsRepository.findShiftForChef(current, trenutni, smena);
+		System.err.println(shift);
+		if(shift==null){
+			return null;
+		}
+		return shift;
+	}
+
+	@Override
+	public WorkingShift findShiftForBartender(Bartender current,
+			String trenutni, Shift smena) {
+		// TODO Auto-generated method stub
+		WorkingShift shift=wsRepository.findShiftForBartender(current, trenutni, smena);
 		System.err.println(shift);
 		if(shift==null){
 			return null;

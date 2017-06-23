@@ -55,15 +55,20 @@ public class WaiterOrd implements Serializable{
 		this.drinks=drinks;
 		this.restaurant=restaurant;
 	}
-	
-	
-	
 
 	public WaiterOrd(Collection<ItemMeal> meals, Collection<ItemDrink> drinks,
 			Restaurant restaurant, Waiter waiter, RestaurantTable table) {
 		super();
 		this.meals = meals;
 		this.drinks = drinks;
+		this.restaurant = restaurant;
+		this.waiter = waiter;
+		this.table = table;
+	}
+
+	public WaiterOrd(Restaurant restaurant2, Waiter waiter2,
+			RestaurantTable table2) {
+		// TODO Auto-generated constructor stub
 		this.restaurant = restaurant;
 		this.waiter = waiter;
 		this.table = table;

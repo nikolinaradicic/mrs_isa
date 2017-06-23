@@ -8,6 +8,8 @@ import java.util.Date;
 import mrs.app.DTOs.ItemDrinkDTO;
 import mrs.app.DTOs.ItemMealDTO;
 import mrs.app.DTOs.MarkDTO;
+import mrs.app.domain.Bartender;
+import mrs.app.domain.Chef;
 import mrs.app.domain.Guest;
 import mrs.app.domain.Waiter;
 import mrs.app.domain.restaurant.BartenderDrink;
@@ -43,6 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -216,6 +220,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public ItemDrink updateItemDrink(ItemDrink itemDr) {
 		// TODO Auto-generated method stub
 		itemDrinkRepository.updateItemDrink(itemDr.getQuantity(), itemDr.getId());
@@ -224,6 +229,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public ItemMeal updateItemMeal(ItemMeal itemMe) {
 		// TODO Auto-generated method stub
 		itemMealRepository.updateItemMeal(itemMe.getQuantity(), itemMe.getId());
@@ -232,23 +238,26 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public ItemMeal updateItemMealStatus(ItemMeal itemMe) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public ItemMeal updateItemMealStatus(ItemMeal itemMe, Chef chef) {
 		// TODO Auto-generated method stub
-		itemMealRepository.updateItemMealStatus(itemMe.getStatus(), itemMe.getId());
+		itemMealRepository.updateItemMealStatus(itemMe.getStatus(), itemMe.getId(), chef);
 		ItemMeal updatedOne=itemMealRepository.findOne(itemMe.getId());
 		return updatedOne;
 	}
 
 	@Override
-	public ItemDrink updateItemDrinkStatus(ItemDrink itemDr) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public ItemDrink updateItemDrinkStatus(ItemDrink itemDr, Bartender b) {
 		// TODO Auto-generated method stub
-		itemDrinkRepository.updateItemDrinkStatus(itemDr.getStatus(), itemDr.getId());
+		itemDrinkRepository.updateItemDrinkStatus(itemDr.getStatus(), itemDr.getId(),b);
 		ItemDrink updatedOne=itemDrinkRepository.findOne(itemDr.getId());
 		return updatedOne;
 	}
 
 
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void deleteItemMeal(ItemMealDTO orderDTO) {
 		// TODO Auto-generated method stub
 		WaiterOrd order=orderRepository.findOne(orderDTO.getIdWaiterOrd());
@@ -258,6 +267,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void deleteItemDrink(ItemDrinkDTO orderDTO) {
 		// TODO Auto-generated method stub
 		WaiterOrd order=orderRepository.findOne(orderDTO.getIdWaiterOrd());
