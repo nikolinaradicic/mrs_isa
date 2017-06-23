@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import mrs.app.DTOs.ChartDTO;
 import mrs.app.DTOs.QueryChartDTO;
+import mrs.app.DTOs.RatingDTO;
 import mrs.app.DTOs.TableDTO;
 import mrs.app.domain.RestaurantManager;
 import mrs.app.domain.User;
@@ -459,5 +460,18 @@ public class RestaurantController {
         RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
         ChartDTO retVal = billService.visitChart(saved.getRestaurant(), query);
 		return new ResponseEntity<ChartDTO>(retVal, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value="/getRating",
+			method=RequestMethod.GET,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+	public ResponseEntity<RatingDTO> getRating(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        RestaurantManager saved = (RestaurantManager) userService.findByUsername(username);
+        RatingDTO retVal = billService.getRatings(saved.getRestaurant());
+		return new ResponseEntity<RatingDTO>(retVal, HttpStatus.OK);
 	}
 }

@@ -4,10 +4,12 @@ function showReports(){
 			$("#income-btn").addClass("active");
 			$("#waiters-btn").removeClass("active");
 			$("#visit-btn").removeClass("active");
+			$("#ratings-btn").removeClass("active");
 			
 			$("#income-div").removeClass("hide-me");
 			$("#waiters-div").addClass("hide-me");
 			$("#visit-div").addClass("hide-me");
+			$("#ratings-div").addClass("hide-me");
 		});
 		
 		
@@ -15,20 +17,38 @@ function showReports(){
 			$("#visit-btn").addClass("active");
 			$("#waiters-btn").removeClass("active");
 			$("#income-btn").removeClass("active");
+			$("#ratings-btn").removeClass("active");
 			
 			$("#income-div").addClass("hide-me");
 			$("#waiters-div").addClass("hide-me");
 			$("#visit-div").removeClass("hide-me");
+			$("#ratings-div").addClass("hide-me");
 		});
 		
 		$("#waiters-btn").click(function(){
 			$("#waiters-btn").addClass("active");
 			$("#income-btn").removeClass("active");
 			$("#visit-btn").removeClass("active");
+			$("#ratings-btn").removeClass("active");
 			
 			$("#income-div").addClass("hide-me");
 			$("#waiters-div").removeClass("hide-me");
 			$("#visit-div").addClass("hide-me");
+			$("#ratings-div").addClass("hide-me");
+		});
+		
+		$("#ratings-btn").click(function(){
+			$("#waiters-btn").removeClass("active");
+			$("#income-btn").removeClass("active");
+			$("#visit-btn").removeClass("active");
+			$("#ratings-btn").addClass("active");
+			
+			$("#income-div").addClass("hide-me");
+			$("#waiters-div").addClass("hide-me");
+			$("#visit-div").addClass("hide-me");
+			$("#ratings-div").removeClass("hide-me");
+			
+			getRating();
 		});
 		
 		var dateToday = new Date();
@@ -54,6 +74,35 @@ function showReports(){
 		});
 		
 	});
+}
+
+function getRating(){
+	$.ajax({
+		url: '/getRating',
+		type: 'GET',
+		dataType: 'json',
+		contentType: 'application/json',
+		headers: createAuthorizationTokenHeader(),
+		success: function(data){
+			$("#meal-rating").empty();
+			$("#waiter-rating").empty();
+			$("#rating").text(data.rating);
+			for (var key in data.waiters) {
+				$("#waiter-rating").append($("<tr>")
+										.append($("<td>").text(key))
+										.append($("<td>").text(data.waiters[key]))
+										);
+			}
+			
+			for (var key in data.meals) {
+				$("#meal-rating").append($("<tr>")
+										.append($("<td>").text(key))
+										.append($("<td>").text(data.meals[key]))
+										);
+			}
+		}
+	});
+
 }
 
 function getVisitChart(){

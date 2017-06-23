@@ -186,7 +186,7 @@ function displayOffers(data){
 												.attr("id", "like-button")
 												.text("Accept")
 												.click(function(){
-													acceptOffer(item.id, data.id);
+													acceptOffer(item, data.id);
 												});
 											if(item.accepted)
 												return "Accepted";
@@ -202,8 +202,8 @@ function displayOffers(data){
 	});
 }
 
-function acceptOffer(offerId, supId){
-	var s = {id: offerId, groceryListId:supId};
+function acceptOffer(data, supId){
+	var s = {id: data.id, price: data.price, groceryListId:supId};
 	$.ajax({
 		url: "/acceptOffer",
 		type:"POST",
@@ -212,7 +212,13 @@ function acceptOffer(offerId, supId){
 		data: JSON.stringify(s),
 		headers: createAuthorizationTokenHeader(),
 		success: function (data, textStatus, jqXHR) {
-	            window.alert("ponuda uspjesno prihvacena");
+				if(data.acceptedOffer != null){
+		            
+				}
+				else{
+
+		            window.alert("This offer has been modified. Review and accepted again.");
+				}
 	            $(window).trigger( "hashchange" );
 	        },
 	    error: function (jqXHR, textStatus, errorThrown) {

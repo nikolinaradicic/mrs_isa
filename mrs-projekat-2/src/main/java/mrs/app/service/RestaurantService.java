@@ -31,8 +31,10 @@ public interface RestaurantService {
 
 	Restaurant updateLocation(Restaurant restaurant);
 
+	//tested
 	Meal updateMeal(Meal meal);
 
+	//tested
 	Drink updateDrink(Drink drink);
 
 	boolean deleteMeal(Meal meal, Restaurant restaurant);

@@ -83,8 +83,8 @@ public class GroceryListServiceImpl implements GroceryListService {
 	
 	
 	@Override
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public Offer updateOffer(OfferDTO o, GroceryList gl) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void updateOffer(OfferDTO o, GroceryList gl) {
 		// TODO Auto-generated method stub
 		logger.info("> update");
         for(Offer off : gl.getOffers()){
@@ -93,10 +93,9 @@ public class GroceryListServiceImpl implements GroceryListService {
         		off.setPrice(o.getPrice());
                 groceryListRepository.save(gl);
                 logger.info("< update");
-        		return off;
+        		return;
         	}
         }
-        return null;
 	}
 	
 	@Override

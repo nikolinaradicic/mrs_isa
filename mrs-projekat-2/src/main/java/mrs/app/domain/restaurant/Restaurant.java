@@ -33,7 +33,7 @@ public class Restaurant {
 	
 	private String latitude;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant")
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<Meal> menu;
 	
